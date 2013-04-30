@@ -9,12 +9,11 @@ import com.ca.automation.golem.annotations.methods.Run;
 import com.ca.automation.golem.annotations.methods.Validate;
 import com.ca.automation.golem.context.RunContextImpl;
 import com.ca.automation.golem.context.actionInterfaces.RunCond;
+import com.ca.automation.golem.context.actionInterfaces.RunConectionSpool;
+import com.ca.automation.golem.context.actionInterfaces.RunConnectionFactory;
 import com.ca.automation.golem.context.actionInterfaces.RunCycleContext;
+import com.ca.automation.golem.context.actionInterfaces.RunParameterMap;
 import com.ca.automation.golem.context.actionInterfaces.RunTreeElement;
-import com.ca.automation.golem.context.actionInterfaces.RunnerConectionSpool;
-import com.ca.automation.golem.context.actionInterfaces.RunnerConnection;
-import com.ca.automation.golem.context.actionInterfaces.RunnerConnectionFactory;
-import com.ca.automation.golem.context.actionInterfaces.RunnerParameterMap;
 import com.ca.automation.golem.context.actionInterfaces.managers.RunActionStackManagerContext;
 import com.ca.automation.golem.context.actionInterfaces.managers.RunCycleManagerContext;
 import com.ca.automation.golem.context.actionInterfaces.managers.RunDelayIntervalManagerContext;
@@ -51,7 +50,7 @@ public class Runner {
     @EJB
     private ActionReflectionContainer actionData;
     private RunCond runConditions;
-    private RunnerConectionSpool connSpool;
+    private RunConectionSpool connSpool;
     private RunContextImpl<Object> run;
 
     /**
@@ -83,7 +82,7 @@ public class Runner {
      * @param runDataMap
      * @return
      */
-    public boolean run(RunTreeElement root, RunnerParameterMap runDataMap) {
+    public boolean run(RunTreeElement root, RunParameterMap runDataMap) {
         boolean retValue = true;
         this.runConditions = new RunCondImpl();
         this.connSpool = new RunnerConnectionSpool();
@@ -101,7 +100,7 @@ public class Runner {
         return retValue;
     }
 
-    private RunnerParameterMap traverseRunTree(RunTreeElement curreElement, RunnerParameterMap runParameterMap) {
+    private RunParameterMap traverseRunTree(RunTreeElement curreElement, RunParameterMap runParameterMap) {
 //        this.run.setCurrentElement(curreElement);
 
         if (curreElement.getParameters() != null) {
@@ -133,7 +132,7 @@ public class Runner {
         return runParameterMap;
     }
 
-    private RunnerParameterMap runLeaf(Object leaf, RunnerParameterMap runParameterMap) {
+    private RunParameterMap runLeaf(Object leaf, RunParameterMap runParameterMap) {
         if (actionData.isAction(leaf)) {
 
             List<Field> fields = actionData.getFields(leaf);
@@ -251,7 +250,7 @@ public class Runner {
         return retValue;
     }
 
-    private void injectContexts(Object action, RunnerParameterMap map) {
+    private void injectContexts(Object action, RunParameterMap map) {
         List<Field> contexts = actionData.getContexts(action);
         if ((contexts != null) && (!contexts.isEmpty())) {
             for (Field f : contexts) {
@@ -259,11 +258,11 @@ public class Runner {
                 try {
                     if (type.isAssignableFrom(RunCond.class)) {
                         f.set(action, runConditions);
-                    } else if (type.isAssignableFrom(RunnerParameterMap.class)) {
+                    } else if (type.isAssignableFrom(RunParameterMap.class)) {
                         f.set(action, map);
-                    } else if (type.isAssignableFrom(RunnerConnectionFactory.class)) {
+                    } else if (type.isAssignableFrom(RunConnectionFactory.class)) {
                         f.set(action, RunnerConnectionFactoryImpl.createNewFactory());
-                    } else if (type.isAssignableFrom(RunnerConectionSpool.class)) {
+                    } else if (type.isAssignableFrom(RunConectionSpool.class)) {
                         f.set(action, connSpool);
                     } else if (type.isAssignableFrom(RunCycleManagerContext.class)) {
                         if (run.getCycleManager() == null) {
@@ -310,7 +309,7 @@ public class Runner {
         if ((connections != null) && (!connections.isEmpty())) {
             for (Field f : connections) {
                 Class<?> type = f.getType();
-                if (type.isAssignableFrom(RunnerConnection.class)) {
+                if (type.isAssignableFrom(com.ca.automation.golem.context.actionInterfaces.RunConnection.class)) {
                     RunConnection connection = f.getAnnotation(RunConnection.class);
                     Object connectionKey = null;
                     if (!connection.key().isEmpty()) {

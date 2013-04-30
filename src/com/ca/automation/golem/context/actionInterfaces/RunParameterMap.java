@@ -10,7 +10,6 @@ import java.util.Map;
  *
  * @author maslu02
  */
-public interface RunnerConectionSpool extends Map<Object, RunnerConnection> {
-
-
+public interface RunParameterMap extends Map<String, Object> {
+    
 }

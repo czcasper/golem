@@ -12,7 +12,7 @@ import java.util.Iterator;
  * @param <T> 
  * @author maslu02
  */
-public interface RunnerContext<T extends Object> extends Iterable<T>, Iterator<T> {
+public interface RunContext<T extends Object> extends Iterable<T>, Iterator<T> {
     
     /**
      *

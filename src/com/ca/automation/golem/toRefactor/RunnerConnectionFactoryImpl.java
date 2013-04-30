@@ -4,8 +4,8 @@
  */
 package com.ca.automation.golem.toRefactor;
 
-import com.ca.automation.golem.context.actionInterfaces.RunnerConnection;
-import com.ca.automation.golem.context.actionInterfaces.RunnerConnectionFactory;
+import com.ca.automation.golem.context.actionInterfaces.RunConnection;
+import com.ca.automation.golem.context.actionInterfaces.RunConnectionFactory;
 import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
@@ -17,12 +17,12 @@ import java.util.Map;
  */
 
 //TODO refator to use URI api for creting and registering connection, also add suport for customized handlers like jse2ftp
-public class RunnerConnectionFactoryImpl implements RunnerConnectionFactory {
+public class RunnerConnectionFactoryImpl implements RunConnectionFactory {
 
-    private static Map<String, RunnerConnectionFactory> providerMap;
+    private static Map<String, RunConnectionFactory> providerMap;
 
     static {
-        providerMap = new HashMap<String, RunnerConnectionFactory>();
+        providerMap = new HashMap<String, RunConnectionFactory>();
 //        providerMap.put("jesftp", new Jes2FtpConnectionFactory());
     }
     
@@ -30,7 +30,7 @@ public class RunnerConnectionFactoryImpl implements RunnerConnectionFactory {
      *
      * @return
      */
-    public static RunnerConnectionFactory createNewFactory(){
+    public static RunConnectionFactory createNewFactory(){
         return new RunnerConnectionFactoryImpl();
     }
 
@@ -43,8 +43,8 @@ public class RunnerConnectionFactoryImpl implements RunnerConnectionFactory {
      * @throws IOException
      */
     @Override
-    public RunnerConnection open(URI url, String userName, String passwd) throws IOException {
-        RunnerConnection retValue = null;
+    public RunConnection open(URI url, String userName, String passwd) throws IOException {
+        RunConnection retValue = null;
         if (url != null) {
             String scheme = url.getScheme();
             if(scheme.compareToIgnoreCase("jesftp")==0) {
@@ -61,7 +61,7 @@ public class RunnerConnectionFactoryImpl implements RunnerConnectionFactory {
      * @return
      */
     @Override
-    public RunnerConnection open(URI url) {
+    public RunConnection open(URI url) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

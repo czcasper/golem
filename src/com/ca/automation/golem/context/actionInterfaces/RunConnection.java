@@ -14,7 +14,7 @@ import java.nio.channels.WritableByteChannel;
  *
  * @author pasol01
  */
-public interface RunnerConnection {
+public interface RunConnection {
 
     /**
      * Disconnects from the FTP server.

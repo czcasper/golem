@@ -87,7 +87,7 @@ public class MethodAnnotationFieldComparatorTest {
         }
     }
 
-    @RunnerAction
+    @RunAction
     private class Test01Class {
 
         @Init(order = 5)

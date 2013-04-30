@@ -4,15 +4,15 @@
  */
 package com.ca.automation.golem.toRefactor;
 
-import com.ca.automation.golem.context.actionInterfaces.RunnerConectionSpool;
-import com.ca.automation.golem.context.actionInterfaces.RunnerConnection;
+import com.ca.automation.golem.context.actionInterfaces.RunConectionSpool;
+import com.ca.automation.golem.context.actionInterfaces.RunConnection;
 import java.util.LinkedHashMap;
 
 /**
  *
  * @author maslu02
  */
-public class RunnerConnectionSpool extends LinkedHashMap<Object, RunnerConnection> implements RunnerConectionSpool {
+public class RunnerConnectionSpool extends LinkedHashMap<Object, RunConnection> implements RunConectionSpool {
 
     /**
      *

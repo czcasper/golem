@@ -11,7 +11,7 @@ import java.net.URI;
  *
  * @author basad01
  */
-public interface RunnerConnectionFactory {
+public interface RunConnectionFactory {
     
    
     /**
@@ -22,14 +22,14 @@ public interface RunnerConnectionFactory {
      * @return
      * @throws IOException
      */
-    public RunnerConnection open(URI url,String userName,String passwd) throws IOException;
+    public RunConnection open(URI url,String userName,String passwd) throws IOException;
     /**
      *
      * @param url
      * @return
      * @throws IOException
      */
-    public RunnerConnection open(URI url) throws IOException;
+    public RunConnection open(URI url) throws IOException;
     
     
 }

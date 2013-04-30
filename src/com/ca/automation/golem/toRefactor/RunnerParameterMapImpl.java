@@ -4,14 +4,14 @@
  */
 package com.ca.automation.golem.toRefactor;
 
-import com.ca.automation.golem.context.actionInterfaces.RunnerParameterMap;
+import com.ca.automation.golem.context.actionInterfaces.RunParameterMap;
 import java.util.LinkedHashMap;
 
 /**
  *
  * @author maslu02
  */
-public class RunnerParameterMapImpl extends LinkedHashMap<String, Object>  implements RunnerParameterMap {
+public class RunnerParameterMapImpl extends LinkedHashMap<String, Object>  implements RunParameterMap {
 
     /**
      *

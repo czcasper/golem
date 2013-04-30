@@ -5,7 +5,7 @@
 package com.ca.automation.golem.context;
 
 import com.ca.automation.golem.common.iterators.ResetableIterator;
-import com.ca.automation.golem.context.actionInterfaces.RunnerContext;
+import com.ca.automation.golem.context.actionInterfaces.RunContext;
 import com.ca.automation.golem.context.actionInterfaces.managers.RunActionStackManagerContext;
 import com.ca.automation.golem.context.actionInterfaces.managers.RunCycleManagerContext;
 import com.ca.automation.golem.context.actionInterfaces.managers.RunDelayIntervalManagerContext;
@@ -20,7 +20,7 @@ import java.util.List;
  * @param <T> 
  * @author basad01
  */
-public class RunContextImpl<T> implements RunnerContext<T>{
+public class RunContextImpl<T> implements RunContext<T>{
 
     /*
      * 
