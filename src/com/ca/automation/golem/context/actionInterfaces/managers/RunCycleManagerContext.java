@@ -4,32 +4,13 @@
  */
 package com.ca.automation.golem.context.actionInterfaces.managers;
 
-import com.ca.automation.golem.context.actionInterfaces.RunCycleContext;
+import com.ca.automation.golem.interfaces.RunCycleManager;
 
 /**
  *
  * @param <T> 
  * @author maslu02
  */
-public interface  RunCycleManagerContext<T> {
+public interface  RunCycleManagerContext extends RunCycleManager<Object> {
     
-    /**
-     *
-     * @param action
-     * @param repeatCount
-     * @param actionCount
-     * @return
-     */
-    public boolean setup(T action, long repeatCount, int actionCount);
-    /**
-     *
-     * @param action
-     */
-    public void load(T action);
-    /**
-     *
-     * @return
-     */
-    public RunCycleContext getCurrent();
-
 }

@@ -1,12 +1,14 @@
 /*
  */
-package com.ca.automation.golem.context.actionInterfaces;
+package com.ca.automation.golem.interfaces;
+
+import java.util.Iterator;
 
 /**
  *
  * @author maslu02
  */
-public interface RunCycleContext {
+public interface RunCycle<T> extends Iterator<T> {
 
     /**
      * Get current action index in cycle
@@ -27,7 +29,7 @@ public interface RunCycleContext {
      *
      * @return the object which represent last action in cycle
      */
-    public Object getEndAction();
+    public T getEndAction();
 
     /**
      * Get current number of iteration which should be executed by this cycle
@@ -43,7 +45,7 @@ public interface RunCycleContext {
      *
      * @return action used for start next iteration in cycle
      */
-    public Object getStartAction();
+    public T getStartAction();
 
     /**
      * Get break cycle flag
@@ -100,4 +102,33 @@ public interface RunCycleContext {
      * @return true in case when current cycle action is first action in cycle
      */
     public boolean isFirstAction();
+    
+    /**
+     * This method test if cycle has startAction equal to endAction.
+     * 
+     * @return true in case when cycle has just one action, otherwise false
+     */
+    public boolean isZeroLength();
+    
+    /**
+     * Save method for updating curent interator container by action.
+     *
+     * @param action runner action object
+     */
+    public void updateIt(T action);
+    
+    /**
+     * This method move cycle in next loop in case when action is equal to endAction.
+     * 
+     * @param action curently processed action
+     */
+    public void endCycleHandler(T action);
+    
+    /**
+     * Method resets all cycle internal counters and flags. This allows start
+     * cycle from scrach, or reuse cycle object for next run. Internal iterator
+     * is not touched in this method.
+     */
+    public void reset();    
+    
 }

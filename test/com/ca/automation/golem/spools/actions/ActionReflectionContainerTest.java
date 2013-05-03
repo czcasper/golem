@@ -29,22 +29,22 @@ public class ActionReflectionContainerTest {
     }
 
     /**
-     * Test of getDefaultInstance method, of class ActionReflectionContainer.
+     * Test of getDefaultInstance method, of class ActionInformationSpool.
      */
     @Test
     public void testGetDefaultInstanceJDK() throws Exception {
-        ActionReflectionContainer result = ActionReflectionContainer.getDefaultInstance();
+        ActionInformationSpool result = ActionInformationSpool.getDefaultInstance();
         assertNotNull(result);
-        ActionReflectionContainer result2 = ActionReflectionContainer.getDefaultInstance();
+        ActionInformationSpool result2 = ActionInformationSpool.getDefaultInstance();
         assertSame(result, result2);
     }
 
     /**
-     * Test of getFields method, of class ActionReflectionContainer.
+     * Test of getFields method, of class ActionInformationSpool.
      */
     @Test
     public void testGetFields() throws Exception {
-        ActionReflectionContainer instance = ActionReflectionContainer.getDefaultInstance();
+        ActionInformationSpool instance = ActionInformationSpool.getDefaultInstance();
         WrongActionNoAnnots actionWr= new WrongActionNoAnnots();
         List result = instance.getFields(actionWr);
         assertNull(result);
@@ -61,11 +61,11 @@ public class ActionReflectionContainerTest {
     }
 
     /**
-     * Test of getFieldByName method, of class ActionReflectionContainer.
+     * Test of getFieldByName method, of class ActionInformationSpool.
      */
     @Test
     public void testGetFieldByName_Object_String() throws Exception {
-        ActionReflectionContainer instance = ActionReflectionContainer.getDefaultInstance();
+        ActionInformationSpool instance = ActionInformationSpool.getDefaultInstance();
         ActionWithMembers action = new ActionWithMembers();
         Field result = instance.getFieldByName(action, "");
         assertNull(result);
@@ -102,11 +102,11 @@ public class ActionReflectionContainerTest {
     }
 
     /**
-     * Test of getConnections method, of class ActionReflectionContainer.
+     * Test of getConnections method, of class ActionInformationSpool.
      */
     @Test
     public void testGetConnections() throws Exception {
-        ActionReflectionContainer instance = ActionReflectionContainer.getDefaultInstance();
+        ActionInformationSpool instance = ActionInformationSpool.getDefaultInstance();
         ActionWithConnection action = new ActionWithConnection();
         List<Field> result = instance.getConnections(new ValidActionWithNoRun());
         assertTrue(result.isEmpty());
@@ -117,11 +117,11 @@ public class ActionReflectionContainerTest {
     }
 
     /**
-     * Test of getRetValues method, of class ActionReflectionContainer.
+     * Test of getRetValues method, of class ActionInformationSpool.
      */
     @Test
     public void testGetRetValues() throws Exception {
-        ActionReflectionContainer instance = ActionReflectionContainer.getDefaultInstance();
+        ActionInformationSpool instance = ActionInformationSpool.getDefaultInstance();
         ActionWithRetValues action = new ActionWithRetValues();
         List<Field> result = instance.getRetValues(new ValidActionWithNoRun());
         assertTrue(result.isEmpty());
@@ -132,11 +132,11 @@ public class ActionReflectionContainerTest {
     }
 
     /**
-     * Test of getContexts method, of class ActionReflectionContainer.
+     * Test of getContexts method, of class ActionInformationSpool.
      */
     @Test
     public void testGetContexts() throws Exception {
-        ActionReflectionContainer instance = ActionReflectionContainer.getDefaultInstance();
+        ActionInformationSpool instance = ActionInformationSpool.getDefaultInstance();
         ActionWithContext action = new ActionWithContext();
         List<Field> result = instance.getContexts(new ValidActionWithNoRun());
         assertTrue(result.isEmpty());
@@ -147,11 +147,11 @@ public class ActionReflectionContainerTest {
     }
 
     /**
-     * Test of getInits method, of class ActionReflectionContainer.
+     * Test of getInits method, of class ActionInformationSpool.
      */
     @Test
     public void testGetInits() throws Exception {
-        ActionReflectionContainer instance = ActionReflectionContainer.getDefaultInstance();
+        ActionInformationSpool instance = ActionInformationSpool.getDefaultInstance();
         ActionWithContext action = new ActionWithContext();
         List<Method> result = instance.getInits(new SimpleValidAction());
         assertTrue(result.isEmpty());
@@ -164,11 +164,11 @@ public class ActionReflectionContainerTest {
     }
 
     /**
-     * Test of getRuns method, of class ActionReflectionContainer.
+     * Test of getRuns method, of class ActionInformationSpool.
      */
     @Test
     public void testGetRuns() throws Exception {
-        ActionReflectionContainer instance = ActionReflectionContainer.getDefaultInstance();
+        ActionInformationSpool instance = ActionInformationSpool.getDefaultInstance();
         ActionWithContext action = new ActionWithContext();
         List<Method> result = instance.getRuns(new SimpleValidAction());
         assertEquals(result.size(),1);
@@ -179,11 +179,11 @@ public class ActionReflectionContainerTest {
     }
 
     /**
-     * Test of getValidates method, of class ActionReflectionContainer.
+     * Test of getValidates method, of class ActionInformationSpool.
      */
     @Test
     public void testGetValidates() throws Exception {
-        ActionReflectionContainer instance = ActionReflectionContainer.getDefaultInstance();
+        ActionInformationSpool instance = ActionInformationSpool.getDefaultInstance();
         ActionWithContext action = new ActionWithContext();
         List<Method> result = instance.getValidates(new SimpleValidAction());
         assertTrue(result.isEmpty());
@@ -194,11 +194,11 @@ public class ActionReflectionContainerTest {
     }
 
     /**
-     * Test of isAction method, of class ActionReflectionContainer.
+     * Test of isAction method, of class ActionInformationSpool.
      */
     @Test
     public void testIsAction() throws Exception {
-        ActionReflectionContainer instance = ActionReflectionContainer.getDefaultInstance();
+        ActionInformationSpool instance = ActionInformationSpool.getDefaultInstance();
         WrongActionNoAnnots actionWr= new WrongActionNoAnnots();
         boolean result = instance.isAction(actionWr);
         assertFalse(result);

@@ -32,9 +32,9 @@ import javax.ejb.Singleton;
  */
 @Singleton
 @LocalBean
-public class ActionReflectionContainer {
+public class ActionInformationSpool {
 
-    private static ActionReflectionContainer defaultInstance = null;
+    private static ActionInformationSpool defaultInstance = null;
     private Map<Class<?>, ProxyContainer> storageMap;
     private MethodAnnotationFieldComparator<Init> initSort = null;
     private MethodAnnotationFieldComparator<Run> runSort = null;
@@ -46,11 +46,11 @@ public class ActionReflectionContainer {
      * provides same initialization and similar sharing policy like in JEE.
      *
      * @return static instance of this
-     * @class ActionReflectionContainer
+     * @class ActionInformationSpool
      */
-    public static ActionReflectionContainer getDefaultInstance() {
+    public static ActionInformationSpool getDefaultInstance() {
         if (defaultInstance == null) {
-            defaultInstance = new ActionReflectionContainer();
+            defaultInstance = new ActionInformationSpool();
             defaultInstance.initMap();
         }
         return defaultInstance;
@@ -69,7 +69,7 @@ public class ActionReflectionContainer {
             validateSort = new MethodAnnotationFieldComparator<Validate>(Validate.class, "order");
 
         } catch (NoSuchMethodException ex) {
-            Logger.getLogger(ActionReflectionContainer.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ActionInformationSpool.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

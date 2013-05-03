@@ -4,6 +4,7 @@ package com.ca.automation.golem.context.managers;
 
 import com.ca.automation.golem.common.AddressArrayList;
 import com.ca.automation.golem.context.RunContextImpl;
+import com.ca.automation.golem.interfaces.ContextManager;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.Map;
  * @param <M>
  * @author maslu02
  */
-public abstract class AbstractContextManager<T, M extends Iterator<T>> implements Iterator<T> {
+public abstract class AbstractContextManager<T, M extends Iterator<T>,K,V> implements ContextManager<T,M,K,V> {
 
     /**
      *
@@ -36,13 +37,13 @@ public abstract class AbstractContextManager<T, M extends Iterator<T>> implement
     /**
      *
      */
-    protected RunContextImpl<T> context;
+    protected RunContextImpl<T,K,V> context;
 
     /**
      *
      * @param context
      */
-    public AbstractContextManager(RunContextImpl<T> context) {
+    public AbstractContextManager(RunContextImpl<T,K,V> context) {
         this.context = context;
         managed = new HashMap<T, List<M>>();
     }
@@ -133,7 +134,6 @@ public abstract class AbstractContextManager<T, M extends Iterator<T>> implement
      *
      */
     protected abstract void beforeNextInList();
-
     /**
      *
      */

@@ -11,28 +11,27 @@ import com.ca.automation.golem.context.RunContextImpl;
 import com.ca.automation.golem.context.actionInterfaces.RunCond;
 import com.ca.automation.golem.context.actionInterfaces.RunConectionSpool;
 import com.ca.automation.golem.context.actionInterfaces.RunConnectionFactory;
-import com.ca.automation.golem.context.actionInterfaces.RunCycleContext;
-import com.ca.automation.golem.context.actionInterfaces.RunParameterMap;
-import com.ca.automation.golem.context.actionInterfaces.RunTreeElement;
+import com.ca.automation.golem.context.actionInterfaces.RunCycleContent;
+import com.ca.automation.golem.interfaces.RunCycle;
+import com.ca.automation.golem.context.actionInterfaces.SimpleParameterSpool;
 import com.ca.automation.golem.context.actionInterfaces.managers.RunActionStackManagerContext;
 import com.ca.automation.golem.context.actionInterfaces.managers.RunCycleManagerContext;
 import com.ca.automation.golem.context.actionInterfaces.managers.RunDelayIntervalManagerContext;
 import com.ca.automation.golem.context.managers.RunActionStackManager;
-import com.ca.automation.golem.context.managers.RunCycleManager;
+import com.ca.automation.golem.context.managers.RunCycleManagerImpl;
 import com.ca.automation.golem.context.managers.RunDelayIntervalManager;
-import com.ca.automation.golem.spools.actions.ActionReflectionContainer;
-import com.ca.automation.golem.toRefactor.RunCondImpl;
+import com.ca.automation.golem.interfaces.ActionStream;
+import com.ca.automation.golem.interfaces.ContextManager;
+import com.ca.automation.golem.interfaces.RunCycleManager;
+import com.ca.automation.golem.spools.actions.ActionInformationSpool;
 import com.ca.automation.golem.toRefactor.RunnerActiveStackList;
 import com.ca.automation.golem.toRefactor.RunnerActiveTimerList;
 import com.ca.automation.golem.toRefactor.RunnerConnectionFactoryImpl;
-import com.ca.automation.golem.toRefactor.RunnerConnectionSpool;
-import com.ca.automation.golem.toRefactor.RunnerParameterMapImpl;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -48,10 +47,10 @@ import javax.ejb.Stateless;
 public class Runner {
 
     @EJB
-    private ActionReflectionContainer actionData;
-    private RunCond runConditions;
-    private RunConectionSpool connSpool;
-    private RunContextImpl<Object> run;
+    protected ActionInformationSpool actionData;
+    protected RunConectionSpool connSpool;
+    protected RunCond runConditions;
+    protected RunContextImpl<Object, String, Object> run;
 
     /**
      * This is method for save runner creation in JDK environment.
@@ -61,156 +60,128 @@ public class Runner {
     public static Runner createNew() {
         @SuppressWarnings("UseInjectionInsteadOfInstantion")
         Runner retValue = new Runner();
-        retValue.actionData = ActionReflectionContainer.getDefaultInstance();
+        retValue.actionData = ActionInformationSpool.getDefaultInstance();
         return retValue;
     }
 
-    /**
-     * This methods executes the root element of the tree and all branches in
-     * the tree.
-     *
-     * @param root
-     * @return true if operation ended successfully
-     */
-    public boolean run(RunTreeElement root) {
-        return run(root, null);
-    }
+    public boolean run(ActionStream<Object,String,Object> actions) {
+        boolean retValue = false;
+        run.setActionStream(actions);
+        Map<String, Object> runParameterMap = actions.getParameterMap();
+        for (Object o : run) {
 
-    /**
-     *
-     * @param root
-     * @param runDataMap
-     * @return
-     */
-    public boolean run(RunTreeElement root, RunParameterMap runDataMap) {
-        boolean retValue = true;
-        this.runConditions = new RunCondImpl();
-        this.connSpool = new RunnerConnectionSpool();
-        this.run = new RunContextImpl<Object>();
-//        this.run.setRootElement(root);
-
-        if (runDataMap == null) {
-            runDataMap = new RunnerParameterMapImpl();
+            // TODO store return value for dealing with failed action into context 
+            //      where must be implemented functionality for it
+            runAction(o, runParameterMap);
+            
+            // TODO finilize work on error state handling and remove this part
+            if (this.runConditions.getCentralStop()) {
+                break;
+            }
         }
 
-        Map<String, Object> runMap = traverseRunTree(root, runDataMap);
-        if ((runMap == null) || (runConditions.getCentralStop())) {
-            retValue = false;
-        }
         return retValue;
     }
 
-    private RunParameterMap traverseRunTree(RunTreeElement curreElement, RunParameterMap runParameterMap) {
-//        this.run.setCurrentElement(curreElement);
+//    /**
+//     * This methods executes the root element of the tree and all branches in
+//     * the tree.
+//     *
+//     * @param root
+//     * @return true if operation ended successfully
+//     */
+//    public boolean run(RunTreeElement root) {
+//        return run(root, null);
+//    }
+//
+//    /**
+//     *
+//     * @param root
+//     * @param runDataMap
+//     * @return
+//     */
+//    public boolean run(RunTreeElement root, RunParameterMap runDataMap) {
+//        boolean retValue = true;
+//        this.runConditions = new RunCondImpl();
+//        this.connSpool = new RunnerConnectionSpool();
+//        this.run = new RunContextImpl<Object, String, Object>();
+////        this.run.setRootElement(root);
+//
+//        if (runDataMap == null) {
+//            runDataMap = new RunnerParameterMapImpl();
+//        }
+//
+////        Map<String, Object> runMap = traverseRunTree(root, runDataMap);
+////        if ((runMap == null) || (runConditions.getCentralStop())) {
+////            retValue = false;
+////        }
+//        return retValue;
+//    }
 
-        if (curreElement.getParameters() != null) {
-            for (Entry<String, Object> entry : curreElement.getParameters().entrySet()) {
-                if (this.runConditions.getCentralStop()) {
-                    break;
-                }
-                runParameterMap.put(entry.getKey(), entry.getValue());
-            }
-        }
+//    private RunParameterMap traverseRunTree(RunTreeElement curreElement, RunParameterMap runParameterMap) {
+////        this.run.setCurrentElement(curreElement);
+//
+//        if (curreElement.getParameters() != null) {
+//            for (Entry<String, Object> entry : curreElement.getParameters().entrySet()) {
+//                if (this.runConditions.getCentralStop()) {
+//                    break;
+//                }
+//                runParameterMap.put(entry.getKey(), entry.getValue());
+//            }
+//        }
+//
+//        if (curreElement.hasLeaves()) {
+//            run.setSteps(curreElement.getLeaves());
+//            for (Object o : run) {
+//                if (this.runConditions.getCentralStop()) {
+//                    break;
+//                }
+//                runParameterMap = runAction(o, runParameterMap);
+//
+//            }
+//        } else if (curreElement.hasChildren()) {
+//            for (RunTreeElement el : curreElement.getChildren()) {
+//                if (this.runConditions.getCentralStop()) {
+//                    break;
+//                }
+//                runParameterMap = traverseRunTree(el, runParameterMap);
+//            }
+//        }
+//        return runParameterMap;
+//    }
 
-        if (curreElement.hasLeaves()) {
-            run.setSteps(curreElement.getLeaves());
-            for (Object o : run) {
-                if (this.runConditions.getCentralStop()) {
-                    break;
-                }
-                runParameterMap = runLeaf(o, runParameterMap);
-
-            }
-        } else if (curreElement.hasChildren()) {
-            for (RunTreeElement el : curreElement.getChildren()) {
-                if (this.runConditions.getCentralStop()) {
-                    break;
-                }
-                runParameterMap = traverseRunTree(el, runParameterMap);
-            }
-        }
-        return runParameterMap;
-    }
-
-    private RunParameterMap runLeaf(Object leaf, RunParameterMap runParameterMap) {
+    protected boolean runAction(Object leaf, Map<String,Object> runParameterMap) {
+        boolean retValue=false;
         if (actionData.isAction(leaf)) {
-
-            List<Field> fields = actionData.getFields(leaf);
-            if ((fields != null) && (!fields.isEmpty())) {
-                for (Field f : fields) {
-                    try {
-                        RunParameter annotation = f.getAnnotation(RunParameter.class);
-                        String name = annotation.name();
-                        if (name.isEmpty()) {
-                            name = leaf.getClass().getSimpleName() + "." + f.getName();
-                        }
-
-                        if (runParameterMap.containsKey(name)) {
-                            Object value = runParameterMap.get(name);
-                            Class<?> type = f.getType();
-                            
-                            if ((value == null) || (type.isAssignableFrom(value.getClass())) || (isAssignableToPrimitive(type, value))) {
-                                f.set(leaf, value);
-                            } else {
-                                Logger.getLogger(Runner.class.getName()).log(Level.WARNING, "Incompatible argument type in field {0}. Expected: {1} \". Found: {2} \"",
-                                        new Object[]{f.getName(), f.getType().getName(), value.getClass().getName()});
-                            }
-                        }
-
-
-                    } catch (IllegalArgumentException ex) {
-                        Logger.getLogger(Runner.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (IllegalAccessException ex) {
-                        Logger.getLogger(Runner.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-            }
+            injectParameters(leaf, runParameterMap);
 
             injectContexts(leaf, runParameterMap);
 
-            if (runMethods(actionData.getInits(leaf), leaf)) {
-                if (runMethods(actionData.getRuns(leaf), leaf)) {
-                    if (runMethods(actionData.getValidates(leaf), leaf)) {
-
-                        List<Field> retValues = actionData.getRetValues(leaf);
-                        if (retValues != null && !retValues.isEmpty()) {
-                            for (Field f : retValues) {
-                                try {
-                                    if (this.runConditions.getCentralStop() != true) {
-                                        RunParameter annotation = f.getAnnotation(RunParameter.class);
-                                        String name = annotation.name();
-                                        if (name.isEmpty()) {
-                                            name = leaf.getClass().getSimpleName() + "." + f.getName();
-                                        }
-
-                                        Object value = f.get(leaf);
-                                        runParameterMap.put(name, value);
-                                    } else {
-                                        break;
-                                    }
-
-                                } catch (IllegalArgumentException ex) {
-                                    Logger.getLogger(Runner.class.getName()).log(Level.SEVERE, null, ex);
-                                } catch (IllegalAccessException ex) {
-                                    Logger.getLogger(Runner.class.getName()).log(Level.SEVERE, null, ex);
-                                }
-                            }
-                        }
-
-                    }
-                }
-
+            injectConnections(leaf, runParameterMap);
+            
+            if (executeAction(leaf)) {
+                retrieveRetValues(leaf, runParameterMap);
+                retValue = true;
             }
-
         }
 
-        return runParameterMap;
+        return retValue;
     }
 
-    private boolean runMethods(List<Method> inits, Object action) {
+    protected boolean executeAction(Object action) {
+        boolean retValue = false;
+        if ((executeActionMethodsGroup(actionData.getInits(action), action))
+                && (executeActionMethodsGroup(actionData.getRuns(action), action))
+                && (executeActionMethodsGroup(actionData.getValidates(action), action))) {
+            retValue = true;
+        }
+        return retValue;
+    }
+
+    protected boolean executeActionMethodsGroup(List<Method> actionMethods, Object action) {
         boolean retValue = true;
-        if ((inits != null) && (!inits.isEmpty())) {
-            for (Method m : inits) {
+        if ((actionMethods != null) && (!actionMethods.isEmpty())) {
+            for (Method m : actionMethods) {
                 try {
                     Object invoke = m.invoke(action);
                     if ((invoke != null) && (invoke instanceof Boolean)) {
@@ -227,12 +198,14 @@ public class Runner {
                         }
 
                         if (method != null && method && !(Boolean) invoke) {
+                            // TODO move this logick like part of refactoring reaction failed actions into context
                             runConditions.setCentralStop(true);
                             retValue = false;
                             break;
                         }
                     }
 
+                    // TODO same after refactoring for reaction on failed action must be removed
                     if (runConditions.getCentralStop()) {
                         retValue = false;
                         break;
@@ -246,65 +219,31 @@ public class Runner {
                 }
             }
         }
-
         return retValue;
     }
 
-    private void injectContexts(Object action, RunParameterMap map) {
-        List<Field> contexts = actionData.getContexts(action);
-        if ((contexts != null) && (!contexts.isEmpty())) {
-            for (Field f : contexts) {
-                Class<?> type = f.getType();
+    protected void retrieveRetValues(Object action, Map<String, Object> parmMap) {
+        List<Field> retValues = actionData.getRetValues(action);
+        if (retValues != null && !retValues.isEmpty()) {
+            for (Field f : retValues) {
                 try {
-                    if (type.isAssignableFrom(RunCond.class)) {
-                        f.set(action, runConditions);
-                    } else if (type.isAssignableFrom(RunParameterMap.class)) {
-                        f.set(action, map);
-                    } else if (type.isAssignableFrom(RunConnectionFactory.class)) {
-                        f.set(action, RunnerConnectionFactoryImpl.createNewFactory());
-                    } else if (type.isAssignableFrom(RunConectionSpool.class)) {
-                        f.set(action, connSpool);
-                    } else if (type.isAssignableFrom(RunCycleManagerContext.class)) {
-                        if (run.getCycleManager() == null) {
-                            run.setCycleManager(new RunCycleManager<Object>(run));
-                        }
-                        f.set(action, run.getCycleManager());
-                    } else if (type.isAssignableFrom(RunCycleContext.class)) {
-                        if (run.getCycleManager() == null) {
-                            run.setCycleManager(new RunCycleManager<Object>(run));
-                        }
-                        f.set(action, run.getCycleManager().getCurrent());
-                    } else if (type.isAssignableFrom(RunDelayIntervalManagerContext.class)) {
-                        if (run.getTimerManager() == null) {
-                            run.setTimerManager(new RunDelayIntervalManager<Object>(run));
-                        }
-                        f.set(action, run.getTimerManager());
-                    } else if (type.isAssignableFrom(RunnerActiveTimerList.class)) {
-                        if (run.getTimerManager() == null) {
-                            run.setTimerManager(new RunDelayIntervalManager<Object>(run));
-                        }
-                        // TODO Logic for accessing lists from actions 
-//                        f.set(action, run.getTimerManager().getActiveTimers());
-                    } else if (type.isAssignableFrom(RunActionStackManagerContext.class)) {
-                        if (run.getStackManager() == null) {
-                            run.setStackManager(new RunActionStackManager<Object>(run));
-                        }
-                        f.set(action, run.getStackManager());
-                    } else if (type.isAssignableFrom(RunnerActiveStackList.class)) {
-                        if (run.getStackManager() == null) {
-                            run.setStackManager(new RunActionStackManager<Object>(run));
-                        }
-                        // TODO Logic for accessing lists from actions 
-//                        f.set(action, run.getStackManager().getActiveStacks());
+                    RunParameter annotation = f.getAnnotation(RunParameter.class);
+                    String name = annotation.name();
+                    if (name.isEmpty()) {
+                        name = action.getClass().getSimpleName() + "." + f.getName();
                     }
+                    Object value = f.get(action);
+                    parmMap.put(name, value);
                 } catch (IllegalArgumentException ex) {
                     Logger.getLogger(Runner.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (IllegalAccessException ex) {
                     Logger.getLogger(Runner.class.getName()).log(Level.SEVERE, null, ex);
                 }
-
             }
         }
+    }
+
+    protected void injectConnections(Object action, Map<String, Object> parmMap) {
         List<Field> connections = actionData.getConnections(action);
         if ((connections != null) && (!connections.isEmpty())) {
             for (Field f : connections) {
@@ -352,34 +291,118 @@ public class Runner {
         }
 
     }
-    
-    private boolean isAssignableToPrimitive(Class<?> type,Object value){
+
+    protected void injectParameters(Object action, Map<String, Object> parmMap) {
+        List<Field> fields = actionData.getFields(action);
+        if ((fields != null) && (!fields.isEmpty())) {
+            for (Field f : fields) {
+                try {
+                    RunParameter annotation = f.getAnnotation(RunParameter.class);
+                    String name = annotation.name();
+                    if (name.isEmpty()) {
+                        name = action.getClass().getSimpleName() + "." + f.getName();
+                    }
+
+                    if (parmMap.containsKey(name)) {
+                        Object value = parmMap.get(name);
+                        Class<?> type = f.getType();
+
+                        if ((value == null) || (type.isAssignableFrom(value.getClass())) || (isAssignableToPrimitive(type, value))) {
+                            f.set(action, value);
+                        } else {
+                            Logger.getLogger(Runner.class.getName()).log(Level.WARNING, "Incompatible argument type in field {0}. Expected: {1} \". Found: {2} \"",
+                                    new Object[]{f.getName(), f.getType().getName(), value.getClass().getName()});
+                        }
+                    }
+
+
+                } catch (IllegalArgumentException ex) {
+                    Logger.getLogger(Runner.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IllegalAccessException ex) {
+                    Logger.getLogger(Runner.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+
+    }
+
+    protected void injectContexts(Object action, Map<String,Object> map) {
+        List<Field> contexts = actionData.getContexts(action);
+        if ((contexts != null) && (!contexts.isEmpty())) {
+            for (Field f : contexts) {
+                Class<?> type = f.getType();
+                try {
+                    if (type.isAssignableFrom(RunCond.class)) {
+                        f.set(action, runConditions);
+                    } else if (type.isAssignableFrom(SimpleParameterSpool.class)) {
+                        f.set(action, map);
+                    } else if (type.isAssignableFrom(RunConnectionFactory.class)) {
+                        f.set(action, RunnerConnectionFactoryImpl.createNewFactory());
+                    } else if (type.isAssignableFrom(RunConectionSpool.class)) {
+                        f.set(action, connSpool);
+                    } else if (type.isAssignableFrom(RunCycleManagerContext.class)) {
+                        if (run.getCycleManager() == null) {
+                            
+                            ContextManager<Object, RunCycle<Object>,String,Object> tmp = new RunCycleManagerImpl<Object, String, Object>(run);
+                            run.setCycleManager(tmp);
+                        }
+                        f.set(action, run.getCycleManager());
+                    } else if (type.isAssignableFrom(RunCycleContent.class)) {
+                        if (run.getCycleManager() == null) {
+                            run.setCycleManager(new RunCycleManagerImpl<Object, String, Object>(run));
+                        }
+                        f.set(action, run.getCycleManager().getCurrent());
+                    } else if (type.isAssignableFrom(RunDelayIntervalManagerContext.class)) {
+                        if (run.getTimerManager() == null) {
+                            run.setTimerManager(new RunDelayIntervalManager<Object, String, Object>(run));
+                        }
+                        f.set(action, run.getTimerManager());
+                    } else if (type.isAssignableFrom(RunnerActiveTimerList.class)) {
+                        if (run.getTimerManager() == null) {
+                            run.setTimerManager(new RunDelayIntervalManager<Object, String, Object>(run));
+                        }
+                        // TODO Logic for accessing lists from actions 
+//                        f.set(action, run.getTimerManager().getActiveTimers());
+                    } else if (type.isAssignableFrom(RunActionStackManagerContext.class)) {
+                        if (run.getStackManager() == null) {
+                            run.setStackManager(new RunActionStackManager<Object, String, Object>(run));
+                        }
+                        f.set(action, run.getStackManager());
+                    } else if (type.isAssignableFrom(RunnerActiveStackList.class)) {
+                        if (run.getStackManager() == null) {
+                            run.setStackManager(new RunActionStackManager<Object, String, Object>(run));
+                        }
+                        // TODO Logic for accessing lists from actions 
+//                        f.set(action, run.getStackManager().getActiveStacks());
+                    }
+                } catch (IllegalArgumentException ex) {
+                    Logger.getLogger(Runner.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IllegalAccessException ex) {
+                    Logger.getLogger(Runner.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            }
+        }
+    }
+
+    private boolean isAssignableToPrimitive(Class<?> type, Object value) {
         boolean retValue = false;
-        if((type.isPrimitive())&&(value!=null)){            
-            if((type.isAssignableFrom(Long.TYPE))&&(value.getClass().isAssignableFrom(Long.class))){
+        if ((type.isPrimitive()) && (value != null)) {
+            if ((type.isAssignableFrom(Long.TYPE)) && (value.getClass().isAssignableFrom(Long.class))) {
                 retValue = true;
-            }else
-            if((type.isAssignableFrom(Integer.TYPE))&&(value.getClass().isAssignableFrom(Integer.class))){
+            } else if ((type.isAssignableFrom(Integer.TYPE)) && (value.getClass().isAssignableFrom(Integer.class))) {
                 retValue = true;
-            }else
-            if((type.isAssignableFrom(Short.TYPE))&&(value.getClass().isAssignableFrom(Short.class))){
+            } else if ((type.isAssignableFrom(Short.TYPE)) && (value.getClass().isAssignableFrom(Short.class))) {
                 retValue = true;
-            }else
-            if((type.isAssignableFrom(Byte.TYPE))&&(value.getClass().isAssignableFrom(Byte.class))){
+            } else if ((type.isAssignableFrom(Byte.TYPE)) && (value.getClass().isAssignableFrom(Byte.class))) {
                 retValue = true;
-            }else
-            if((type.isAssignableFrom(Double.TYPE))&&(value.getClass().isAssignableFrom(Double.class))){
+            } else if ((type.isAssignableFrom(Double.TYPE)) && (value.getClass().isAssignableFrom(Double.class))) {
                 retValue = true;
-            }else
-            if((type.isAssignableFrom(Float.TYPE))&&(value.getClass().isAssignableFrom(Float.class))){
+            } else if ((type.isAssignableFrom(Float.TYPE)) && (value.getClass().isAssignableFrom(Float.class))) {
                 retValue = true;
-            }else                    
-            
-            if((type.isAssignableFrom(Character.TYPE))&&(value.getClass().isAssignableFrom(Character.class))){
+            } else if ((type.isAssignableFrom(Character.TYPE)) && (value.getClass().isAssignableFrom(Character.class))) {
                 retValue = true;
-            }else
-            
-            if((type.isAssignableFrom(Boolean.TYPE))&&(value.getClass().isAssignableFrom(Boolean.class))){
+            } else if ((type.isAssignableFrom(Boolean.TYPE)) && (value.getClass().isAssignableFrom(Boolean.class))) {
                 retValue = true;
             }
         }

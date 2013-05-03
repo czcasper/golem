@@ -6,8 +6,9 @@ package com.ca.automation.golem.context.managers;
 
 import com.ca.automation.golem.common.iterators.ResetableIterator;
 import com.ca.automation.golem.context.RunContextImpl;
-import com.ca.automation.golem.context.RunCycle;
-import com.ca.automation.golem.context.actionInterfaces.managers.RunCycleManagerContext;
+import com.ca.automation.golem.context.RunCycleImpl;
+import com.ca.automation.golem.interfaces.RunCycle;
+import com.ca.automation.golem.interfaces.RunCycleManager;
 import java.util.List;
 import java.util.Stack;
 
@@ -16,7 +17,7 @@ import java.util.Stack;
  * @param <T> 
  * @author maslu02
  */
-public class RunCycleManager<T> extends AbstractContextManager<T, RunCycle<T>> implements RunCycleManagerContext<T> {
+public class RunCycleManagerImpl<T,K,V> extends AbstractContextManager<T, RunCycle<T>,K,V> implements RunCycleManager<T> {
 
     /**
      *
@@ -35,7 +36,7 @@ public class RunCycleManager<T> extends AbstractContextManager<T, RunCycle<T>> i
      *
      * @param context
      */
-    public RunCycleManager(RunContextImpl<T> context) {
+    public RunCycleManagerImpl(RunContextImpl<T,K,V> context) {
         super(context);
         currentCycleStack = new Stack<List<RunCycle<T>>>();
         arrayIndexStack = new Stack<Integer>();
@@ -71,7 +72,7 @@ public class RunCycleManager<T> extends AbstractContextManager<T, RunCycle<T>> i
         if (!zeroLenFlag) {
             current.updateIt(current.getStartAction());
             if (current.isZeroLength()) {
-                ResetableIterator tmpIt = context.getIt();
+                ResetableIterator tmpIt = context.resetableIterator();
                 if (tmpIt.hasNext()) {
                     tmpIt.next();
                 }
@@ -137,11 +138,11 @@ public class RunCycleManager<T> extends AbstractContextManager<T, RunCycle<T>> i
      * @return
      */
     @Override
-    protected RunCycle<T> setupManager(T action, Object ... params) {
-        RunCycle<T> retValue = null;
-        if ((context != null) && (params.length == 2) && (params instanceof Number[])) {
+    protected RunCycleImpl<T> setupManager(T action, Object ... params) {
+        RunCycleImpl<T> retValue = null;
+        if ((context != null) && (context.getActionStream()!=null) && (params.length == 2) && (params instanceof Number[])) {
             Number[] parm = (Number[]) params;
-            RunCycle<T> cycle = new RunCycle<T>(context.getSteps(), context.getIt());
+            RunCycleImpl<T> cycle = new RunCycleImpl<T>(context.getActionStream().getActionList(), context.resetableIterator());
             if (cycle.setupCycle(action, parm[0].longValue(), parm[1].intValue())) {
                 retValue = cycle;
             }

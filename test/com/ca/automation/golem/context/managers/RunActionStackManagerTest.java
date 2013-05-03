@@ -45,10 +45,10 @@ public class RunActionStackManagerTest {
 
     @Test
     public void testHasNext() throws Exception {
-        RunActionStackManager<Object> instance = new RunActionStackManager<Object>(null);
+        RunActionStackManager<Object,String,Object> instance = new RunActionStackManager<Object,String,Object>(null);
         assertFalse(instance.hasNext());
 
-        instance = (RunActionStackManager<Object>) initializedRun.getStackManager();
+        instance = (RunActionStackManager<Object,String,Object>) initializedRun.getStackManager();
         List<Object> actions = new ArrayList<Object>();
         for (int i = 0; i < 7; i++) {
             actions.add(i);
@@ -96,10 +96,10 @@ public class RunActionStackManagerTest {
 
     @Test
     public void testNext() {
-        RunActionStackManager<Object> instance = new RunActionStackManager<Object>(null);
+        RunActionStackManager<Object,String,Object> instance = new RunActionStackManager<Object,String,Object>(null);
         assertNull(instance.next());
 
-        instance = (RunActionStackManager<Object>) initializedRun.getStackManager();
+        instance = (RunActionStackManager<Object,String,Object>) initializedRun.getStackManager();
         List<Object> actions = new ArrayList<Object>();
         for (int i = 0; i < 7; i++) {
             actions.add(i);
@@ -131,7 +131,7 @@ public class RunActionStackManagerTest {
 
     @Test
     public void testSetup() {
-        RunActionStackManager<Object> instance = (RunActionStackManager<Object>) initializedRun.getStackManager();
+        RunActionStackManager<Object,String,Object> instance = (RunActionStackManager<Object,String,Object>) initializedRun.getStackManager();
 
         List<Object> actions = new ArrayList<Object>();
         for (int i = 0; i < 7; i++) {

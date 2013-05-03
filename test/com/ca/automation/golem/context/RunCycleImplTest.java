@@ -18,13 +18,13 @@ import org.junit.Test;
  *
  * @author maslu02
  */
-public class RunCycleTest {
+public class RunCycleImplTest {
 
     private AddressArrayList<Object> steps;
-    private RunCycle initialized;
+    private RunCycleImpl initialized;
     private ResetableIterator<Object> it;
 
-    public RunCycleTest() {
+    public RunCycleImplTest() {
         steps = new AddressArrayList<Object>();
         steps.add(new Integer(0));
         steps.add(new Integer(1));
@@ -46,7 +46,7 @@ public class RunCycleTest {
     @Before
     public void setUp() {
         it = new ResetableIterator<Object>(steps.iterator());
-        initialized = new RunCycle(steps, it);
+        initialized = new RunCycleImpl(steps, it);
         initialized.setupCycle(steps.get(0), 5, steps.size() - 1);
     }
 
@@ -56,7 +56,7 @@ public class RunCycleTest {
     }
 
     /**
-     * This method is testing hasNext implementation for RunCycle.
+     * This method is testing hasNext implementation for RunCycleImpl.
      *
      * Test case one: Initialized cycle by number of object iterated from start
      * to end by multiple times specified in setup method.
@@ -125,14 +125,14 @@ public class RunCycleTest {
     }
 
     /**
-     * Test of setupCycle method, of class RunCycle.
+     * Test of setupCycle method, of class RunCycleImpl.
      */
     @Test
     public void testSetupCycle() {
         Object rootAction = null;
         int repeatCount = 0;
         int actionCount = -1;
-        RunCycle instance = new RunCycle(steps, it);
+        RunCycleImpl instance = new RunCycleImpl(steps, it);
 
         boolean result = instance.setupCycle(rootAction, repeatCount, actionCount);
         assertFalse(result);
@@ -159,7 +159,7 @@ public class RunCycleTest {
     }
 
     /**
-     * Test of next method, of class RunCycle.
+     * Test of next method, of class RunCycleImpl.
      */
     @Test
     public void testNext() {
@@ -231,11 +231,11 @@ public class RunCycleTest {
     }
 
     /**
-     * Test of getStartAction method, of class RunCycle.
+     * Test of getStartAction method, of class RunCycleImpl.
      */
     @Test
     public void testGetStartAction() {
-        RunCycle instance = new RunCycle(steps);
+        RunCycleImpl instance = new RunCycleImpl(steps);
         Object result = instance.getStartAction();
         assertNull(result);
         Object expResult;
@@ -250,11 +250,11 @@ public class RunCycleTest {
     }
 
     /**
-     * Test of shiftStartAction method, of class RunCycle.
+     * Test of shiftStartAction method, of class RunCycleImpl.
      */
     @Test
     public void testShiftRootAction() {
-        RunCycle instance = new RunCycle(steps);
+        RunCycleImpl instance = new RunCycleImpl(steps);
 
         boolean result = instance.shiftStartAction(10);
         assertFalse(result);
@@ -315,11 +315,11 @@ public class RunCycleTest {
     }
 
     /**
-     * Test of getEndAction method, of class RunCycle.
+     * Test of getEndAction method, of class RunCycleImpl.
      */
     @Test
     public void testGetEndAction() {
-        RunCycle instance = new RunCycle(steps);
+        RunCycleImpl instance = new RunCycleImpl(steps);
         Object expResult = null;
         Object result = instance.getEndAction();
         assertEquals(expResult, result);
@@ -340,11 +340,11 @@ public class RunCycleTest {
     }
 
     /**
-     * Test of shiftEndAction method, of class RunCycle.
+     * Test of shiftEndAction method, of class RunCycleImpl.
      */
     @Test
     public void testShiftEndAction() {
-        RunCycle instance = new RunCycle(steps);
+        RunCycleImpl instance = new RunCycleImpl(steps);
         boolean result = instance.shiftEndAction(10);
         assertFalse(result);
 
@@ -385,7 +385,7 @@ public class RunCycleTest {
     }
 
     /**
-     * Test of isContinue method, of class RunCycle.
+     * Test of isContinue method, of class RunCycleImpl.
      */
     @Test
     public void testSetContinue() {
@@ -412,11 +412,11 @@ public class RunCycleTest {
     }
 
     /**
-     * Test of setBreak method, of class RunCycle.
+     * Test of setBreak method, of class RunCycleImpl.
      */
     @Test
     public void testSetBreak() {
-        RunCycle instance = new RunCycle(steps);
+        RunCycleImpl instance = new RunCycleImpl(steps);
         boolean result = instance.isBreak();
         assertFalse(result);
 
@@ -447,11 +447,11 @@ public class RunCycleTest {
     }
 
     /**
-     * Test of getCycleIterationNum method, of class RunCycle.
+     * Test of getCycleIterationNum method, of class RunCycleImpl.
      */
     @Test
     public void testGetCycleIterationNum() {
-        RunCycle instance = new RunCycle(steps);
+        RunCycleImpl instance = new RunCycleImpl(steps);
         long result = instance.getCycleIterationNum();
         assertEquals(0l, result);
 
@@ -470,11 +470,11 @@ public class RunCycleTest {
     }
 
     /**
-     * Test of getActionIndex method, of class RunCycle.
+     * Test of getActionIndex method, of class RunCycleImpl.
      */
     @Test
     public void testGetActionIndex() {
-        RunCycle instance = new RunCycle(steps);
+        RunCycleImpl instance = new RunCycleImpl(steps);
         int result = instance.getActionIndex();
         assertEquals(0, result);
 
@@ -494,11 +494,11 @@ public class RunCycleTest {
     }
 
     /**
-     * Test of getRepeatCount method, of class RunCycle.
+     * Test of getRepeatCount method, of class RunCycleImpl.
      */
     @Test
     public void testGetRepeatCount() {
-        RunCycle instance = new RunCycle(steps);
+        RunCycleImpl instance = new RunCycleImpl(steps);
         long result = instance.getRepeatCount();
         assertEquals(0L, result);
 
@@ -511,12 +511,12 @@ public class RunCycleTest {
     }
 
     /**
-     * Test of setRepeatCount method, of class RunCycle.
+     * Test of setRepeatCount method, of class RunCycleImpl.
      */
     @Test
     public void testSetRepeatCount() {
         int repeatCount = 0;
-        RunCycle instance = new RunCycle(steps);
+        RunCycleImpl instance = new RunCycleImpl(steps);
         instance.setRepeatCount(repeatCount);
         assertEquals(repeatCount, instance.getRepeatCount());
 

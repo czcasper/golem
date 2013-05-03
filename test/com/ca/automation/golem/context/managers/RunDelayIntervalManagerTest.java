@@ -129,7 +129,7 @@ public class RunDelayIntervalManagerTest {
 
         long actionCount = steps.size();
         long time = 10;
-        instance = (RunDelayIntervalManager<Integer>) initializedRun.getTimerManager();
+        instance = (RunDelayIntervalManager<Integer,String,Object>) initializedRun.getTimerManager();
         
         for(int i=0;i<steps.size();i++){
              boolean setup = instance.setup(steps.get(0), i+2, time);

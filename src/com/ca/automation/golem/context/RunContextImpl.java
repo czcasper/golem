@@ -5,13 +5,12 @@
 package com.ca.automation.golem.context;
 
 import com.ca.automation.golem.common.iterators.ResetableIterator;
-import com.ca.automation.golem.context.actionInterfaces.RunContext;
-import com.ca.automation.golem.context.actionInterfaces.managers.RunActionStackManagerContext;
-import com.ca.automation.golem.context.actionInterfaces.managers.RunCycleManagerContext;
-import com.ca.automation.golem.context.actionInterfaces.managers.RunDelayIntervalManagerContext;
 import com.ca.automation.golem.context.managers.RunActionStackManager;
-import com.ca.automation.golem.context.managers.RunCycleManager;
 import com.ca.automation.golem.context.managers.RunDelayIntervalManager;
+import com.ca.automation.golem.interfaces.ActionStream;
+import com.ca.automation.golem.interfaces.ContextManager;
+import com.ca.automation.golem.interfaces.RunContextManagers;
+import com.ca.automation.golem.interfaces.RunCycle;
 import java.util.Iterator;
 import java.util.List;
 
@@ -20,15 +19,14 @@ import java.util.List;
  * @param <T> 
  * @author basad01
  */
-public class RunContextImpl<T> implements RunContext<T>{
+public class RunContextImpl<T,K,V> implements RunContextManagers<T, K, V>, Iterator<T> {
+    
+    protected ActionStream<T,K,V> currentStream;
 
-    /*
-     * 
-     */
     /**
      *
      */
-    protected List<T> steps;
+//    protected List<T> steps;
     private ResetableIterator<T> it;
     /**
      *
@@ -39,21 +37,39 @@ public class RunContextImpl<T> implements RunContext<T>{
      * updating iterator by cycle
      */
     private boolean cycleNextFlag;
-    private RunCycleManager<T> cycle;
+    protected ContextManager<T, RunCycle<T>,K,V> cycle;
+//    private RunCycleManager<T,K,V> cycle;
     /*
      * 
      */
-    private RunDelayIntervalManager<T> timer;
+    private RunDelayIntervalManager<T,K,V> timer;
     /*
      * 
      */
-    private RunActionStackManager<T> stack;
+    private RunActionStackManager<T,K,V> stack;
     /*
      * 
      */
 //    RunTreeElement rootElement;
 //    RunTreeElement currentElement;
 
+//    public ActionStream<T,K, V> getCurrentStream() {
+//        return currentStream;
+//    }
+
+    @Override
+    public void setActionStream(ActionStream<T, K, V> stream) {
+        // TODO throw exception in case when stream is null
+        this.currentStream =stream;
+        it = currentStream.resetableIterator();
+    }
+
+    @Override
+    public ActionStream<T, K, V> getActionStream() {
+        return currentStream;
+    }
+
+    
     /**
      *
      * @return
@@ -74,41 +90,42 @@ public class RunContextImpl<T> implements RunContext<T>{
      *
      * @return
      */
-    public List<T> getSteps() {
-        return steps;
-    }
+//    public List<T> getSteps() {
+//        return steps;
+//    }
 
     /**
      *
      * @param steps
      */
-    public void setSteps(List<T> steps) {
-        if (steps != null) {
-            this.steps = steps;
-            it = new ResetableIterator<T>(steps.iterator());
-            currentAction = null;
-        }
-    }
+//    public void setSteps(List<T> steps) {
+//        if (steps != null) {
+//            this.steps = steps;
+//            it = new ResetableIterator<T>(steps.iterator());
+//            currentAction = null;
+//        }
+//    }
 
     /**
      *
      * @param it
      */
-    public void setIt(Iterator<T> it) {
-        if (it instanceof ResetableIterator) {
-            this.it = (ResetableIterator<T>) it;
-        } else {
-            this.it = new ResetableIterator<T>(it);
-        }
-
-    }
+//    public void setIt(Iterator<T> it) {
+//        if (it instanceof ResetableIterator) {
+//            this.it = (ResetableIterator<T>) it;
+//        } else {
+//            this.it = new ResetableIterator<T>(it);
+//        }
+//
+//    }
 
     /**
      *
      * @return
      */
-    public ResetableIterator<T> getIt() {
-        return it;
+    @Override
+    public ResetableIterator<T> resetableIterator() {
+        return currentStream.resetableIterator();
     }
 
     @Override
@@ -180,7 +197,7 @@ public class RunContextImpl<T> implements RunContext<T>{
      * @return
      */
     @Override
-    public RunCycleManagerContext<T> getCycleManager() {
+    public ContextManager<T,RunCycle<T>,K,V> getCycleManager() {
         return cycle;
     }
 
@@ -188,16 +205,16 @@ public class RunContextImpl<T> implements RunContext<T>{
      *
      * @return
      */
-    @Override
-    public RunDelayIntervalManagerContext<T> getTimerManager() {
-        return timer;
-    }
+//    @Override
+//    public RunDelayIntervalManagerContext<T> getTimerManager() {
+//        return timer;
+//    }
 
     /**
      *
      * @param manager
      */
-    public void setCycleManager(RunCycleManager<T> manager) {
+    public void setCycleManager(ContextManager<T,RunCycle<T>,K,V> manager) {
         cycle = manager;
     }
 
@@ -205,7 +222,7 @@ public class RunContextImpl<T> implements RunContext<T>{
      *
      * @param manager
      */
-    public void setTimerManager(RunDelayIntervalManager<T> manager) {
+    public void setTimerManager(RunDelayIntervalManager<T,K,V> manager) {
         timer = manager;
     }
 
@@ -213,16 +230,17 @@ public class RunContextImpl<T> implements RunContext<T>{
      *
      * @param manager
      */
-    public void setStackManager(RunActionStackManager<T> manager) {
+    public void setStackManager(RunActionStackManager<T,K,V> manager) {
         stack = manager;
     }
 
+    
     /**
      *
      * @return
      */
-    @Override
-    public RunActionStackManagerContext getStackManager() {
-        return stack;
-    }
+//    @Override
+//    public RunActionStackManagerContext getStackManager() {
+//        return stack;
+//    }
 }

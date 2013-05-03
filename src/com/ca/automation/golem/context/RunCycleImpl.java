@@ -5,22 +5,22 @@ package com.ca.automation.golem.context;
 
 import com.ca.automation.golem.common.AddressArrayList;
 import com.ca.automation.golem.common.iterators.ResetableIterator;
-import com.ca.automation.golem.context.actionInterfaces.RunCycleContext;
-import java.util.Iterator;
+import com.ca.automation.golem.interfaces.ActionStream;
+import com.ca.automation.golem.interfaces.RunCycle;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  * Class cover data storage for information releated to Runner cycle
- * implementation. RunCycleContext interface is used for exposing method into
+ * implementation. RunCycle interface is used for exposing method into
  * runner actions, this allows driving cycles directelly from actions inside
  * cycle.
  *
  * @param <T> 
  * @author maslu02
  */
-public class RunCycle<T extends Object> implements RunCycleContext, Iterator<T> {
+public class RunCycleImpl<T> implements RunCycle<T> {
 
     /**
      * Variables releated range of cycle in array
@@ -53,7 +53,7 @@ public class RunCycle<T extends Object> implements RunCycleContext, Iterator<T> 
      *
      * @param steps
      */
-    public RunCycle(List<T> steps) {
+    public RunCycleImpl(List<T> steps) {
         this(steps, new ResetableIterator<T>(steps.iterator()));
     }
 
@@ -62,7 +62,7 @@ public class RunCycle<T extends Object> implements RunCycleContext, Iterator<T> 
      * @param steps
      * @param internalIt
      */
-    public RunCycle(List<T> steps, ResetableIterator<T> internalIt) {
+    public RunCycleImpl(List<T> steps,ResetableIterator<T> internalIt) {
         if ((steps == null) || (internalIt == null)) {
             throw new NullPointerException("Run cycle cannot be initializet by null array or iterator");
         }
@@ -111,6 +111,7 @@ public class RunCycle<T extends Object> implements RunCycleContext, Iterator<T> 
      * cycle from scrach, or reuse cycle object for next run. Internal iterator
      * is not touched in this method.
      */
+    @Override
     public void reset() {
         actionIndex = 0;
         cycleIterationNum = 0;
@@ -244,7 +245,7 @@ public class RunCycle<T extends Object> implements RunCycleContext, Iterator<T> 
      */
     @Override
     public void setContinue() {
-        Logger.getLogger(RunCycle.class.getName()).log(Level.FINE, "Cycle has issued \"continue\" on cycle index::{0} in iteration:{1}", new Object[]{actionIndex, cycleIterationNum});
+        Logger.getLogger(RunCycleImpl.class.getName()).log(Level.FINE, "Cycle has issued \"continue\" on cycle index::{0} in iteration:{1}", new Object[]{actionIndex, cycleIterationNum});
         cycleIterationNum++;
         if (hasNext()) {
             actionIndex = 0;
@@ -273,7 +274,7 @@ public class RunCycle<T extends Object> implements RunCycleContext, Iterator<T> 
      */
     @Override
     public void setBreak() {
-        Logger.getLogger(RunCycle.class.getName()).log(Level.FINE, "Cycle has issued \"break\" on cycle index::{0} in iteration:{1}", new Object[]{actionIndex, cycleIterationNum});
+        Logger.getLogger(RunCycleImpl.class.getName()).log(Level.FINE, "Cycle has issued \"break\" on cycle index::{0} in iteration:{1}", new Object[]{actionIndex, cycleIterationNum});
         if (hasNext()) {
             updateIt(endAction);
             if (internalIt.hasNext()) {
@@ -339,6 +340,12 @@ public class RunCycle<T extends Object> implements RunCycleContext, Iterator<T> 
         return (actionIndex == 0);
     }
     
+    /**
+     * This method test if cycle has startAction equal to endAction.
+     * 
+     * @return true in case when cycle has just one action, otherwise false
+     */
+    @Override
     public boolean isZeroLength(){
         return startAction==endAction;
     }
@@ -347,8 +354,8 @@ public class RunCycle<T extends Object> implements RunCycleContext, Iterator<T> 
      * Save method for updating curent interator container by action.
      *
      * @param action runner action object
-     *
      */
+    @Override
     public void updateIt(T action) {
         if (steps.contains(action)) {
             int index = steps.indexOf(action);
@@ -365,8 +372,9 @@ public class RunCycle<T extends Object> implements RunCycleContext, Iterator<T> 
     }
 
     /**
-     *
-     * @param action
+     * This method move cycle in next loop in case when action is equal to endAction.
+     * 
+     * @param action curently processed action
      */
     public void endCycleHandler(T action) {
         if ((action != null) && (action == endAction)) {
