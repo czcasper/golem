@@ -13,18 +13,16 @@ import com.ca.automation.golem.context.actionInterfaces.RunConectionSpool;
 import com.ca.automation.golem.context.actionInterfaces.RunConnectionFactory;
 import com.ca.automation.golem.context.actionInterfaces.RunCycleContent;
 import com.ca.automation.golem.context.actionInterfaces.RunDelaysListContext;
-import com.ca.automation.golem.interfaces.RunCycle;
+import com.ca.automation.golem.context.actionInterfaces.RunStacksListContext;
 import com.ca.automation.golem.context.actionInterfaces.SimpleParameterSpool;
 import com.ca.automation.golem.context.actionInterfaces.managers.RunActionStackManagerContext;
 import com.ca.automation.golem.context.actionInterfaces.managers.RunCycleManagerContext;
 import com.ca.automation.golem.context.actionInterfaces.managers.RunDelayIntervalManagerContext;
-import com.ca.automation.golem.context.managers.RunActionStackManager;
+import com.ca.automation.golem.context.managers.RunActionStackManagerImpl;
 import com.ca.automation.golem.context.managers.RunCycleManagerImpl;
 import com.ca.automation.golem.context.managers.RunDelayIntervalManagerImpl;
 import com.ca.automation.golem.interfaces.ActionStream;
-import com.ca.automation.golem.interfaces.ContextManager;
 import com.ca.automation.golem.spools.actions.ActionInformationSpool;
-import com.ca.automation.golem.toRefactor.RunnerActiveStackList;
 import com.ca.automation.golem.toRefactor.RunnerConnectionFactoryImpl;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -341,9 +339,7 @@ public class Runner {
                         f.set(action, connSpool);
                     } else if (type.isAssignableFrom(RunCycleManagerContext.class)) {
                         if (run.getCycleManager() == null) {
-                            
-                            ContextManager<Object, RunCycle<Object>,String,Object> tmp = new RunCycleManagerImpl<Object, String, Object>(run);
-                            run.setCycleManager(tmp);
+                            run.setCycleManager(new RunCycleManagerImpl<Object, String, Object>(run));
                         }
                         f.set(action, run.getCycleManager());
                     } else if (type.isAssignableFrom(RunCycleContent.class)) {
@@ -363,15 +359,14 @@ public class Runner {
                         f.set(action, run.getDelayManager().getActive());
                     } else if (type.isAssignableFrom(RunActionStackManagerContext.class)) {
                         if (run.getStackManager() == null) {
-                            run.setStackManager(new RunActionStackManager<Object, String, Object>(run));
+                            run.setStackManager(new RunActionStackManagerImpl<Object, String, Object>(run));
                         }
                         f.set(action, run.getStackManager());
-                    } else if (type.isAssignableFrom(RunnerActiveStackList.class)) {
+                    } else if (type.isAssignableFrom(RunStacksListContext.class)) {
                         if (run.getStackManager() == null) {
-                            run.setStackManager(new RunActionStackManager<Object, String, Object>(run));
+                            run.setStackManager(new RunActionStackManagerImpl<Object, String, Object>(run));
                         }
-                        // TODO Logic for accessing lists from actions 
-//                        f.set(action, run.getStackManager().getActiveStacks());
+                        f.set(action, run.getStackManager().getActive());
                     }
                 } catch (IllegalArgumentException ex) {
                     Logger.getLogger(Runner.class.getName()).log(Level.SEVERE, null, ex);

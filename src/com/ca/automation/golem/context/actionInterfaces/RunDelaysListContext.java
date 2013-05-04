@@ -4,13 +4,13 @@
  */
 package com.ca.automation.golem.context.actionInterfaces;
 
-import com.ca.automation.golem.interfaces.DelayInterval;
+import com.ca.automation.golem.interfaces.RunDelayInterval;
 import java.util.List;
 
 /**
  *
  * @author maslu02
  */
-public interface RunDelaysListContext extends List<DelayInterval<Object>> {
+public interface RunDelaysListContext extends List<RunDelayInterval<Object>> {
     
 }

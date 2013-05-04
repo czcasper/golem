@@ -4,7 +4,7 @@
 package com.ca.automation.golem.context;
 
 
-import com.ca.automation.golem.interfaces.DelayInterval;
+import com.ca.automation.golem.interfaces.RunDelayInterval;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -13,7 +13,7 @@ import java.util.logging.Logger;
  * @param <T> 
  * @author maslu02
  */
-public class RunDelayIntervalImpl<T> implements DelayInterval<T>, Cloneable {
+public class RunDelayIntervalImpl<T> implements RunDelayInterval<T>, Cloneable {
 
     /**
      *

@@ -4,6 +4,7 @@
 package com.ca.automation.golem.context;
 
 import com.ca.automation.golem.context.actionInterfaces.RunActionStackContext;
+import com.ca.automation.golem.interfaces.RunActionStack;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -12,7 +13,7 @@ import java.util.LinkedList;
  * @param <T> 
  * @author maslu02
  */
-public class RunActionStack<T> implements RunActionStackContext<T>, Iterator<T>, Cloneable {
+public class RunActionStackImpl<T> implements RunActionStack<T>, Iterator<T>, Cloneable {
 
     /**
      *
@@ -26,7 +27,7 @@ public class RunActionStack<T> implements RunActionStackContext<T>, Iterator<T>,
     /**
      *
      */
-    public RunActionStack() {
+    public RunActionStackImpl() {
         actions = new LinkedList<T>();
     }
 
@@ -105,6 +106,7 @@ public class RunActionStack<T> implements RunActionStackContext<T>, Iterator<T>,
      *
      * @return true if stack is correctly initialized, otherwise false.
      */
+    @Override
     public boolean setupStack(T action, T... actions) {
         boolean retValue = false;
         if ((this.actions != null) && (actions != null) && (actions.length > 0)) {
@@ -129,8 +131,8 @@ public class RunActionStack<T> implements RunActionStackContext<T>, Iterator<T>,
 
     @SuppressWarnings("unchecked")
     @Override
-    public RunActionStack<T> clone() throws CloneNotSupportedException {
-        RunActionStack<T> retValue = (RunActionStack<T>) super.clone();
+    public RunActionStackImpl<T> clone() throws CloneNotSupportedException {
+        RunActionStackImpl<T> retValue = (RunActionStackImpl<T>) super.clone();
         retValue.actions = new LinkedList<T>(actions);
         return retValue;
     }

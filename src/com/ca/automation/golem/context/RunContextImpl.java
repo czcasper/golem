@@ -5,10 +5,11 @@
 package com.ca.automation.golem.context;
 
 import com.ca.automation.golem.common.iterators.ResetableIterator;
-import com.ca.automation.golem.context.managers.RunActionStackManager;
+import com.ca.automation.golem.context.managers.RunActionStackManagerImpl;
 import com.ca.automation.golem.interfaces.ActionStream;
 import com.ca.automation.golem.interfaces.ContextManager;
-import com.ca.automation.golem.interfaces.DelayInterval;
+import com.ca.automation.golem.interfaces.RunDelayInterval;
+import com.ca.automation.golem.interfaces.RunActionStackManager;
 import com.ca.automation.golem.interfaces.RunContextManagers;
 import com.ca.automation.golem.interfaces.RunCycle;
 import com.ca.automation.golem.interfaces.RunCycleManager;
@@ -217,6 +218,7 @@ public class RunContextImpl<T, K, V> implements RunContextManagers<T, K, V>, Ite
      *
      * @param manager
      */
+    @Override
     public void setStackManager(RunActionStackManager<T, K, V> manager) {
         stack = manager;
     }
@@ -225,7 +227,8 @@ public class RunContextImpl<T, K, V> implements RunContextManagers<T, K, V>, Ite
      * @return
      */
 //    @Override
-//    public RunActionStackManagerContext getStackManager() {
-//        return stack;
-//    }
+    @Override
+    public RunActionStackManager<T, K, V> getStackManager() {
+        return stack;
+    }
 }

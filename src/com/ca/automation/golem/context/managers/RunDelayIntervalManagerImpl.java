@@ -6,7 +6,7 @@ package com.ca.automation.golem.context.managers;
 
 import com.ca.automation.golem.context.RunContextImpl;
 import com.ca.automation.golem.context.RunDelayIntervalImpl;
-import com.ca.automation.golem.interfaces.DelayInterval;
+import com.ca.automation.golem.interfaces.RunDelayInterval;
 import com.ca.automation.golem.interfaces.RunDelayIntervalManager;
 import java.util.LinkedList;
 import java.util.List;
@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  * @param <T> 
  * @author maslu02
  */
-public class RunDelayIntervalManagerImpl<T,K,V> extends AbstractContextManager<T, DelayInterval<T>,K,V> implements RunDelayIntervalManager<T, K, V> {
+public class RunDelayIntervalManagerImpl<T,K,V> extends AbstractContextManager<T, RunDelayInterval<T>,K,V> implements RunDelayIntervalManager<T, K, V> {
 
     /**
      *
@@ -33,9 +33,9 @@ public class RunDelayIntervalManagerImpl<T,K,V> extends AbstractContextManager<T
     public T next() {
         T retValue = null;
         if (hasNext()) {
-            ListIterator<DelayInterval<T>> it = currentList.listIterator(index - 1);
+            ListIterator<RunDelayInterval<T>> it = currentList.listIterator(index - 1);
             while (it.hasNext()) {
-                DelayInterval<T> timer = it.next();
+                RunDelayInterval<T> timer = it.next();
                 retValue = timer.next();
                 if (!timer.hasNext()) {
                     it.remove();
@@ -94,16 +94,18 @@ public class RunDelayIntervalManagerImpl<T,K,V> extends AbstractContextManager<T
      *
      * @param action
      */
+    
     @Override
     protected void loadManger(T action) {
         if (currentList == null) {
-            currentList = new LinkedList<DelayInterval<T>>();
+            currentList = new LinkedList<RunDelayInterval<T>>();
         }
-        List<DelayInterval<T>> found = managed.get(action);
+        List<RunDelayInterval<T>> found = managed.get(action);
         if (!found.isEmpty()) {
-            for (DelayInterval<T> i : found) {
+            for (RunDelayInterval<T> i : found) {
                 try {
-                    DelayInterval<T> newDelay = (DelayInterval<T>) i.clone();
+                    @SuppressWarnings("unchecked")
+                    RunDelayInterval<T> newDelay = (RunDelayInterval<T>) i.clone();
                     currentList.add(newDelay);
                 } catch (CloneNotSupportedException ex) {
                     Logger.getLogger(RunDelayIntervalManagerImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -123,11 +125,11 @@ public class RunDelayIntervalManagerImpl<T,K,V> extends AbstractContextManager<T
      * @return
      */
     @Override
-    protected DelayInterval<T> setupManager(T action, Object... params) {
-        DelayInterval<T> retValue = null;
+    protected RunDelayInterval<T> setupManager(T action, Object... params) {
+        RunDelayInterval<T> retValue = null;
         if ((context != null) && (action != null) && (params.length == 2) &&(params instanceof Number[])) {
             Number[] parm=(Number[]) params;
-            DelayInterval<T> in = new RunDelayIntervalImpl<T>();
+            RunDelayInterval<T> in = new RunDelayIntervalImpl<T>();
                if (in.setupTimer(action, parm[0].longValue(), parm[1].longValue())) {
                 retValue = in;
             }
@@ -140,12 +142,12 @@ public class RunDelayIntervalManagerImpl<T,K,V> extends AbstractContextManager<T
      * @return
      */
     @Override
-    public DelayInterval<T> getCurrent() {
+    public RunDelayInterval<T> getCurrent() {
         return super.getCurrent();
     }
 
     @Override
-    public List<DelayInterval<T>> getActive(){
+    public List<RunDelayInterval<T>> getActive(){
         return currentList;
     }
     

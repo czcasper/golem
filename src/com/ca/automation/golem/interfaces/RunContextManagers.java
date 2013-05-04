@@ -24,4 +24,8 @@ public interface RunContextManagers<T,K,V> extends RunContext<T, K, V> {
     public void setDelayManager(RunDelayIntervalManager<T,K,V> manager);
     
     public RunDelayIntervalManager<T,K,V> getDelayManager();
+    
+    public void setStackManager(RunActionStackManager<T, K, V> manager);
+    
+    public RunActionStackManager<T, K, V> getStackManager();
 }

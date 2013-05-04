@@ -2,9 +2,11 @@
  */
 package com.ca.automation.golem.context.managers;
 
-import com.ca.automation.golem.context.RunActionStack;
+import com.ca.automation.golem.context.RunActionStackImpl;
 import com.ca.automation.golem.context.RunContextImpl;
-import com.ca.automation.golem.context.actionInterfaces.managers.RunActionStackManagerContext;
+import com.ca.automation.golem.interfaces.RunActionStack;
+import com.ca.automation.golem.interfaces.RunActionStackManager;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -13,15 +15,20 @@ import java.util.logging.Logger;
  * @param <T> 
  * @author maslu02
  */
-public class RunActionStackManager<T,K,V> extends AbstractContextManager<T, RunActionStack<T>,K,V> implements RunActionStackManagerContext<T> {
+public class RunActionStackManagerImpl<T,K,V> extends AbstractContextManager<T, RunActionStack<T>,K,V> implements RunActionStackManager<T, K, V> {
 
     /**
      * Cosntructor fot this type of manager.
      *
      * @param context this context must refered to RunnerContext implementation
      */
-    public RunActionStackManager(RunContextImpl<T,K,V> context) {
+    public RunActionStackManagerImpl(RunContextImpl<T,K,V> context) {
         super(context);
+    }
+
+    @Override
+    public List<RunActionStack<T>> getActive() {
+        return currentList;
     }
 
     /**
@@ -34,12 +41,13 @@ public class RunActionStackManager<T,K,V> extends AbstractContextManager<T, RunA
     /**
      *
      */
+    @SuppressWarnings("unchecked")
     @Override
     protected void afterNextInList() {
         try {
-            current = current.clone();
+            current = (RunActionStack<T>) current.clone();
         } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(RunActionStackManager.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RunActionStackManagerImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -56,15 +64,17 @@ public class RunActionStackManager<T,K,V> extends AbstractContextManager<T, RunA
      *
      * @param action
      */
+    @SuppressWarnings("unchecked")
     @Override
     protected void loadManger(T action) {
         if (current == null) {
             currentList = managed.get(action);
             index = 0;
             try {
-                current = currentList.get(index++).clone();
+                
+                current = (RunActionStack<T>) currentList.get(index++).clone();
             } catch (CloneNotSupportedException ex) {
-                Logger.getLogger(RunActionStackManager.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(RunActionStackManagerImpl.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
@@ -87,7 +97,7 @@ public class RunActionStackManager<T,K,V> extends AbstractContextManager<T, RunA
     protected RunActionStack<T> setupManager(T action, Object... params) {
         RunActionStack<T> retValue = null;
         if ((action != null) && (params != null) && (params.length > 0)) {
-            RunActionStack<T> tmp = new RunActionStack<T>();
+            RunActionStack<T> tmp = new RunActionStackImpl<T>();
             if (tmp.setupStack(action, (T[]) params)) {
                 retValue = tmp;
             }

@@ -8,7 +8,7 @@ package com.ca.automation.golem.interfaces;
  *
  * @author maslu02
  */
-public interface DelayInterval<T> extends CloneableIterator<T> {
+public interface RunDelayInterval<T> extends CloneableIterator<T> {
 
     public T getAction();
 

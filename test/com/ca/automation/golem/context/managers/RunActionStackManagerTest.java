@@ -6,6 +6,7 @@ package com.ca.automation.golem.context.managers;
 
 import com.ca.automation.golem.common.AddressArrayList;
 import com.ca.automation.golem.context.RunContextImpl;
+import com.ca.automation.golem.context.SimpleActionStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -34,8 +35,8 @@ public class RunActionStackManagerTest {
     @Before
     public void setUp() {
         initializedRun = new RunContextImpl();
-        initializedRun.setSteps(steps);
-        initializedRun.setStackManager(new RunActionStackManager(initializedRun));
+        initializedRun.setActionStream(new SimpleActionStream(steps));
+        initializedRun.setStackManager(new RunActionStackManagerImpl(initializedRun));
     }
 
     @After
@@ -45,10 +46,10 @@ public class RunActionStackManagerTest {
 
     @Test
     public void testHasNext() throws Exception {
-        RunActionStackManager<Object,String,Object> instance = new RunActionStackManager<Object,String,Object>(null);
+        RunActionStackManagerImpl<Object,String,Object> instance = new RunActionStackManagerImpl<Object,String,Object>(null);
         assertFalse(instance.hasNext());
 
-        instance = (RunActionStackManager<Object,String,Object>) initializedRun.getStackManager();
+        instance = (RunActionStackManagerImpl<Object,String,Object>) initializedRun.getStackManager();
         List<Object> actions = new ArrayList<Object>();
         for (int i = 0; i < 7; i++) {
             actions.add(i);
@@ -75,7 +76,7 @@ public class RunActionStackManagerTest {
 
         setupStack = instance.setup(steps.get(0), tmp);
         assertTrue(setupStack);
-        initializedRun.getIt().setIt(steps.iterator());
+        initializedRun.resetableIterator().setIt(steps.iterator());
         result = instance.hasNext();
         assertFalse(result);
 
@@ -96,10 +97,10 @@ public class RunActionStackManagerTest {
 
     @Test
     public void testNext() {
-        RunActionStackManager<Object,String,Object> instance = new RunActionStackManager<Object,String,Object>(null);
+        RunActionStackManagerImpl<Object,String,Object> instance = new RunActionStackManagerImpl<Object,String,Object>(null);
         assertNull(instance.next());
 
-        instance = (RunActionStackManager<Object,String,Object>) initializedRun.getStackManager();
+        instance = (RunActionStackManagerImpl<Object,String,Object>) initializedRun.getStackManager();
         List<Object> actions = new ArrayList<Object>();
         for (int i = 0; i < 7; i++) {
             actions.add(i);
@@ -131,7 +132,7 @@ public class RunActionStackManagerTest {
 
     @Test
     public void testSetup() {
-        RunActionStackManager<Object,String,Object> instance = (RunActionStackManager<Object,String,Object>) initializedRun.getStackManager();
+        RunActionStackManagerImpl<Object,String,Object> instance = (RunActionStackManagerImpl<Object,String,Object>) initializedRun.getStackManager();
 
         List<Object> actions = new ArrayList<Object>();
         for (int i = 0; i < 7; i++) {

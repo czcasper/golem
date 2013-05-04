@@ -28,11 +28,11 @@ public class RunActionStackTest {
     }
 
     /**
-     * Test of hasNext method, of class RunActionStack.
+     * Test of hasNext method, of class RunActionStackImpl.
      */
     @Test
     public void testHasNext() {
-        RunActionStack<Integer> instance = new RunActionStack<Integer>();
+        RunActionStackImpl<Integer> instance = new RunActionStackImpl<Integer>();
         boolean result = instance.hasNext();
         assertFalse(result);
         
@@ -53,11 +53,11 @@ public class RunActionStackTest {
     }
 
     /**
-     * Test of next method, of class RunActionStack.
+     * Test of next method, of class RunActionStackImpl.
      */
     @Test
     public void testNext() {
-        RunActionStack<Integer> instance = new RunActionStack<Integer>();
+        RunActionStackImpl<Integer> instance = new RunActionStackImpl<Integer>();
         Integer result = instance.next();
         assertNull(result);
         
@@ -80,11 +80,11 @@ public class RunActionStackTest {
     }
 
     /**
-     * Test of remove method, of class RunActionStack.
+     * Test of remove method, of class RunActionStackImpl.
      */
     @Test
     public void testRemove() {
-        RunActionStack<Integer> instance = new RunActionStack<Integer>();
+        RunActionStackImpl<Integer> instance = new RunActionStackImpl<Integer>();
         ArrayList<Integer> actions = new ArrayList<Integer>();
         for(int i=0;i<7;i++) {
             actions.add(i);
@@ -108,21 +108,21 @@ public class RunActionStackTest {
     }
 
     /**
-     * Test of isEmpty method, of class RunActionStack.
+     * Test of isEmpty method, of class RunActionStackImpl.
      */
     @Test
     public void testIsEmpty() {
-        RunActionStack instance = new RunActionStack();
+        RunActionStackImpl instance = new RunActionStackImpl();
         boolean result = instance.isEmpty();
         assertTrue(result);
     }
 
     /**
-     * Test of peek method, of class RunActionStack.
+     * Test of peek method, of class RunActionStackImpl.
      */
     @Test
     public void testPeek() {
-        RunActionStack<Integer> instance = new RunActionStack<Integer>();
+        RunActionStackImpl<Integer> instance = new RunActionStackImpl<Integer>();
         Integer result = instance.peek();
         assertNull(result);
         ArrayList<Integer> actions = new ArrayList<Integer>();
@@ -149,22 +149,22 @@ public class RunActionStackTest {
     }
 
     /**
-     * Test of pop method, of class RunActionStack.
+     * Test of pop method, of class RunActionStackImpl.
      */
     @Test
     public void testPop() {
-        RunActionStack instance = new RunActionStack();
+        RunActionStackImpl instance = new RunActionStackImpl();
         testException.expect(NoSuchElementException.class);
         Object result = instance.pop();
     }
 
     /**
-     * Test of push method, of class RunActionStack.
+     * Test of push method, of class RunActionStackImpl.
      */
     @Test
     public void testPush() {
         Integer item = null;
-        RunActionStack<Integer> instance = new RunActionStack<Integer>();
+        RunActionStackImpl<Integer> instance = new RunActionStackImpl<Integer>();
         boolean result = instance.push(item);
         assertFalse(result);
         
@@ -174,13 +174,13 @@ public class RunActionStackTest {
     }
 
     /**
-     * Test of setupStack method, of class RunActionStack.
+     * Test of setupStack method, of class RunActionStackImpl.
      */
     @Test
     public void testSetupStack() {
         Integer action = null;
         Integer[] actions = null;
-        RunActionStack<Integer> instance = new RunActionStack<Integer>();
+        RunActionStackImpl<Integer> instance = new RunActionStackImpl<Integer>();
         boolean result = instance.setupStack(action, actions);
         assertFalse(result);
         
@@ -198,11 +198,11 @@ public class RunActionStackTest {
     }
 
     /**
-     * Test of getAction method, of class RunActionStack.
+     * Test of getAction method, of class RunActionStackImpl.
      */
     @Test
     public void testGetAction() {
-        RunActionStack<Integer> instance = new RunActionStack<Integer>();
+        RunActionStackImpl<Integer> instance = new RunActionStackImpl<Integer>();
         Integer result = instance.getAction();
         assertNull(result);
         
@@ -214,11 +214,11 @@ public class RunActionStackTest {
     }
 
     /**
-     * Test of clone method, of class RunActionStack.
+     * Test of clone method, of class RunActionStackImpl.
      */
     @Test
     public void testClone() throws Exception {
-        RunActionStack<Integer> instance = new RunActionStack<Integer>();
+        RunActionStackImpl<Integer> instance = new RunActionStackImpl<Integer>();
 
         ArrayList<Integer> actions = new ArrayList<Integer>();
         for(int i=0;i<7;i++) {
@@ -230,7 +230,7 @@ public class RunActionStackTest {
         assertTrue(setupStack);
         Collections.reverse(actions);        
         
-        RunActionStack<Integer> result = instance.clone();
+        RunActionStackImpl<Integer> result = instance.clone();
         Iterator<Integer> it = actions.iterator();
         while(result.hasNext()){
             assertEquals(it.next(), result.next());
