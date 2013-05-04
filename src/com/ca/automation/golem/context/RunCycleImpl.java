@@ -13,14 +13,13 @@ import java.util.logging.Logger;
 
 /**
  * Class cover data storage for information releated to Runner cycle
- * implementation. RunCycle interface is used for exposing method into
- * runner actions, this allows driving cycles directelly from actions inside
- * cycle.
+ * implementation. RunCycle interface is used for exposing method into runner
+ * actions, this allows driving cycles directelly from actions inside cycle.
  *
- * @param <T> 
+ * @param <T>
  * @author maslu02
  */
-public class RunCycleImpl<T> implements RunCycle<T> {
+public class RunCycleImpl<T> implements RunCycle<T>, Cloneable {
 
     /**
      * Variables releated range of cycle in array
@@ -62,7 +61,7 @@ public class RunCycleImpl<T> implements RunCycle<T> {
      * @param steps
      * @param internalIt
      */
-    public RunCycleImpl(List<T> steps,ResetableIterator<T> internalIt) {
+    public RunCycleImpl(List<T> steps, ResetableIterator<T> internalIt) {
         if ((steps == null) || (internalIt == null)) {
             throw new NullPointerException("Run cycle cannot be initializet by null array or iterator");
         }
@@ -81,11 +80,11 @@ public class RunCycleImpl<T> implements RunCycle<T> {
     /**
      * Setup cycle for curently used list and iterator.
      *
-     * @param rootAction 
+     * @param rootAction
      * @param repeatCount number of cycle iteration, -1 loop withouth end
      * @param actionCount number of action in this cycle. Must be greater or
      * equal to zero.
-     * @return  
+     * @return
      */
     public boolean setupCycle(T rootAction, long repeatCount, int actionCount) {
         boolean retValue = false;
@@ -339,15 +338,15 @@ public class RunCycleImpl<T> implements RunCycle<T> {
     public boolean isFirstAction() {
         return (actionIndex == 0);
     }
-    
+
     /**
      * This method test if cycle has startAction equal to endAction.
-     * 
+     *
      * @return true in case when cycle has just one action, otherwise false
      */
     @Override
-    public boolean isZeroLength(){
-        return startAction==endAction;
+    public boolean isZeroLength() {
+        return startAction == endAction;
     }
 
     /**
@@ -372,10 +371,12 @@ public class RunCycleImpl<T> implements RunCycle<T> {
     }
 
     /**
-     * This method move cycle in next loop in case when action is equal to endAction.
-     * 
+     * This method move cycle in next loop in case when action is equal to
+     * endAction.
+     *
      * @param action curently processed action
      */
+    @Override
     public void endCycleHandler(T action) {
         if ((action != null) && (action == endAction)) {
             cycleIterationNum++;
@@ -386,6 +387,9 @@ public class RunCycleImpl<T> implements RunCycle<T> {
         }
 
     }
-    
-    
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
 }

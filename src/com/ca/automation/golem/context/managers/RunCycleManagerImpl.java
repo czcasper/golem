@@ -11,14 +11,17 @@ import com.ca.automation.golem.interfaces.RunCycle;
 import com.ca.automation.golem.interfaces.RunCycleManager;
 import java.util.List;
 import java.util.Stack;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
- * @param <T> 
+ * @param <T>
  * @author maslu02
  */
-public class RunCycleManagerImpl<T,K,V> extends AbstractContextManager<T, RunCycle<T>,K,V> implements RunCycleManager<T,K,V> {
+public class RunCycleManagerImpl<T, K, V> extends AbstractContextManager<T, RunCycle<T>, K, V> implements RunCycleManager<T, K, V> {
 
+    protected Stack<RunCycle<T>> curentStack;
     /**
      *
      */
@@ -36,7 +39,7 @@ public class RunCycleManagerImpl<T,K,V> extends AbstractContextManager<T, RunCyc
      *
      * @param context
      */
-    public RunCycleManagerImpl(RunContextImpl<T,K,V> context) {
+    public RunCycleManagerImpl(RunContextImpl<T, K, V> context) {
         super(context);
         currentCycleStack = new Stack<List<RunCycle<T>>>();
         arrayIndexStack = new Stack<Integer>();
@@ -60,7 +63,7 @@ public class RunCycleManagerImpl<T,K,V> extends AbstractContextManager<T, RunCyc
      */
     @Override
     protected void beforeNextInList() {
-        current.reset();
+//        current.reset();
         zeroLenFlag = current.isZeroLength();
     }
 
@@ -87,18 +90,17 @@ public class RunCycleManagerImpl<T,K,V> extends AbstractContextManager<T, RunCyc
     @Override
     protected boolean currentFinilizer() {
         boolean retValue = false;
-        current.reset();
 
         if (!currentCycleStack.isEmpty()) {
             currentList = currentCycleStack.pop();
             index = arrayIndexStack.pop();
 
-            if (index <= currentList.size()) {
+//            if (index <= currentList.size()) {
                 T tmp = current.getEndAction();
-                current = currentList.get(index - 1);
+                current = curentStack.pop();
                 current.endCycleHandler(tmp);
                 retValue = true;
-            }
+//            }
         }
 
         return retValue;
@@ -118,16 +120,26 @@ public class RunCycleManagerImpl<T,K,V> extends AbstractContextManager<T, RunCyc
      *
      * @param action currently proccesed action instance.
      */
+    @SuppressWarnings("unchecked")
     @Override
     protected void loadManger(T action) {
         if ((current == null) || (current.getStartAction() != action)) {
+
             if (current != null) {
+                curentStack.push(current);
                 currentCycleStack.push(currentList);
                 arrayIndexStack.push(index);
             }
             index = 0;
             currentList = managed.get(action);
-            current = currentList.get(index++);
+            try {
+                current = (RunCycle<T>) currentList.get(index++);
+                if (current != null) {
+                    current = (RunCycle<T>) current.clone();
+                }
+            } catch (CloneNotSupportedException ex) {
+                Logger.getLogger(RunCycleManagerImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
@@ -138,9 +150,9 @@ public class RunCycleManagerImpl<T,K,V> extends AbstractContextManager<T, RunCyc
      * @return
      */
     @Override
-    protected RunCycleImpl<T> setupManager(T action, Object ... params) {
+    protected RunCycleImpl<T> setupManager(T action, Object... params) {
         RunCycleImpl<T> retValue = null;
-        if ((context != null) && (context.getActionStream()!=null) && (params.length == 2) && (params instanceof Number[])) {
+        if ((context != null) && (context.getActionStream() != null) && (params.length == 2) && (params instanceof Number[])) {
             Number[] parm = (Number[]) params;
             RunCycleImpl<T> cycle = new RunCycleImpl<T>(context.getActionStream().getActionList(), context.resetableIterator());
             if (cycle.setupCycle(action, parm[0].longValue(), parm[1].intValue())) {

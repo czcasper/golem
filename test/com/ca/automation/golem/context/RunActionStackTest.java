@@ -230,7 +230,7 @@ public class RunActionStackTest {
         assertTrue(setupStack);
         Collections.reverse(actions);        
         
-        RunActionStackImpl<Integer> result = instance.clone();
+        RunActionStackImpl<Integer> result = (RunActionStackImpl<Integer>) instance.clone();
         Iterator<Integer> it = actions.iterator();
         while(result.hasNext()){
             assertEquals(it.next(), result.next());

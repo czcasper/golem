@@ -131,7 +131,7 @@ public class RunActionStackImpl<T> implements RunActionStack<T>, Iterator<T>, Cl
 
     @SuppressWarnings("unchecked")
     @Override
-    public RunActionStackImpl<T> clone() throws CloneNotSupportedException {
+    public Object clone() throws CloneNotSupportedException {
         RunActionStackImpl<T> retValue = (RunActionStackImpl<T>) super.clone();
         retValue.actions = new LinkedList<T>(actions);
         return retValue;

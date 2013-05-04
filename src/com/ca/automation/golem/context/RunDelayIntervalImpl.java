@@ -163,10 +163,8 @@ public class RunDelayIntervalImpl<T> implements RunDelayInterval<T>, Cloneable {
         return retValue;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public RunDelayIntervalImpl<T> clone() throws CloneNotSupportedException {
-        RunDelayIntervalImpl<T> retValue = (RunDelayIntervalImpl<T>) super.clone();
-        return retValue;
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }
