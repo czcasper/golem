@@ -4,13 +4,14 @@
  */
 package com.ca.automation.golem.interfaces;
 
-import java.util.Iterator;
-
 /**
  *
  * @author maslu02
  */
-public interface RunCycleManager<T> extends Iterator<T> {
+public interface RunCycleManager<T,K,V> extends ContextManager<T, RunCycle<T>, K, V> {
 
     public boolean setup(T action, long repeatCount, int actionCount);
+    
+    @Override
+    public RunCycle<T> getCurrent();
 }

@@ -11,6 +11,6 @@ import com.ca.automation.golem.interfaces.RunCycleManager;
  * @param <T> 
  * @author maslu02
  */
-public interface  RunCycleManagerContext extends RunCycleManager<Object> {
+public interface  RunCycleManagerContext extends RunCycleManager<Object,String,Object> {
     
 }

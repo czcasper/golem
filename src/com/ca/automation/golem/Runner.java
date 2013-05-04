@@ -12,6 +12,7 @@ import com.ca.automation.golem.context.actionInterfaces.RunCond;
 import com.ca.automation.golem.context.actionInterfaces.RunConectionSpool;
 import com.ca.automation.golem.context.actionInterfaces.RunConnectionFactory;
 import com.ca.automation.golem.context.actionInterfaces.RunCycleContent;
+import com.ca.automation.golem.context.actionInterfaces.RunDelaysListContext;
 import com.ca.automation.golem.interfaces.RunCycle;
 import com.ca.automation.golem.context.actionInterfaces.SimpleParameterSpool;
 import com.ca.automation.golem.context.actionInterfaces.managers.RunActionStackManagerContext;
@@ -19,13 +20,11 @@ import com.ca.automation.golem.context.actionInterfaces.managers.RunCycleManager
 import com.ca.automation.golem.context.actionInterfaces.managers.RunDelayIntervalManagerContext;
 import com.ca.automation.golem.context.managers.RunActionStackManager;
 import com.ca.automation.golem.context.managers.RunCycleManagerImpl;
-import com.ca.automation.golem.context.managers.RunDelayIntervalManager;
+import com.ca.automation.golem.context.managers.RunDelayIntervalManagerImpl;
 import com.ca.automation.golem.interfaces.ActionStream;
 import com.ca.automation.golem.interfaces.ContextManager;
-import com.ca.automation.golem.interfaces.RunCycleManager;
 import com.ca.automation.golem.spools.actions.ActionInformationSpool;
 import com.ca.automation.golem.toRefactor.RunnerActiveStackList;
-import com.ca.automation.golem.toRefactor.RunnerActiveTimerList;
 import com.ca.automation.golem.toRefactor.RunnerConnectionFactoryImpl;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -353,16 +352,15 @@ public class Runner {
                         }
                         f.set(action, run.getCycleManager().getCurrent());
                     } else if (type.isAssignableFrom(RunDelayIntervalManagerContext.class)) {
-                        if (run.getTimerManager() == null) {
-                            run.setTimerManager(new RunDelayIntervalManager<Object, String, Object>(run));
+                        if (run.getDelayManager() == null) {
+                            run.setDelayManager(new RunDelayIntervalManagerImpl<Object, String, Object>(run));
                         }
-                        f.set(action, run.getTimerManager());
-                    } else if (type.isAssignableFrom(RunnerActiveTimerList.class)) {
-                        if (run.getTimerManager() == null) {
-                            run.setTimerManager(new RunDelayIntervalManager<Object, String, Object>(run));
+                        f.set(action, run.getDelayManager());
+                    } else if (type.isAssignableFrom(RunDelaysListContext.class)) {
+                        if (run.getDelayManager() == null) {
+                            run.setDelayManager(new RunDelayIntervalManagerImpl<Object, String, Object>(run));
                         }
-                        // TODO Logic for accessing lists from actions 
-//                        f.set(action, run.getTimerManager().getActiveTimers());
+                        f.set(action, run.getDelayManager().getActive());
                     } else if (type.isAssignableFrom(RunActionStackManagerContext.class)) {
                         if (run.getStackManager() == null) {
                             run.setStackManager(new RunActionStackManager<Object, String, Object>(run));

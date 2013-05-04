@@ -13,9 +13,9 @@ import org.junit.Test;
  *
  * @author maslu02
  */
-public class RunDelayIntervalTest {
+public class RunDelayIntervalImplTest {
     
-    public RunDelayIntervalTest() {
+    public RunDelayIntervalImplTest() {
     }
     
     @BeforeClass
@@ -35,11 +35,11 @@ public class RunDelayIntervalTest {
     }
 
     /**
-     * Test of hasNext method, of class RunDelayInterval.
+     * Test of hasNext method, of class RunDelayIntervalImpl.
      */
     @Test
     public void testHasNext() {
-        RunDelayInterval<Integer> instance = new RunDelayInterval<Integer>();
+        RunDelayIntervalImpl<Integer> instance = new RunDelayIntervalImpl<Integer>();
         assertFalse(instance.hasNext());
         
         long actionCount = 10;
@@ -77,11 +77,11 @@ public class RunDelayIntervalTest {
     }
 
     /**
-     * Test of next method, of class RunDelayInterval.
+     * Test of next method, of class RunDelayIntervalImpl.
      */
     @Test
     public void testNext() {
-        RunDelayInterval<Integer> instance = new RunDelayInterval<Integer>();
+        RunDelayIntervalImpl<Integer> instance = new RunDelayIntervalImpl<Integer>();
         assertFalse(instance.hasNext());
         
         long actionCount = 10;
@@ -103,11 +103,11 @@ public class RunDelayIntervalTest {
     }
 
     /**
-     * Test of getActionCount method, of class RunDelayInterval.
+     * Test of getActionCount method, of class RunDelayIntervalImpl.
      */
     @Test
     public void testGetActionCount() {
-        RunDelayInterval<Integer> instance = new RunDelayInterval<Integer>();
+        RunDelayIntervalImpl<Integer> instance = new RunDelayIntervalImpl<Integer>();
         assertFalse(instance.hasNext());
         
         long actionCount = 10;
@@ -133,11 +133,11 @@ public class RunDelayIntervalTest {
     }
 
     /**
-     * Test of setActionCount method, of class RunDelayInterval.
+     * Test of setActionCount method, of class RunDelayIntervalImpl.
      */
     @Test
     public void testSetActionCount() {
-        RunDelayInterval<Integer> instance = new RunDelayInterval<Integer>();
+        RunDelayIntervalImpl<Integer> instance = new RunDelayIntervalImpl<Integer>();
         assertFalse(instance.hasNext());
         
         long actionCount = 10;
@@ -164,33 +164,33 @@ public class RunDelayIntervalTest {
     }
 
     /**
-     * Test of reset method, of class RunDelayInterval.
+     * Test of reset method, of class RunDelayIntervalImpl.
      */
-    @Test
-    public void testResetTimer() {
-        RunDelayInterval instance = new RunDelayInterval();
-        instance.setTime(1);
-        instance.setActionCount(-1);
-        
-        for (int i = 0; i < 2500; i++) {
-            double random = Math.random();
-            if (random > 0.5) {
-                instance.reset();
-                long actionCount = instance.getActionCount();
-                assertEquals(0, actionCount);
-            }
-        }
-        instance.reset();
-        long actionCount = instance.getActionCount();
-        assertEquals(0, actionCount);
-    }
+//    @Test
+//    public void testResetTimer() {
+//        RunDelayIntervalImpl instance = new RunDelayIntervalImpl();
+//        instance.setTime(1);
+//        instance.setActionCount(-1);
+//        
+//        for (int i = 0; i < 2500; i++) {
+//            double random = Math.random();
+//            if (random > 0.5) {
+//                instance.reset();
+//                long actionCount = instance.getActionCount();
+//                assertEquals(0, actionCount);
+//            }
+//        }
+//        instance.reset();
+//        long actionCount = instance.getActionCount();
+//        assertEquals(0, actionCount);
+//    }
 
     /**
-     * Test of getTime method, of class RunDelayInterval.
+     * Test of getTime method, of class RunDelayIntervalImpl.
      */
     @Test
     public void testGetTime() {
-        RunDelayInterval instance = new RunDelayInterval();
+        RunDelayIntervalImpl instance = new RunDelayIntervalImpl();
         long expResult = 1L;
         boolean setTime = instance.setTime(expResult);
         assertTrue(setTime);
@@ -200,12 +200,12 @@ public class RunDelayIntervalTest {
     }
 
     /**
-     * Test of setTime method, of class RunDelayInterval.
+     * Test of setTime method, of class RunDelayIntervalImpl.
      */
     @Test
     public void testSetTime() {
         long time = 0L;
-        RunDelayInterval instance = new RunDelayInterval();
+        RunDelayIntervalImpl instance = new RunDelayIntervalImpl();
         boolean result = instance.setTime(time);
         assertFalse(result);
         
@@ -233,11 +233,11 @@ public class RunDelayIntervalTest {
     }
 
     /**
-     * Test of stop method, of class RunDelayInterval.
+     * Test of stop method, of class RunDelayIntervalImpl.
      */
     @Test
     public void testStop() {
-        RunDelayInterval instance = new RunDelayInterval();
+        RunDelayIntervalImpl instance = new RunDelayIntervalImpl();
 
         long actionCount = -1;
         long time = 10;
@@ -266,11 +266,11 @@ public class RunDelayIntervalTest {
     }
 
     /**
-     * Test of setupTimer method, of class RunDelayInterval.
+     * Test of setupTimer method, of class RunDelayIntervalImpl.
      */
     @Test
     public void testSetupTimer() {
-        RunDelayInterval instance = new RunDelayInterval();
+        RunDelayIntervalImpl instance = new RunDelayIntervalImpl();
         boolean result = instance.setupTimer(null, 10, 0);
         assertFalse(result);
         

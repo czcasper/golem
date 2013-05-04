@@ -6,23 +6,23 @@ package com.ca.automation.golem.context;
 
 import com.ca.automation.golem.common.iterators.ResetableIterator;
 import com.ca.automation.golem.context.managers.RunActionStackManager;
-import com.ca.automation.golem.context.managers.RunDelayIntervalManager;
 import com.ca.automation.golem.interfaces.ActionStream;
 import com.ca.automation.golem.interfaces.ContextManager;
+import com.ca.automation.golem.interfaces.DelayInterval;
 import com.ca.automation.golem.interfaces.RunContextManagers;
 import com.ca.automation.golem.interfaces.RunCycle;
+import com.ca.automation.golem.interfaces.RunCycleManager;
+import com.ca.automation.golem.interfaces.RunDelayIntervalManager;
 import java.util.Iterator;
-import java.util.List;
 
 /**
  *
- * @param <T> 
+ * @param <T>
  * @author basad01
  */
-public class RunContextImpl<T,K,V> implements RunContextManagers<T, K, V>, Iterator<T> {
-    
-    protected ActionStream<T,K,V> currentStream;
+public class RunContextImpl<T, K, V> implements RunContextManagers<T, K, V>, Iterator<T> {
 
+    protected ActionStream<T, K, V> currentStream;
     /**
      *
      */
@@ -32,21 +32,15 @@ public class RunContextImpl<T,K,V> implements RunContextManagers<T, K, V>, Itera
      *
      */
     protected T currentAction;
-
-    /* Flag used in next and has next method for correct dealing with 
-     * updating iterator by cycle
-     */
-    private boolean cycleNextFlag;
-    protected ContextManager<T, RunCycle<T>,K,V> cycle;
-//    private RunCycleManager<T,K,V> cycle;
+    protected RunCycleManager<T, K, V> cycle;
     /*
      * 
      */
-    private RunDelayIntervalManager<T,K,V> timer;
+    private RunDelayIntervalManager<T, K, V> timer;
     /*
      * 
      */
-    private RunActionStackManager<T,K,V> stack;
+    private RunActionStackManager<T, K, V> stack;
     /*
      * 
      */
@@ -56,11 +50,10 @@ public class RunContextImpl<T,K,V> implements RunContextManagers<T, K, V>, Itera
 //    public ActionStream<T,K, V> getCurrentStream() {
 //        return currentStream;
 //    }
-
     @Override
     public void setActionStream(ActionStream<T, K, V> stream) {
         // TODO throw exception in case when stream is null
-        this.currentStream =stream;
+        this.currentStream = stream;
         it = currentStream.resetableIterator();
     }
 
@@ -69,7 +62,6 @@ public class RunContextImpl<T,K,V> implements RunContextManagers<T, K, V>, Itera
         return currentStream;
     }
 
-    
     /**
      *
      * @return
@@ -93,7 +85,6 @@ public class RunContextImpl<T,K,V> implements RunContextManagers<T, K, V>, Itera
 //    public List<T> getSteps() {
 //        return steps;
 //    }
-
     /**
      *
      * @param steps
@@ -105,7 +96,6 @@ public class RunContextImpl<T,K,V> implements RunContextManagers<T, K, V>, Itera
 //            currentAction = null;
 //        }
 //    }
-
     /**
      *
      * @param it
@@ -118,7 +108,6 @@ public class RunContextImpl<T,K,V> implements RunContextManagers<T, K, V>, Itera
 //        }
 //
 //    }
-
     /**
      *
      * @return
@@ -197,24 +186,30 @@ public class RunContextImpl<T,K,V> implements RunContextManagers<T, K, V>, Itera
      * @return
      */
     @Override
-    public ContextManager<T,RunCycle<T>,K,V> getCycleManager() {
-        return cycle;
+    public RunDelayIntervalManager<T, K, V> getDelayManager() {
+        return timer;
+    }
+
+    @Override
+    public void setDelayManager(RunDelayIntervalManager<T, K, V> manager) {
+        timer = manager;
     }
 
     /**
      *
      * @return
      */
-//    @Override
-//    public RunDelayIntervalManagerContext<T> getTimerManager() {
-//        return timer;
-//    }
+    @Override
+    public RunCycleManager<T, K, V> getCycleManager() {
+        return cycle;
+    }
 
     /**
      *
      * @param manager
      */
-    public void setCycleManager(ContextManager<T,RunCycle<T>,K,V> manager) {
+    @Override
+    public void setCycleManager(RunCycleManager<T, K, V> manager) {
         cycle = manager;
     }
 
@@ -222,19 +217,9 @@ public class RunContextImpl<T,K,V> implements RunContextManagers<T, K, V>, Itera
      *
      * @param manager
      */
-    public void setTimerManager(RunDelayIntervalManager<T,K,V> manager) {
-        timer = manager;
-    }
-
-    /**
-     *
-     * @param manager
-     */
-    public void setStackManager(RunActionStackManager<T,K,V> manager) {
+    public void setStackManager(RunActionStackManager<T, K, V> manager) {
         stack = manager;
     }
-
-    
     /**
      *
      * @return

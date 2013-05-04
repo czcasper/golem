@@ -8,6 +8,7 @@ import com.ca.automation.golem.context.RunContextImpl;
 import com.ca.automation.golem.context.RunCycleImpl;
 import com.ca.automation.golem.context.SimpleActionStream;
 import com.ca.automation.golem.interfaces.RunCycle;
+import com.ca.automation.golem.interfaces.RunCycleManager;
 import java.util.Iterator;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -57,7 +58,7 @@ public class RunCycleManagerImplTest {
      */
     @Test
     public void testHasNext() {
-        RunCycleManagerImpl instance = new RunCycleManagerImpl(null);
+        RunCycleManager instance = new RunCycleManagerImpl(null);
         assertFalse(instance.hasNext());
 
         instance = new RunCycleManagerImpl(initializedRun);
@@ -69,7 +70,7 @@ public class RunCycleManagerImplTest {
         ResetableIterator it = initializedRun.resetableIterator();
         assertTrue(it.hasNext());
 
-        instance = (RunCycleManagerImpl) initializedRun.getCycleManager();
+        instance = initializedRun.getCycleManager();
         setup = instance.setup(steps.get(0), repeatCount, steps.size() - 1);
         assertTrue(setup);
 

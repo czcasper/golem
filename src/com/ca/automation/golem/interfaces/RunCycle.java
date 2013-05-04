@@ -8,7 +8,7 @@ import java.util.Iterator;
  *
  * @author maslu02
  */
-public interface RunCycle<T> extends Iterator<T> {
+public interface RunCycle<T> extends Iterator<T>  {
 
     /**
      * Get current action index in cycle

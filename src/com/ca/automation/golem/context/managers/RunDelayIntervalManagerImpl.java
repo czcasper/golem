@@ -5,8 +5,9 @@
 package com.ca.automation.golem.context.managers;
 
 import com.ca.automation.golem.context.RunContextImpl;
-import com.ca.automation.golem.context.RunDelayInterval;
-import com.ca.automation.golem.context.actionInterfaces.managers.RunDelayIntervalManagerContext;
+import com.ca.automation.golem.context.RunDelayIntervalImpl;
+import com.ca.automation.golem.interfaces.DelayInterval;
+import com.ca.automation.golem.interfaces.RunDelayIntervalManager;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -18,13 +19,13 @@ import java.util.logging.Logger;
  * @param <T> 
  * @author maslu02
  */
-public class RunDelayIntervalManager<T,K,V> extends AbstractContextManager<T, RunDelayInterval<T>,K,V> implements RunDelayIntervalManagerContext<T> {
+public class RunDelayIntervalManagerImpl<T,K,V> extends AbstractContextManager<T, DelayInterval<T>,K,V> implements RunDelayIntervalManager<T, K, V> {
 
     /**
      *
      * @param context
      */
-    public RunDelayIntervalManager(RunContextImpl<T,K,V> context) {
+    public RunDelayIntervalManagerImpl(RunContextImpl<T,K,V> context) {
         super(context);
     }
 
@@ -32,9 +33,9 @@ public class RunDelayIntervalManager<T,K,V> extends AbstractContextManager<T, Ru
     public T next() {
         T retValue = null;
         if (hasNext()) {
-            ListIterator<RunDelayInterval<T>> it = currentList.listIterator(index - 1);
+            ListIterator<DelayInterval<T>> it = currentList.listIterator(index - 1);
             while (it.hasNext()) {
-                RunDelayInterval<T> timer = it.next();
+                DelayInterval<T> timer = it.next();
                 retValue = timer.next();
                 if (!timer.hasNext()) {
                     it.remove();
@@ -96,16 +97,16 @@ public class RunDelayIntervalManager<T,K,V> extends AbstractContextManager<T, Ru
     @Override
     protected void loadManger(T action) {
         if (currentList == null) {
-            currentList = new LinkedList<RunDelayInterval<T>>();
+            currentList = new LinkedList<DelayInterval<T>>();
         }
-        List<RunDelayInterval<T>> found = managed.get(action);
+        List<DelayInterval<T>> found = managed.get(action);
         if (!found.isEmpty()) {
-            for (RunDelayInterval<T> i : found) {
+            for (DelayInterval<T> i : found) {
                 try {
-                    RunDelayInterval<T> newDelay = (RunDelayInterval<T>) i.clone();
+                    DelayInterval<T> newDelay = (DelayInterval<T>) i.clone();
                     currentList.add(newDelay);
                 } catch (CloneNotSupportedException ex) {
-                    Logger.getLogger(RunDelayIntervalManager.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(RunDelayIntervalManagerImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
@@ -122,11 +123,11 @@ public class RunDelayIntervalManager<T,K,V> extends AbstractContextManager<T, Ru
      * @return
      */
     @Override
-    protected RunDelayInterval<T> setupManager(T action, Object... params) {
-        RunDelayInterval<T> retValue = null;
+    protected DelayInterval<T> setupManager(T action, Object... params) {
+        DelayInterval<T> retValue = null;
         if ((context != null) && (action != null) && (params.length == 2) &&(params instanceof Number[])) {
             Number[] parm=(Number[]) params;
-            RunDelayInterval<T> in = new RunDelayInterval<T>();
+            DelayInterval<T> in = new RunDelayIntervalImpl<T>();
                if (in.setupTimer(action, parm[0].longValue(), parm[1].longValue())) {
                 retValue = in;
             }
@@ -139,9 +140,13 @@ public class RunDelayIntervalManager<T,K,V> extends AbstractContextManager<T, Ru
      * @return
      */
     @Override
-    public RunDelayInterval<T> getCurrent() {
+    public DelayInterval<T> getCurrent() {
         return super.getCurrent();
     }
 
+    @Override
+    public List<DelayInterval<T>> getActive(){
+        return currentList;
+    }
     
 }

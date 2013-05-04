@@ -4,6 +4,8 @@ package com.ca.automation.golem.context.managers;
 
 import com.ca.automation.golem.common.AddressArrayList;
 import com.ca.automation.golem.context.RunContextImpl;
+import com.ca.automation.golem.context.SimpleActionStream;
+import com.ca.automation.golem.interfaces.RunDelayIntervalManager;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.*;
@@ -15,12 +17,12 @@ import org.junit.Test;
  *
  * @author maslu02
  */
-public class RunDelayIntervalManagerTest {
+public class RunDelayIntervalManagerImplTest {
 
     private AddressArrayList<Object> steps;
     private RunContextImpl initializedRun;
 
-    public RunDelayIntervalManagerTest() {
+    public RunDelayIntervalManagerImplTest() {
         steps = new AddressArrayList<Object>();
         for (int i = 0; i < 5; i++) {
             steps.add(new Integer(i));
@@ -39,8 +41,8 @@ public class RunDelayIntervalManagerTest {
     @Before
     public void setUp() {
         initializedRun = new RunContextImpl();
-        initializedRun.setSteps(steps);
-        initializedRun.setTimerManager(new RunDelayIntervalManager(initializedRun));
+        initializedRun.setActionStream(new SimpleActionStream(steps));
+        initializedRun.setDelayManager(new RunDelayIntervalManagerImpl(initializedRun));
     }
 
     @After
@@ -49,16 +51,16 @@ public class RunDelayIntervalManagerTest {
     }
 
     /**
-     * Test of hasNext method, of class RunDelayIntervalManager.
+     * Test of hasNext method, of class RunDelayIntervalManagerImpl.
      */
     @Test
     public void testHasNext() throws Exception {
-        RunDelayIntervalManager instance = new RunDelayIntervalManager(null);
+        RunDelayIntervalManager instance = new RunDelayIntervalManagerImpl(null);
         assertFalse(instance.hasNext());
 
         long actionCount = steps.size();
         long time = 10;
-        instance = (RunDelayIntervalManager) initializedRun.getTimerManager();
+        instance = initializedRun.getDelayManager();
         boolean setupTimer = instance.setup(steps.get(0), actionCount, time);
         assertTrue(setupTimer);
 
@@ -85,16 +87,16 @@ public class RunDelayIntervalManagerTest {
     }
 
     /**
-     * Test of setup method, of class RunDelayIntervalManager.
+     * Test of setup method, of class RunDelayIntervalManagerImpl.
      */
     @Test
     public void testNext() {
-        RunDelayIntervalManager instance = new RunDelayIntervalManager(null);
+        RunDelayIntervalManager instance = new RunDelayIntervalManagerImpl(null);
         assertFalse(instance.hasNext());
 
         long actionCount = steps.size();
         long time = 10;
-        instance = (RunDelayIntervalManager) initializedRun.getTimerManager();
+        instance = initializedRun.getDelayManager();
 
         for (int i = 0; i < steps.size(); i++) {
             boolean setupTimer = instance.setup(steps.get(i), actionCount-i, time);
@@ -124,12 +126,12 @@ public class RunDelayIntervalManagerTest {
     
     @Test
     public void testSetup(){
-        RunDelayIntervalManager instance = new RunDelayIntervalManager(null);
+        RunDelayIntervalManager instance = new RunDelayIntervalManagerImpl(null);
         assertFalse(instance.hasNext());
 
         long actionCount = steps.size();
         long time = 10;
-        instance = (RunDelayIntervalManager<Integer,String,Object>) initializedRun.getTimerManager();
+        instance = initializedRun.getDelayManager();
         
         for(int i=0;i<steps.size();i++){
              boolean setup = instance.setup(steps.get(0), i+2, time);

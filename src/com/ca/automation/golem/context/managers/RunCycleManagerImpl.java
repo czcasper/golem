@@ -17,7 +17,7 @@ import java.util.Stack;
  * @param <T> 
  * @author maslu02
  */
-public class RunCycleManagerImpl<T,K,V> extends AbstractContextManager<T, RunCycle<T>,K,V> implements RunCycleManager<T> {
+public class RunCycleManagerImpl<T,K,V> extends AbstractContextManager<T, RunCycle<T>,K,V> implements RunCycleManager<T,K,V> {
 
     /**
      *

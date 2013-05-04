@@ -4,8 +4,7 @@
 package com.ca.automation.golem.context;
 
 
-import com.ca.automation.golem.context.actionInterfaces.RunDelayIntervalContext;
-import java.util.Iterator;
+import com.ca.automation.golem.interfaces.DelayInterval;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -14,7 +13,7 @@ import java.util.logging.Logger;
  * @param <T> 
  * @author maslu02
  */
-public class RunDelayInterval<T> implements RunDelayIntervalContext<T>, Iterator<T>, Cloneable {
+public class RunDelayIntervalImpl<T> implements DelayInterval<T>, Cloneable {
 
     /**
      *
@@ -52,7 +51,7 @@ public class RunDelayInterval<T> implements RunDelayIntervalContext<T>, Iterator
             try {
                 Thread.sleep(time);
             } catch (InterruptedException ex) {
-                Logger.getLogger(RunDelayInterval.class.getName()).log(Level.SEVERE, "Waiting process was interupted by external source. For current action:" + action.toString(), ex);
+                Logger.getLogger(RunDelayIntervalImpl.class.getName()).log(Level.SEVERE, "Waiting process was interupted by external source. For current action:" + action.toString(), ex);
             }
             retValue = action;
         }
@@ -80,6 +79,7 @@ public class RunDelayInterval<T> implements RunDelayIntervalContext<T>, Iterator
      * @return true in case when timer is initialized correctelly, otherwise
      * false.
      */
+    @Override
     public boolean setupTimer(T action, long actionCount, long time) {
         boolean retValue = false;
         if ((actionCount != 0) && (setTime(time))) {
@@ -123,14 +123,15 @@ public class RunDelayInterval<T> implements RunDelayIntervalContext<T>, Iterator
      * Reset internal timer iterator to zero.
      *
      */
-    @Override
-    public void reset() {
-        iterator = 0;
-    }
+//    @Override
+//    public void reset() {
+//        iterator = 0;
+//    }
 
     /**
      * Stop timer execution
      */
+    @Override
     public void stop() {
         iterator = actionCount;
     }
@@ -164,8 +165,8 @@ public class RunDelayInterval<T> implements RunDelayIntervalContext<T>, Iterator
 
     @SuppressWarnings("unchecked")
     @Override
-    public RunDelayInterval<T> clone() throws CloneNotSupportedException {
-        RunDelayInterval<T> retValue = (RunDelayInterval<T>) super.clone();
+    public RunDelayIntervalImpl<T> clone() throws CloneNotSupportedException {
+        RunDelayIntervalImpl<T> retValue = (RunDelayIntervalImpl<T>) super.clone();
         return retValue;
     }
 }

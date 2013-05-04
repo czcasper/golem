@@ -14,12 +14,14 @@ public interface RunContextManagers<T,K,V> extends RunContext<T, K, V> {
      *
      * @param manager
      */
-    public void setCycleManager(ContextManager<T,RunCycle<T>,K,V> manager);
+    public void setCycleManager(RunCycleManager<T,K,V> manager);
     /**
      *
      * @return
      */
-    public ContextManager<T,RunCycle<T>,K,V> getCycleManager();
+    public RunCycleManager<T,K,V> getCycleManager();
     
+    public void setDelayManager(RunDelayIntervalManager<T,K,V> manager);
     
+    public RunDelayIntervalManager<T,K,V> getDelayManager();
 }
