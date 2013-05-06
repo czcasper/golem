@@ -8,7 +8,7 @@ package com.ca.automation.golem.interfaces;
  *
  * @author maslu02
  */
-public interface RunContextManagers<T,K,V> extends RunContext<T, K, V> {
+public interface RunContextManagers<T,C,K,V> extends RunContext<T, K, V> {
     
     /**
      *
@@ -28,4 +28,12 @@ public interface RunContextManagers<T,K,V> extends RunContext<T, K, V> {
     public void setStackManager(RunActionStackManager<T, K, V> manager);
     
     public RunActionStackManager<T, K, V> getStackManager();
+    
+    
+    public void setConditionManager(RunCondManager<T,C,K,V> manager);
+    
+    public RunCondManager<T,C,K,V> getConditionManager();
+    
+    public boolean validateResult(C result,boolean isAction);
+    
 }

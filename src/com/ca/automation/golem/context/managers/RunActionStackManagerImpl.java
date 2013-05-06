@@ -12,17 +12,17 @@ import java.util.logging.Logger;
 
 /**
  *
- * @param <T> 
+ * @param <T>
  * @author maslu02
  */
-public class RunActionStackManagerImpl<T,K,V> extends AbstractContextManager<T, RunActionStack<T>,K,V> implements RunActionStackManager<T, K, V> {
+public class RunActionStackManagerImpl<T, C, K, V> extends AbstractContextManager<T, C, RunActionStack<T>, K, V> implements RunActionStackManager<T, K, V> {
 
     /**
      * Cosntructor fot this type of manager.
      *
      * @param context this context must refered to RunnerContext implementation
      */
-    public RunActionStackManagerImpl(RunContextImpl<T,K,V> context) {
+    public RunActionStackManagerImpl(RunContextImpl<T, C, K, V> context) {
         super(context);
     }
 
@@ -71,7 +71,7 @@ public class RunActionStackManagerImpl<T,K,V> extends AbstractContextManager<T, 
             currentList = managed.get(action);
             index = 0;
             try {
-                
+
                 current = (RunActionStack<T>) currentList.get(index++).clone();
             } catch (CloneNotSupportedException ex) {
                 Logger.getLogger(RunActionStackManagerImpl.class.getName()).log(Level.SEVERE, null, ex);

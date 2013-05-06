@@ -5,13 +5,11 @@
 package com.ca.automation.golem.context;
 
 import com.ca.automation.golem.common.iterators.ResetableIterator;
-import com.ca.automation.golem.context.managers.RunActionStackManagerImpl;
 import com.ca.automation.golem.interfaces.ActionStream;
-import com.ca.automation.golem.interfaces.ContextManager;
-import com.ca.automation.golem.interfaces.RunDelayInterval;
 import com.ca.automation.golem.interfaces.RunActionStackManager;
+import com.ca.automation.golem.interfaces.RunCondManager;
+import com.ca.automation.golem.interfaces.RunCondition;
 import com.ca.automation.golem.interfaces.RunContextManagers;
-import com.ca.automation.golem.interfaces.RunCycle;
 import com.ca.automation.golem.interfaces.RunCycleManager;
 import com.ca.automation.golem.interfaces.RunDelayIntervalManager;
 import java.util.Iterator;
@@ -21,36 +19,16 @@ import java.util.Iterator;
  * @param <T>
  * @author basad01
  */
-public class RunContextImpl<T, K, V> implements RunContextManagers<T, K, V>, Iterator<T> {
+public class RunContextImpl<T, C, K, V> implements RunContextManagers<T, C, K, V>, Iterator<T> {
 
     protected ActionStream<T, K, V> currentStream;
-    /**
-     *
-     */
-//    protected List<T> steps;
     private ResetableIterator<T> it;
-    /**
-     *
-     */
     protected T currentAction;
     protected RunCycleManager<T, K, V> cycle;
-    /*
-     * 
-     */
-    private RunDelayIntervalManager<T, K, V> timer;
-    /*
-     * 
-     */
-    private RunActionStackManager<T, K, V> stack;
-    /*
-     * 
-     */
-//    RunTreeElement rootElement;
-//    RunTreeElement currentElement;
+    protected RunDelayIntervalManager<T, K, V> timer;
+    protected RunActionStackManager<T, K, V> stack;
+    protected RunCondManager<T, C, K, V> conds;
 
-//    public ActionStream<T,K, V> getCurrentStream() {
-//        return currentStream;
-//    }
     @Override
     public void setActionStream(ActionStream<T, K, V> stream) {
         // TODO throw exception in case when stream is null
@@ -79,36 +57,6 @@ public class RunContextImpl<T, K, V> implements RunContextManagers<T, K, V>, Ite
         this.currentAction = currentAction;
     }
 
-    /**
-     *
-     * @return
-     */
-//    public List<T> getSteps() {
-//        return steps;
-//    }
-    /**
-     *
-     * @param steps
-     */
-//    public void setSteps(List<T> steps) {
-//        if (steps != null) {
-//            this.steps = steps;
-//            it = new ResetableIterator<T>(steps.iterator());
-//            currentAction = null;
-//        }
-//    }
-    /**
-     *
-     * @param it
-     */
-//    public void setIt(Iterator<T> it) {
-//        if (it instanceof ResetableIterator) {
-//            this.it = (ResetableIterator<T>) it;
-//        } else {
-//            this.it = new ResetableIterator<T>(it);
-//        }
-//
-//    }
     /**
      *
      * @return
@@ -222,13 +170,40 @@ public class RunContextImpl<T, K, V> implements RunContextManagers<T, K, V>, Ite
     public void setStackManager(RunActionStackManager<T, K, V> manager) {
         stack = manager;
     }
+
     /**
      *
      * @return
      */
-//    @Override
     @Override
     public RunActionStackManager<T, K, V> getStackManager() {
         return stack;
+    }    
+
+    @Override
+    public void setConditionManager(RunCondManager<T, C, K, V> manager) {
+        conds = manager;
     }
+
+    @Override
+    public RunCondManager<T, C, K, V> getConditionManager() {
+        return conds;
+    }
+
+    @Override
+    public boolean validateResult(C result, boolean isAction) {
+        boolean retValue = true;
+        if(conds!=null){
+            RunCondition<T, C> current = conds.getCurrent();
+            if(current!=null){
+                current.setActionTest(isAction);
+                current.setCurrentResult(result);
+                if(current.next()==null){
+                    retValue = false;
+                }
+            }
+        }
+        return retValue;
+    }
+    
 }

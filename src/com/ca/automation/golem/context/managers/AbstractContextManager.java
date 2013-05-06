@@ -16,7 +16,7 @@ import java.util.Map;
  * @param <M>
  * @author maslu02
  */
-public abstract class AbstractContextManager<T, M extends Iterator<T>,K,V> implements ContextManager<T,M,K,V> {
+public abstract class AbstractContextManager<T, C, M extends Iterator<T>, K, V> implements ContextManager<T, M, K, V> {
 
     /**
      *
@@ -37,13 +37,13 @@ public abstract class AbstractContextManager<T, M extends Iterator<T>,K,V> imple
     /**
      *
      */
-    protected RunContextImpl<T,K,V> context;
+    protected RunContextImpl<T, C, K, V> context;
 
     /**
      *
      * @param context
      */
-    public AbstractContextManager(RunContextImpl<T,K,V> context) {
+    public AbstractContextManager(RunContextImpl<T, C, K, V> context) {
         this.context = context;
         managed = new HashMap<T, List<M>>();
     }
@@ -54,6 +54,7 @@ public abstract class AbstractContextManager<T, M extends Iterator<T>,K,V> imple
      * @param parms
      * @return
      */
+    @Override
     public boolean setup(T action, Object... parms) {
         boolean retValue = false;
         M man = setupManager(action, parms);
@@ -75,6 +76,7 @@ public abstract class AbstractContextManager<T, M extends Iterator<T>,K,V> imple
      *
      * @param action
      */
+    @Override
     public void load(T action) {
         if (managed.containsKey(action)) {
             loadManger(action);
@@ -126,6 +128,7 @@ public abstract class AbstractContextManager<T, M extends Iterator<T>,K,V> imple
      *
      * @return
      */
+    @Override
     public M getCurrent() {
         return current;
     }
@@ -134,6 +137,7 @@ public abstract class AbstractContextManager<T, M extends Iterator<T>,K,V> imple
      *
      */
     protected abstract void beforeNextInList();
+
     /**
      *
      */

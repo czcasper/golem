@@ -18,5 +18,6 @@ public interface ActionStream<T,K,V> {
     public void setParameter(Map<K,V> actionParams);
     public Map<K,V> getParameterMap();
     public ResetableIterator<T> resetableIterator();
+    public void reInitializeIterator();
     
 }

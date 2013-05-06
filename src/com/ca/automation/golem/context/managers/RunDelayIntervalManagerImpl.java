@@ -16,16 +16,16 @@ import java.util.logging.Logger;
 
 /**
  *
- * @param <T> 
+ * @param <T>
  * @author maslu02
  */
-public class RunDelayIntervalManagerImpl<T,K,V> extends AbstractContextManager<T, RunDelayInterval<T>,K,V> implements RunDelayIntervalManager<T, K, V> {
+public class RunDelayIntervalManagerImpl<T, C, K, V> extends AbstractContextManager<T, C, RunDelayInterval<T>, K, V> implements RunDelayIntervalManager<T, K, V> {
 
     /**
      *
      * @param context
      */
-    public RunDelayIntervalManagerImpl(RunContextImpl<T,K,V> context) {
+    public RunDelayIntervalManagerImpl(RunContextImpl<T, C, K, V> context) {
         super(context);
     }
 
@@ -94,7 +94,6 @@ public class RunDelayIntervalManagerImpl<T,K,V> extends AbstractContextManager<T
      *
      * @param action
      */
-    
     @Override
     protected void loadManger(T action) {
         if (currentList == null) {
@@ -127,10 +126,10 @@ public class RunDelayIntervalManagerImpl<T,K,V> extends AbstractContextManager<T
     @Override
     protected RunDelayInterval<T> setupManager(T action, Object... params) {
         RunDelayInterval<T> retValue = null;
-        if ((context != null) && (action != null) && (params.length == 2) &&(params instanceof Number[])) {
-            Number[] parm=(Number[]) params;
+        if ((context != null) && (action != null) && (params.length == 2) && (params instanceof Number[])) {
+            Number[] parm = (Number[]) params;
             RunDelayInterval<T> in = new RunDelayIntervalImpl<T>();
-               if (in.setupTimer(action, parm[0].longValue(), parm[1].longValue())) {
+            if (in.setupTimer(action, parm[0].longValue(), parm[1].longValue())) {
                 retValue = in;
             }
         }
@@ -147,8 +146,7 @@ public class RunDelayIntervalManagerImpl<T,K,V> extends AbstractContextManager<T
     }
 
     @Override
-    public List<RunDelayInterval<T>> getActive(){
+    public List<RunDelayInterval<T>> getActive() {
         return currentList;
     }
-    
 }

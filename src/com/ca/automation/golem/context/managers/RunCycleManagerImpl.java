@@ -4,13 +4,13 @@
  */
 package com.ca.automation.golem.context.managers;
 
+import com.ca.automation.golem.common.FastStack;
 import com.ca.automation.golem.common.iterators.ResetableIterator;
 import com.ca.automation.golem.context.RunContextImpl;
 import com.ca.automation.golem.context.RunCycleImpl;
 import com.ca.automation.golem.interfaces.RunCycle;
 import com.ca.automation.golem.interfaces.RunCycleManager;
 import java.util.List;
-import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,17 +19,17 @@ import java.util.logging.Logger;
  * @param <T>
  * @author maslu02
  */
-public class RunCycleManagerImpl<T, K, V> extends AbstractContextManager<T, RunCycle<T>, K, V> implements RunCycleManager<T, K, V> {
+public class RunCycleManagerImpl<T, C,K, V> extends AbstractContextManager<T,C, RunCycle<T>, K, V> implements RunCycleManager<T, K, V> {
 
-    protected Stack<RunCycle<T>> curentStack;
+    protected FastStack<RunCycle<T>> curentStack;
     /**
      *
      */
-    protected Stack<Integer> arrayIndexStack;
+    protected FastStack<Integer> arrayIndexStack;
     /**
      *
      */
-    protected Stack<List<RunCycle<T>>> currentCycleStack;
+    protected FastStack<List<RunCycle<T>>> currentCycleStack;
     /**
      *
      */
@@ -39,10 +39,11 @@ public class RunCycleManagerImpl<T, K, V> extends AbstractContextManager<T, RunC
      *
      * @param context
      */
-    public RunCycleManagerImpl(RunContextImpl<T, K, V> context) {
+    public RunCycleManagerImpl(RunContextImpl<T,C, K, V> context) {
         super(context);
-        currentCycleStack = new Stack<List<RunCycle<T>>>();
-        arrayIndexStack = new Stack<Integer>();
+        curentStack = new FastStack<RunCycle<T>>();
+        currentCycleStack = new FastStack<List<RunCycle<T>>>();
+        arrayIndexStack = new FastStack<Integer>();
     }
 
     /**

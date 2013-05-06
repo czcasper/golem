@@ -46,10 +46,10 @@ public class RunActionStackManagerTest {
 
     @Test
     public void testHasNext() throws Exception {
-        RunActionStackManagerImpl<Object,String,Object> instance = new RunActionStackManagerImpl<Object,String,Object>(null);
+        RunActionStackManagerImpl<Object,Boolean,String,Object> instance = new RunActionStackManagerImpl<Object,Boolean,String,Object>(null);
         assertFalse(instance.hasNext());
 
-        instance = (RunActionStackManagerImpl<Object,String,Object>) initializedRun.getStackManager();
+        instance = (RunActionStackManagerImpl<Object,Boolean,String,Object>) initializedRun.getStackManager();
         List<Object> actions = new ArrayList<Object>();
         for (int i = 0; i < 7; i++) {
             actions.add(i);
@@ -97,10 +97,10 @@ public class RunActionStackManagerTest {
 
     @Test
     public void testNext() {
-        RunActionStackManagerImpl<Object,String,Object> instance = new RunActionStackManagerImpl<Object,String,Object>(null);
+        RunActionStackManagerImpl<Object,Boolean,String,Object> instance = new RunActionStackManagerImpl<Object,Boolean,String,Object>(null);
         assertNull(instance.next());
 
-        instance = (RunActionStackManagerImpl<Object,String,Object>) initializedRun.getStackManager();
+        instance = (RunActionStackManagerImpl<Object,Boolean,String,Object>) initializedRun.getStackManager();
         List<Object> actions = new ArrayList<Object>();
         for (int i = 0; i < 7; i++) {
             actions.add(i);
@@ -132,7 +132,7 @@ public class RunActionStackManagerTest {
 
     @Test
     public void testSetup() {
-        RunActionStackManagerImpl<Object,String,Object> instance = (RunActionStackManagerImpl<Object,String,Object>) initializedRun.getStackManager();
+        RunActionStackManagerImpl<Object,Boolean,String,Object> instance = (RunActionStackManagerImpl<Object,Boolean,String,Object>) initializedRun.getStackManager();
 
         List<Object> actions = new ArrayList<Object>();
         for (int i = 0; i < 7; i++) {
