@@ -29,7 +29,7 @@ public class RunCondManagerImpl<T, C extends Object, K, V> extends AbstractConte
 
     @Override
     protected void beforeNextInList() {
-        current=null;
+        current = null;
         index--;
     }
 
@@ -43,7 +43,6 @@ public class RunCondManagerImpl<T, C extends Object, K, V> extends AbstractConte
         return false;
     }
 
-    
     @SuppressWarnings("unchecked")
     @Override
     protected void loadManger(T action) {
@@ -53,9 +52,9 @@ public class RunCondManagerImpl<T, C extends Object, K, V> extends AbstractConte
         List<RunCondition<T, C>> found = managed.get(action);
         if (!found.isEmpty()) {
             for (RunCondition<T, C> c : found) {
-                
+
                 try {
-                    
+
                     currentList.add((RunCondition<T, C>) c.clone());
                 } catch (CloneNotSupportedException ex) {
                     Logger.getLogger(RunCondManagerImpl.class.getName()).log(Level.SEVERE, null, ex);

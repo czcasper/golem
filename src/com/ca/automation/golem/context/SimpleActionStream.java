@@ -6,6 +6,7 @@ import com.ca.automation.golem.common.AddressArrayList;
 import com.ca.automation.golem.common.iterators.ResetableIterator;
 import com.ca.automation.golem.interfaces.ActionStream;
 import com.ca.automation.golem.spools.actions.ActionInformationSpool;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -15,9 +16,9 @@ import java.util.logging.Logger;
  *
  * @author maslu02
  */
-public class SimpleActionStream implements ActionStream<Object,String,Object> {
-    
-    protected Map<String,Object> parmSpool;
+public class SimpleActionStream implements ActionStream<Object, String, Object> {
+
+    protected Map<String, Object> parmSpool;
     protected List<Object> actions;
     protected ResetableIterator<Object> it;
 
@@ -27,14 +28,14 @@ public class SimpleActionStream implements ActionStream<Object,String,Object> {
         }
         this.actions = new AddressArrayList<Object>(actions.size());
         ActionInformationSpool spool = ActionInformationSpool.getDefaultInstance();
-        for(Object action : actions){
-            if(spool.isAction(action)){
+        for (Object action : actions) {
+            if (spool.isAction(action)) {
                 this.actions.add(action);
             } else {
                 Logger.getLogger(SimpleActionStream.class.getName()).log(Level.INFO, "Action {0} is not valid runner action.", action.toString());
             }
         }
-        if(this.actions.isEmpty()){
+        if (this.actions.isEmpty()) {
             throw new NullPointerException("List doesnt contains valid actions");
         }
         it = new ResetableIterator<Object>(this.actions.iterator());
@@ -61,8 +62,12 @@ public class SimpleActionStream implements ActionStream<Object,String,Object> {
     }
 
     @Override
-    public void reInitializeIterator() {
-        it.setIt(this.actions.iterator());
+    public Object clone() throws CloneNotSupportedException {
+        SimpleActionStream retValue = (SimpleActionStream) super.clone();
+        retValue.it = new ResetableIterator<Object>(retValue.actions.iterator());
+        if (parmSpool != null) {
+            retValue.parmSpool = new LinkedHashMap<String, Object>(parmSpool);
+        }
+        return retValue;
     }
-    
 }

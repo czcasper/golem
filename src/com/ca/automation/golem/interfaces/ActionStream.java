@@ -12,12 +12,15 @@ import java.util.Map;
  *
  * @author maslu02
  */
-public interface ActionStream<T,K,V> {
- 
+public interface ActionStream<T, K, V> extends Cloneable {
+
     public List<T> getActionList();
-    public void setParameter(Map<K,V> actionParams);
-    public Map<K,V> getParameterMap();
+
+    public void setParameter(Map<K, V> actionParams);
+
+    public Map<K, V> getParameterMap();
+
     public ResetableIterator<T> resetableIterator();
-    public void reInitializeIterator();
-    
+
+    public Object clone() throws CloneNotSupportedException;
 }

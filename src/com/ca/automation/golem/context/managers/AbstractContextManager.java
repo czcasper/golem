@@ -11,12 +11,20 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
- * @param <T>
- * @param <M>
+ * This class describe functionality of general context manager and provide 
+ * solution for common manager problems. Support ability to have assigned more 
+ * than one context manager on single action. Provide 
+ * 
+ * 
  * @author maslu02
+ * 
+ * @param <T> - type of Action 
+ * @param <C> - type of object used for validation of run results
+ * @param <M> - type of object managed by manager. It must be child of Iterator
+ * @param <K> - type of object used by parameter map like key
+ * @param <V> - type of object used by parameter map like value
  */
-public abstract class AbstractContextManager<T, C, M extends Iterator<T>, K, V> implements ContextManager<T, M, K, V> {
+public abstract class AbstractContextManager<T, C extends Object, M extends Iterator<T>, K, V> implements ContextManager<T, M, K, V> {
 
     /**
      *

@@ -5,6 +5,10 @@
 package com.ca.automation.golem.context;
 
 import com.ca.automation.golem.common.iterators.ResetableIterator;
+import com.ca.automation.golem.context.managers.RunActionStackManagerImpl;
+import com.ca.automation.golem.context.managers.RunCondManagerImpl;
+import com.ca.automation.golem.context.managers.RunCycleManagerImpl;
+import com.ca.automation.golem.context.managers.RunDelayIntervalManagerImpl;
 import com.ca.automation.golem.interfaces.ActionStream;
 import com.ca.automation.golem.interfaces.RunActionStackManager;
 import com.ca.automation.golem.interfaces.RunCondManager;
@@ -15,9 +19,16 @@ import com.ca.automation.golem.interfaces.RunDelayIntervalManager;
 import java.util.Iterator;
 
 /**
- *
- * @param <T>
- * @author basad01
+ * This class is supporting all runner special context features. For managing 
+ * features are used special manages implemented in Golem. All information connected
+ * with What?(actions) and Which parameters are used? are stored in ActionStream.
+ * 
+ * 
+ * @author maslu02
+ * @param <T> - type for action objects
+ * @param <C> - type used for validating result of actions
+ * @param <K> - type used in parameter spool like key
+ * @param <V> - type used in parameter spool like value
  */
 public class RunContextImpl<T, C, K, V> implements RunContextManagers<T, C, K, V>, Iterator<T> {
 
@@ -31,7 +42,9 @@ public class RunContextImpl<T, C, K, V> implements RunContextManagers<T, C, K, V
 
     @Override
     public void setActionStream(ActionStream<T, K, V> stream) {
-        // TODO throw exception in case when stream is null
+        if(stream==null){
+            throw new NullPointerException("RunContext cannot be intilized by null ActionStream");
+        }
         this.currentStream = stream;
         it = currentStream.resetableIterator();
     }
@@ -140,6 +153,14 @@ public class RunContextImpl<T, C, K, V> implements RunContextManagers<T, C, K, V
     }
 
     @Override
+    public RunDelayIntervalManager<T, K, V> getInitializedDelayManager() {
+        if(timer==null){
+            timer = new RunDelayIntervalManagerImpl<T, C, K, V>(this);
+        }
+        return timer;
+    }
+
+    @Override
     public void setDelayManager(RunDelayIntervalManager<T, K, V> manager) {
         timer = manager;
     }
@@ -162,6 +183,14 @@ public class RunContextImpl<T, C, K, V> implements RunContextManagers<T, C, K, V
         cycle = manager;
     }
 
+    @Override
+    public RunCycleManager<T, K, V> getInitializedCycleManager() {
+        if(cycle==null){
+            cycle = new RunCycleManagerImpl<T, C, K, V>(this);
+        }
+        return cycle;
+    }
+
     /**
      *
      * @param manager
@@ -181,12 +210,28 @@ public class RunContextImpl<T, C, K, V> implements RunContextManagers<T, C, K, V
     }    
 
     @Override
+    public RunActionStackManager<T, K, V> getInitializedStackManager() {
+        if(stack == null){
+            stack = new RunActionStackManagerImpl<T, C, K, V>(this);
+        }
+        return stack;
+    }
+
+    @Override
     public void setConditionManager(RunCondManager<T, C, K, V> manager) {
         conds = manager;
     }
 
     @Override
     public RunCondManager<T, C, K, V> getConditionManager() {
+        return conds;
+    }
+
+    @Override
+    public RunCondManager<T, C, K, V> getInitializedConditionManager() {
+        if(conds == null){
+            conds = new RunCondManagerImpl<T, C, K, V>(this);
+        }
         return conds;
     }
 

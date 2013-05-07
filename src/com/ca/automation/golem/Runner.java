@@ -26,6 +26,8 @@ import com.ca.automation.golem.context.managers.RunCycleManagerImpl;
 import com.ca.automation.golem.context.managers.RunDelayIntervalManagerImpl;
 import com.ca.automation.golem.interfaces.ActionStream;
 import com.ca.automation.golem.interfaces.RunCondManager;
+import com.ca.automation.golem.interfaces.RunContext;
+import com.ca.automation.golem.interfaces.RunContextManagers;
 import com.ca.automation.golem.spools.actions.ActionInformationSpool;
 import com.ca.automation.golem.toRefactor.RunnerConnectionFactoryImpl;
 import java.lang.reflect.Field;
@@ -51,7 +53,6 @@ public class Runner {
     @EJB
     protected ActionInformationSpool actionData;
     protected RunConectionSpool connSpool;
-//    protected RunConditionContext runConditions;
     protected RunContextImpl<Object, Boolean, String, Object> run;
 
     /**
@@ -73,7 +74,7 @@ public class Runner {
         Map<String, Object> runParameterMap = actions.getParameterMap();
         for (Object o : run) {
             boolean runAction = runAction(o, runParameterMap);
-            if(!run.validateResult(runAction, true)){
+            if (!run.validateResult(runAction, true)) {
                 retValue = false;
                 break;
             }
@@ -81,7 +82,11 @@ public class Runner {
 
         return retValue;
     }
-    
+
+    public RunContextManagers<Object, Boolean, String, Object> getRunContext() {
+        return run;
+    }
+
     protected boolean runAction(Object leaf, Map<String, Object> runParameterMap) {
         boolean retValue = false;
         if (actionData.isAction(leaf)) {
@@ -102,7 +107,7 @@ public class Runner {
 
     protected boolean executeAction(Object action) {
         boolean retValue = false;
-        
+
         if ((executeActionMethodsGroup(actionData.getInits(action), action))
                 && (executeActionMethodsGroup(actionData.getRuns(action), action))
                 && (executeActionMethodsGroup(actionData.getValidates(action), action))) {
@@ -131,8 +136,8 @@ public class Runner {
                         }
 
                         if (method != null && method) {
-                            if(run.validateResult((Boolean)invoke, false)){
-                                retValue=false;
+                            if (run.validateResult((Boolean) invoke, false)) {
+                                retValue = false;
                                 break;
                             }
                         }
@@ -265,27 +270,14 @@ public class Runner {
                 Class<?> type = f.getType();
                 try {
                     if (type.isAssignableFrom(RunCondManagerContext.class)) {
-                        RunCondManager<Object, Boolean, String, Object> man = run.getConditionManager();
-                        if(man ==null){
-                            man = new RunCondManagerImpl<Object, Boolean, String, Object>(run);
-                            run.setConditionManager(man);
-                        }
-                        f.set(action, man);
+                        f.set(action, run.getInitializedConditionManager());
                     } else if (type.isAssignableFrom(RunConditionContext.class)) {
-                        RunCondManager<Object, Boolean, String, Object> man = run.getConditionManager();
-                        if(man ==null){
-                            man = new RunCondManagerImpl<Object, Boolean, String, Object>(run);
-                            run.setConditionManager(man);
-                        }
+                        RunCondManager<Object, Boolean, String, Object> man = run.getInitializedConditionManager();
                         f.set(action, man.getCurrent());
                     } else if (type.isAssignableFrom(RunConditionsListContext.class)) {
-                        RunCondManager<Object, Boolean, String, Object> man = run.getConditionManager();
-                        if(man ==null){
-                            man = new RunCondManagerImpl<Object, Boolean, String, Object>(run);
-                            run.setConditionManager(man);
-                        }
+                        RunCondManager<Object, Boolean, String, Object> man = run.getInitializedConditionManager();
                         f.set(action, man.getActive());
-                        
+
                     } else if (type.isAssignableFrom(SimpleParameterSpool.class)) {
                         f.set(action, parmMap);
                     } else if (type.isAssignableFrom(RunConnectionFactory.class)) {
@@ -293,35 +285,17 @@ public class Runner {
                     } else if (type.isAssignableFrom(RunConectionSpool.class)) {
                         f.set(action, connSpool);
                     } else if (type.isAssignableFrom(RunCycleManagerContext.class)) {
-                        if (run.getCycleManager() == null) {
-                            run.setCycleManager(new RunCycleManagerImpl<Object, Boolean, String, Object>(run));
-                        }
-                        f.set(action, run.getCycleManager());
+                        f.set(action, run.getInitializedCycleManager());
                     } else if (type.isAssignableFrom(RunCycleContent.class)) {
-                        if (run.getCycleManager() == null) {
-                            run.setCycleManager(new RunCycleManagerImpl<Object, Boolean, String, Object>(run));
-                        }
-                        f.set(action, run.getCycleManager().getCurrent());
+                        f.set(action, run.getInitializedCycleManager().getCurrent());
                     } else if (type.isAssignableFrom(RunDelayIntervalManagerContext.class)) {
-                        if (run.getDelayManager() == null) {
-                            run.setDelayManager(new RunDelayIntervalManagerImpl<Object, Boolean, String, Object>(run));
-                        }
-                        f.set(action, run.getDelayManager());
+                        f.set(action, run.getInitializedDelayManager());
                     } else if (type.isAssignableFrom(RunDelaysListContext.class)) {
-                        if (run.getDelayManager() == null) {
-                            run.setDelayManager(new RunDelayIntervalManagerImpl<Object, Boolean, String, Object>(run));
-                        }
-                        f.set(action, run.getDelayManager().getActive());
+                        f.set(action, run.getInitializedDelayManager().getActive());
                     } else if (type.isAssignableFrom(RunActionStackManagerContext.class)) {
-                        if (run.getStackManager() == null) {
-                            run.setStackManager(new RunActionStackManagerImpl<Object, Boolean, String, Object>(run));
-                        }
-                        f.set(action, run.getStackManager());
+                        f.set(action, run.getInitializedStackManager());
                     } else if (type.isAssignableFrom(RunStacksListContext.class)) {
-                        if (run.getStackManager() == null) {
-                            run.setStackManager(new RunActionStackManagerImpl<Object, Boolean, String, Object>(run));
-                        }
-                        f.set(action, run.getStackManager().getActive());
+                        f.set(action, run.getInitializedStackManager().getActive());
                     }
                 } catch (IllegalArgumentException ex) {
                     Logger.getLogger(Runner.class.getName()).log(Level.SEVERE, null, ex);
