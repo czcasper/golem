@@ -2,7 +2,13 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.ca.automation.golem.interfaces;
+package com.ca.automation.golem.interfaces.context.managers;
+
+import com.ca.automation.golem.interfaces.RunContext;
+import com.ca.automation.golem.interfaces.context.managers.RunCondManager;
+import com.ca.automation.golem.interfaces.context.managers.RunActionStackManager;
+import com.ca.automation.golem.interfaces.context.managers.RunCycleManager;
+import com.ca.automation.golem.interfaces.context.managers.RunDelayIntervalManager;
 
 /**
  *

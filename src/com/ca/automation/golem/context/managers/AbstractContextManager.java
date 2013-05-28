@@ -4,7 +4,7 @@ package com.ca.automation.golem.context.managers;
 
 import com.ca.automation.golem.common.AddressArrayList;
 import com.ca.automation.golem.context.RunContextImpl;
-import com.ca.automation.golem.interfaces.ContextManager;
+import com.ca.automation.golem.interfaces.context.managers.ContextManager;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;

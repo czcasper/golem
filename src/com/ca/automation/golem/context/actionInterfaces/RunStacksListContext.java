@@ -4,7 +4,7 @@
  */
 package com.ca.automation.golem.context.actionInterfaces;
 
-import com.ca.automation.golem.interfaces.RunActionStack;
+import com.ca.automation.golem.interfaces.context.RunActionStack;
 import java.util.List;
 
 /**

@@ -4,7 +4,7 @@
  */
 package com.ca.automation.golem.context.actionInterfaces;
 
-import com.ca.automation.golem.interfaces.RunDelayInterval;
+import com.ca.automation.golem.interfaces.context.RunDelayInterval;
 import java.util.List;
 
 /**

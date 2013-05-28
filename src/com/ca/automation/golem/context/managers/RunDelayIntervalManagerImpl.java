@@ -6,8 +6,8 @@ package com.ca.automation.golem.context.managers;
 
 import com.ca.automation.golem.context.RunContextImpl;
 import com.ca.automation.golem.context.RunDelayIntervalImpl;
-import com.ca.automation.golem.interfaces.RunDelayInterval;
-import com.ca.automation.golem.interfaces.RunDelayIntervalManager;
+import com.ca.automation.golem.interfaces.context.RunDelayInterval;
+import com.ca.automation.golem.interfaces.context.managers.RunDelayIntervalManager;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;

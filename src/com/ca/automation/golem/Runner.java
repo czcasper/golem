@@ -20,14 +20,9 @@ import com.ca.automation.golem.context.actionInterfaces.managers.RunActionStackM
 import com.ca.automation.golem.context.actionInterfaces.managers.RunCondManagerContext;
 import com.ca.automation.golem.context.actionInterfaces.managers.RunCycleManagerContext;
 import com.ca.automation.golem.context.actionInterfaces.managers.RunDelayIntervalManagerContext;
-import com.ca.automation.golem.context.managers.RunActionStackManagerImpl;
-import com.ca.automation.golem.context.managers.RunCondManagerImpl;
-import com.ca.automation.golem.context.managers.RunCycleManagerImpl;
-import com.ca.automation.golem.context.managers.RunDelayIntervalManagerImpl;
 import com.ca.automation.golem.interfaces.ActionStream;
-import com.ca.automation.golem.interfaces.RunCondManager;
-import com.ca.automation.golem.interfaces.RunContext;
-import com.ca.automation.golem.interfaces.RunContextManagers;
+import com.ca.automation.golem.interfaces.context.managers.RunCondManager;
+import com.ca.automation.golem.interfaces.context.managers.RunContextManagers;
 import com.ca.automation.golem.spools.actions.ActionInformationSpool;
 import com.ca.automation.golem.toRefactor.RunnerConnectionFactoryImpl;
 import java.lang.reflect.Field;
@@ -128,8 +123,8 @@ public class Runner {
                             Init init = m.getAnnotation(Init.class);
                             method = init.isCritical();
                         } else if (m.isAnnotationPresent(Run.class)) {
-                            Run run = m.getAnnotation(Run.class);
-                            method = run.isCritical();
+                            Run criticalFlag = m.getAnnotation(Run.class);
+                            method = criticalFlag.isCritical();
                         } else {
                             Validate valid = m.getAnnotation(Validate.class);
                             method = valid.isCritical();

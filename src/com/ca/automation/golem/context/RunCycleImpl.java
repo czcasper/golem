@@ -5,7 +5,7 @@ package com.ca.automation.golem.context;
 
 import com.ca.automation.golem.common.AddressArrayList;
 import com.ca.automation.golem.common.iterators.ResetableIterator;
-import com.ca.automation.golem.interfaces.RunCycle;
+import com.ca.automation.golem.interfaces.context.RunCycle;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;

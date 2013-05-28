@@ -3,8 +3,8 @@
  */
 package com.ca.automation.golem.context;
 
-import com.ca.automation.golem.context.actionInterfaces.RunActionStackContext;
-import com.ca.automation.golem.interfaces.RunActionStack;
+import com.ca.automation.golem.common.FastStack;
+import com.ca.automation.golem.interfaces.context.RunActionStack;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -28,7 +28,7 @@ public class RunActionStackImpl<T> implements RunActionStack<T>, Iterator<T>, Cl
      *
      */
     public RunActionStackImpl() {
-        actions = new LinkedList<T>();
+        actions = new FastStack<T>();
     }
 
     @Override

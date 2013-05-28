@@ -4,8 +4,8 @@ package com.ca.automation.golem.context.managers;
 
 import com.ca.automation.golem.context.RunActionStackImpl;
 import com.ca.automation.golem.context.RunContextImpl;
-import com.ca.automation.golem.interfaces.RunActionStack;
-import com.ca.automation.golem.interfaces.RunActionStackManager;
+import com.ca.automation.golem.interfaces.context.RunActionStack;
+import com.ca.automation.golem.interfaces.context.managers.RunActionStackManager;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;

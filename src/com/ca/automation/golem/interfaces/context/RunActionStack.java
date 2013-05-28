@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.ca.automation.golem.interfaces;
+package com.ca.automation.golem.interfaces.context;
 
 /**
  *
@@ -20,28 +20,28 @@ public interface RunActionStack<T> extends CloneableIterator<T> {
      * @return true if stack is correctly initialized, otherwise false.
      */
     public boolean setupStack(T action, T... actions);
-    
+
     /**
      * Get action where stack is defined to start.
      *
      * @return stack start action object
      */
     public T getAction();
-    
+
     /**
      * This method push action into stack.
-     * 
+     *
      * @param item action which shlould be push into stack
      * @return bool in case when success, otherwise false
      */
     public boolean push(T item);
-    
+
     /**
      *
      * @return
      */
-    public T pop();    
-    
+    public T pop();
+
     /**
      *
      * @return
@@ -53,5 +53,4 @@ public interface RunActionStack<T> extends CloneableIterator<T> {
      * @return
      */
     public boolean isEmpty();
-    
 }

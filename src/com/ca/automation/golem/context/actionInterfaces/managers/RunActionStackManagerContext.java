@@ -2,7 +2,7 @@
  */
 package com.ca.automation.golem.context.actionInterfaces.managers;
 
-import com.ca.automation.golem.interfaces.RunActionStackManager;
+import com.ca.automation.golem.interfaces.context.managers.RunActionStackManager;
 
 /**
  *

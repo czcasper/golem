@@ -2,7 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.ca.automation.golem.interfaces;
+package com.ca.automation.golem.interfaces.context.managers;
+
+import com.ca.automation.golem.interfaces.context.RunCycle;
 
 /**
  *

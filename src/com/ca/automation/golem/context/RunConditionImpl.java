@@ -2,7 +2,7 @@
  */
 package com.ca.automation.golem.context;
 
-import com.ca.automation.golem.interfaces.RunCondition;
+import com.ca.automation.golem.interfaces.context.RunCondition;
 
 /**
  *

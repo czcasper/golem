@@ -1,6 +1,6 @@
 /*
  */
-package com.ca.automation.golem.interfaces;
+package com.ca.automation.golem.interfaces.context;
 
 /**
  *

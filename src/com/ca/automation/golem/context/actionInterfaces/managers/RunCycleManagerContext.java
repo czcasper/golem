@@ -4,7 +4,7 @@
  */
 package com.ca.automation.golem.context.actionInterfaces.managers;
 
-import com.ca.automation.golem.interfaces.RunCycleManager;
+import com.ca.automation.golem.interfaces.context.managers.RunCycleManager;
 
 /**
  *

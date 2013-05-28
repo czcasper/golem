@@ -10,12 +10,12 @@ import com.ca.automation.golem.context.managers.RunCondManagerImpl;
 import com.ca.automation.golem.context.managers.RunCycleManagerImpl;
 import com.ca.automation.golem.context.managers.RunDelayIntervalManagerImpl;
 import com.ca.automation.golem.interfaces.ActionStream;
-import com.ca.automation.golem.interfaces.RunActionStackManager;
-import com.ca.automation.golem.interfaces.RunCondManager;
-import com.ca.automation.golem.interfaces.RunCondition;
-import com.ca.automation.golem.interfaces.RunContextManagers;
-import com.ca.automation.golem.interfaces.RunCycleManager;
-import com.ca.automation.golem.interfaces.RunDelayIntervalManager;
+import com.ca.automation.golem.interfaces.context.managers.RunActionStackManager;
+import com.ca.automation.golem.interfaces.context.managers.RunCondManager;
+import com.ca.automation.golem.interfaces.context.RunCondition;
+import com.ca.automation.golem.interfaces.context.managers.RunContextManagers;
+import com.ca.automation.golem.interfaces.context.managers.RunCycleManager;
+import com.ca.automation.golem.interfaces.context.managers.RunDelayIntervalManager;
 import java.util.Iterator;
 
 /**
