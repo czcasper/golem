@@ -19,13 +19,13 @@ import java.util.logging.Logger;
  * @param <T>
  * @author maslu02
  */
-public class RunDelayIntervalManagerImpl<T, C, K, V> extends AbstractContextManager<T, C, RunDelayInterval<T>, K, V> implements RunDelayIntervalManager<T, K, V> {
+public class RunDelayIntervalManagerImpl<T, C, V> extends AbstractContextManager<T, C, RunDelayInterval<T>, V> implements RunDelayIntervalManager<T, V> {
 
     /**
      *
      * @param context
      */
-    public RunDelayIntervalManagerImpl(RunContextImpl<T, C, K, V> context) {
+    public RunDelayIntervalManagerImpl(RunContextImpl<T, C, V> context) {
         super(context);
     }
 

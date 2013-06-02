@@ -21,10 +21,9 @@ import java.util.Map;
  * @param <T> - type of Action 
  * @param <C> - type of object used for validation of run results
  * @param <M> - type of object managed by manager. It must be child of Iterator
- * @param <K> - type of object used by parameter map like key
  * @param <V> - type of object used by parameter map like value
  */
-public abstract class AbstractContextManager<T, C extends Object, M extends Iterator<T>, K, V> implements ContextManager<T, M, K, V> {
+public abstract class AbstractContextManager<T, C extends Object, M extends Iterator<T>, V> implements ContextManager<T, M, V> {
 
     /**
      *
@@ -45,13 +44,13 @@ public abstract class AbstractContextManager<T, C extends Object, M extends Iter
     /**
      *
      */
-    protected RunContextImpl<T, C, K, V> context;
+    protected RunContextImpl<T, C, V> context;
 
     /**
      *
      * @param context
      */
-    public AbstractContextManager(RunContextImpl<T, C, K, V> context) {
+    public AbstractContextManager(RunContextImpl<T, C, V> context) {
         this.context = context;
         managed = new HashMap<T, List<M>>();
     }

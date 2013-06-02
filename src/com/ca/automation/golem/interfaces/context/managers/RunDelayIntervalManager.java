@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @author maslu02
  */
-public interface RunDelayIntervalManager<T,K,V> extends ContextManager<T, RunDelayInterval<T>, K, V> {
+public interface RunDelayIntervalManager<T,V> extends ContextManager<T, RunDelayInterval<T>, V> {
     /**
      * Safelly initialize all timer members by calling one method.
      *

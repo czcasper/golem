@@ -10,11 +10,11 @@ import com.ca.automation.golem.common.iterators.ResetableIterator;
  *
  * @author maslu02
  */
-public interface RunContext<T,K,V> extends Iterable<T> {
-    
-    public void setActionStream(ActionStream<T,K,V> stream);
-    public ActionStream<T,K,V> getActionStream();
+public interface RunContext<T, V> extends Iterable<T> {
+
+    public void setActionStream(ActionStream<T, V> stream);
+
+    public ActionStream<T, V> getActionStream();
 
     public ResetableIterator<T> resetableIterator();
-    
 }

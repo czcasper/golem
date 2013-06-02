@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @author maslu02
  */
-public interface RunCondManager<T, C extends Object, K, V> extends ContextManager<T, RunCondition<T, C>, K, V> {
+public interface RunCondManager<T, C extends Object, V> extends ContextManager<T, RunCondition<T, C>, V> {
 
     public boolean setup(T action, C expect, long counter);
 

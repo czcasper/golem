@@ -37,4 +37,15 @@ public @interface RunParameter {
      */
     boolean retValue() default false;
     
+    /**
+     * Define id of object used for connecting value of field with stored value 
+     * in parameter spool. If this atribute is non empty, golem try to use it 
+     * in first step and if it is successfully found then name settings is ignored.
+     * In case when pointer is not found, value from name attribute is involved 
+     * into process.
+     * 
+     * @return if defined then non empty string, otherwise empty.
+     */
+    String pointer() default "";
+    
 }

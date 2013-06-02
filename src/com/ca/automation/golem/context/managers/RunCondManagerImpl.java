@@ -4,8 +4,8 @@ package com.ca.automation.golem.context.managers;
 
 import com.ca.automation.golem.context.RunConditionImpl;
 import com.ca.automation.golem.context.RunContextImpl;
-import com.ca.automation.golem.interfaces.context.managers.RunCondManager;
 import com.ca.automation.golem.interfaces.context.RunCondition;
+import com.ca.automation.golem.interfaces.context.managers.RunCondManager;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -15,9 +15,9 @@ import java.util.logging.Logger;
  *
  * @author maslu02
  */
-public class RunCondManagerImpl<T, C extends Object, K, V> extends AbstractContextManager<T, C, RunCondition<T, C>, K, V> implements RunCondManager<T, C, K, V> {
+public class RunCondManagerImpl<T, C extends Object, V> extends AbstractContextManager<T, C, RunCondition<T, C>, V> implements RunCondManager<T, C, V> {
 
-    public RunCondManagerImpl(RunContextImpl<T, C, K, V> context) {
+    public RunCondManagerImpl(RunContextImpl<T, C, V> context) {
         super(context);
     }
 

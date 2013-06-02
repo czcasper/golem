@@ -27,7 +27,7 @@ import javax.ejb.LocalBean;
 import javax.ejb.Singleton;
 
 /**
- *
+ * This class is storage for 
  * @author maslu02
  */
 @Singleton

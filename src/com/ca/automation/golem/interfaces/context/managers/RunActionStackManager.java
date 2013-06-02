@@ -11,10 +11,10 @@ import java.util.List;
  *
  * @author maslu02
  */
-public interface RunActionStackManager <T,K,V> extends ContextManager<T, RunActionStack<T>,K,V> {
-    
+public interface RunActionStackManager<T, V> extends ContextManager<T, RunActionStack<T>, V> {
+
     @Override
     public RunActionStack<T> getCurrent();
-    
-    public List<RunActionStack<T>> getActive();    
+
+    public List<RunActionStack<T>> getActive();
 }

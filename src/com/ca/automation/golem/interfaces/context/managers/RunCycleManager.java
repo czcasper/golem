@@ -10,7 +10,7 @@ import com.ca.automation.golem.interfaces.context.RunCycle;
  *
  * @author maslu02
  */
-public interface RunCycleManager<T,K,V> extends ContextManager<T, RunCycle<T>, K, V> {
+public interface RunCycleManager<T,V> extends ContextManager<T, RunCycle<T>, V> {
 
     public boolean setup(T action, long repeatCount, int actionCount);
     

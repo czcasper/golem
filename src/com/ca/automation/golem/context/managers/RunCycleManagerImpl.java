@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  * @param <T>
  * @author maslu02
  */
-public class RunCycleManagerImpl<T, C,K, V> extends AbstractContextManager<T,C, RunCycle<T>, K, V> implements RunCycleManager<T, K, V> {
+public class RunCycleManagerImpl<T, C, V> extends AbstractContextManager<T, C, RunCycle<T>, V> implements RunCycleManager<T, V> {
 
     protected FastStack<RunCycle<T>> curentStack;
     /**
@@ -39,7 +39,7 @@ public class RunCycleManagerImpl<T, C,K, V> extends AbstractContextManager<T,C, 
      *
      * @param context
      */
-    public RunCycleManagerImpl(RunContextImpl<T,C, K, V> context) {
+    public RunCycleManagerImpl(RunContextImpl<T, C, V> context) {
         super(context);
         curentStack = new FastStack<RunCycle<T>>();
         currentCycleStack = new FastStack<List<RunCycle<T>>>();
@@ -97,10 +97,10 @@ public class RunCycleManagerImpl<T, C,K, V> extends AbstractContextManager<T,C, 
             index = arrayIndexStack.pop();
 
 //            if (index <= currentList.size()) {
-                T tmp = current.getEndAction();
-                current = curentStack.pop();
-                current.endCycleHandler(tmp);
-                retValue = true;
+            T tmp = current.getEndAction();
+            current = curentStack.pop();
+            current.endCycleHandler(tmp);
+            retValue = true;
 //            }
         }
 

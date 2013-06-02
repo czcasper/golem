@@ -2,8 +2,6 @@
  */
 package com.ca.automation.golem;
 
-import com.ca.automation.golem.annotations.fields.RunConnection;
-import com.ca.automation.golem.annotations.fields.RunParameter;
 import com.ca.automation.golem.annotations.methods.Init;
 import com.ca.automation.golem.annotations.methods.Run;
 import com.ca.automation.golem.annotations.methods.Validate;
@@ -15,20 +13,24 @@ import com.ca.automation.golem.context.actionInterfaces.RunConnectionFactory;
 import com.ca.automation.golem.context.actionInterfaces.RunCycleContent;
 import com.ca.automation.golem.context.actionInterfaces.RunDelaysListContext;
 import com.ca.automation.golem.context.actionInterfaces.RunStacksListContext;
-import com.ca.automation.golem.context.actionInterfaces.SimpleParameterSpool;
 import com.ca.automation.golem.context.actionInterfaces.managers.RunActionStackManagerContext;
 import com.ca.automation.golem.context.actionInterfaces.managers.RunCondManagerContext;
 import com.ca.automation.golem.context.actionInterfaces.managers.RunCycleManagerContext;
 import com.ca.automation.golem.context.actionInterfaces.managers.RunDelayIntervalManagerContext;
+import com.ca.automation.golem.context.actionInterfaces.spools.ParameterSpool;
 import com.ca.automation.golem.interfaces.ActionStream;
+import com.ca.automation.golem.interfaces.connections.Connection;
+import com.ca.automation.golem.interfaces.spools.ParameterKey;
 import com.ca.automation.golem.interfaces.context.managers.RunCondManager;
 import com.ca.automation.golem.interfaces.context.managers.RunContextManagers;
+import com.ca.automation.golem.interfaces.spools.AbstractSpool;
+import com.ca.automation.golem.interfaces.spools.ConnectionKey;
+import com.ca.automation.golem.spools.ParameterSpoolImpl;
 import com.ca.automation.golem.spools.actions.ActionInformationSpool;
 import com.ca.automation.golem.toRefactor.RunnerConnectionFactoryImpl;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -47,8 +49,8 @@ public class Runner {
 
     @EJB
     protected ActionInformationSpool actionData;
-    protected RunConectionSpool connSpool;
-    protected RunContextImpl<Object, Boolean, String, Object> run;
+    protected AbstractSpool<Object, ConnectionKey, Connection> connSpool;
+    protected RunContextImpl<Object, Boolean, Object> run;
 
     /**
      * This is method for save runner creation in JDK environment.
@@ -59,14 +61,14 @@ public class Runner {
         @SuppressWarnings("UseInjectionInsteadOfInstantion")
         Runner retValue = new Runner();
         retValue.actionData = ActionInformationSpool.getDefaultInstance();
-        retValue.run = new RunContextImpl<Object, Boolean, String, Object>();
+        retValue.run = new RunContextImpl<Object, Boolean, Object>();
         return retValue;
     }
 
-    public boolean run(ActionStream<Object, String, Object> actions) {
+    public boolean run(ActionStream<Object, Object> actions) {
         boolean retValue = true;
         run.setActionStream(actions);
-        Map<String, Object> runParameterMap = actions.getParameterMap();
+        AbstractSpool<Object, ParameterKey, Object> runParameterMap = actions.getParameterMap();
         for (Object o : run) {
             boolean runAction = runAction(o, runParameterMap);
             if (!run.validateResult(runAction, true)) {
@@ -78,18 +80,18 @@ public class Runner {
         return retValue;
     }
 
-    public RunContextManagers<Object, Boolean, String, Object> getRunContext() {
+    public RunContextManagers<Object, Boolean, Object> getRunContext() {
         return run;
     }
 
-    protected boolean runAction(Object leaf, Map<String, Object> runParameterMap) {
+    protected boolean runAction(Object leaf, AbstractSpool<Object, ParameterKey, Object> runParameterMap) {
         boolean retValue = false;
         if (actionData.isAction(leaf)) {
             injectParameters(leaf, runParameterMap);
 
             injectContexts(leaf, runParameterMap);
 
-            injectConnections(leaf);
+            injectConnections(leaf, runParameterMap);
 
             if (executeAction(leaf)) {
                 retrieveRetValues(leaf, runParameterMap);
@@ -151,21 +153,17 @@ public class Runner {
         return retValue;
     }
 
-    protected void retrieveRetValues(Object action, Map<String, Object> parmMap) {
+    protected void retrieveRetValues(Object action, AbstractSpool<Object, ParameterKey, Object> parmMap) {
         List<Field> retValues = actionData.getRetValues(action);
         if (retValues != null && !retValues.isEmpty()) {
             if (parmMap == null) {
-                parmMap = new LinkedHashMap<String, Object>(retValues.size(), 0.75f, true);
+                parmMap = new ParameterSpoolImpl<Object, Object>();
             }
+
             for (Field f : retValues) {
                 try {
-                    RunParameter annotation = f.getAnnotation(RunParameter.class);
-                    String name = annotation.name();
-                    if (name.isEmpty()) {
-                        name = action.getClass().getSimpleName() + "." + f.getName();
-                    }
                     Object value = f.get(action);
-                    parmMap.put(name, value);
+                    parmMap.put(action, f, parmMap, value);
                 } catch (IllegalArgumentException ex) {
                     Logger.getLogger(Runner.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (IllegalAccessException ex) {
@@ -175,79 +173,38 @@ public class Runner {
         }
     }
 
-    protected void injectConnections(Object action) {
+    protected void injectConnections(Object action, AbstractSpool<Object, ParameterKey, Object> parmMap) {
         List<Field> connections = actionData.getConnections(action);
         if ((connections != null) && (!connections.isEmpty())) {
             for (Field f : connections) {
-                Class<?> type = f.getType();
-                if (type.isAssignableFrom(com.ca.automation.golem.context.actionInterfaces.RunConnection.class)) {
-                    RunConnection connection = f.getAnnotation(RunConnection.class);
-                    Object connectionKey = null;
-                    if (!connection.key().isEmpty()) {
-                        Field fieldByName = actionData.getFieldByName(action, connection.key());
-                        if (fieldByName != null) {
-                            try {
-                                connectionKey = fieldByName.get(action);
-                                if (!connSpool.containsKey(connectionKey)) {
-                                    connectionKey = null;
-                                }
-                            } catch (IllegalArgumentException ex) {
-                                Logger.getLogger(Runner.class.getName()).log(Level.SEVERE, null, ex);
-                            } catch (IllegalAccessException ex) {
-                                Logger.getLogger(Runner.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                        } else {
-                            Logger.getLogger(Runner.class.getName()).log(Level.WARNING, "Incorect connection key attribute:{0}. Object {1} have not defined field with this name ", new Object[]{connection.key(), action.getClass().getName()});
-                        }
-                    }
-                    if (connectionKey == null) {
-                        if (connection.name().isEmpty()) {
-                            connectionKey = action.getClass().getSimpleName() + "." + f.getName();
-                        } else {
-                            connectionKey = connection.name();
-                        }
-                    }
-
-                    if ((connectionKey != null) && (connSpool.containsKey(connectionKey))) {
+                Connection connection = connSpool.get(action, f, parmMap);
+                if (connection != null) {
+                    Class<?> type = f.getType();
+                    if (type.isAssignableFrom(connection.getClass())) {
                         try {
-                            f.set(action, connSpool.get(connectionKey));
+                            f.set(action, connection);
                         } catch (IllegalArgumentException ex) {
                             Logger.getLogger(Runner.class.getName()).log(Level.SEVERE, null, ex);
                         } catch (IllegalAccessException ex) {
                             Logger.getLogger(Runner.class.getName()).log(Level.SEVERE, null, ex);
                         }
+                    } else {
+                        Logger.getLogger(Runner.class.getName()).log(Level.FINE, "Field:{0} in action:{1} request type:{2} which is not compatible with type of stored connection:{3}", new Object[]{f.getName(), action.getClass().getName(), type.getName(), connection.getClass().getName()});
                     }
                 }
-
             }
         }
-
     }
 
-    protected void injectParameters(Object action, Map<String, Object> parmMap) {
+    protected void injectParameters(Object action, AbstractSpool<Object, ParameterKey, Object> parmMap) {
         List<Field> fields = actionData.getFields(action);
         if ((fields != null) && (!fields.isEmpty()) && (parmMap != null) && (!parmMap.isEmpty())) {
             for (Field f : fields) {
                 try {
-                    RunParameter annotation = f.getAnnotation(RunParameter.class);
-                    String name = annotation.name();
-                    if (name.isEmpty()) {
-                        name = action.getClass().getSimpleName() + "." + f.getName();
+                    Object parametr = parmMap.get(action, f, parmMap);
+                    if (f.getType().isAssignableFrom(parametr.getClass())) {
+                        f.set(action, parametr);
                     }
-
-                    if (parmMap.containsKey(name)) {
-                        Object value = parmMap.get(name);
-                        Class<?> type = f.getType();
-
-                        if ((value == null) || (type.isAssignableFrom(value.getClass())) || (isAssignableToPrimitive(type, value))) {
-                            f.set(action, value);
-                        } else {
-                            Logger.getLogger(Runner.class.getName()).log(Level.WARNING, "Incompatible argument type in field {0}. Expected: {1} \". Found: {2} \"",
-                                    new Object[]{f.getName(), f.getType().getName(), value.getClass().getName()});
-                        }
-                    }
-
-
                 } catch (IllegalArgumentException ex) {
                     Logger.getLogger(Runner.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (IllegalAccessException ex) {
@@ -258,7 +215,7 @@ public class Runner {
 
     }
 
-    protected void injectContexts(Object action, Map<String, Object> parmMap) {
+    protected void injectContexts(Object action, Map<ParameterKey, Object> parmMap) {
         List<Field> contexts = actionData.getContexts(action);
         if ((contexts != null) && (!contexts.isEmpty())) {
             for (Field f : contexts) {
@@ -267,13 +224,13 @@ public class Runner {
                     if (type.isAssignableFrom(RunCondManagerContext.class)) {
                         f.set(action, run.getInitializedConditionManager());
                     } else if (type.isAssignableFrom(RunConditionContext.class)) {
-                        RunCondManager<Object, Boolean, String, Object> man = run.getInitializedConditionManager();
+                        RunCondManager<Object, Boolean, Object> man = run.getInitializedConditionManager();
                         f.set(action, man.getCurrent());
                     } else if (type.isAssignableFrom(RunConditionsListContext.class)) {
-                        RunCondManager<Object, Boolean, String, Object> man = run.getInitializedConditionManager();
+                        RunCondManager<Object, Boolean, Object> man = run.getInitializedConditionManager();
                         f.set(action, man.getActive());
 
-                    } else if (type.isAssignableFrom(SimpleParameterSpool.class)) {
+                    } else if (type.isAssignableFrom(ParameterSpool.class)) {
                         f.set(action, parmMap);
                     } else if (type.isAssignableFrom(RunConnectionFactory.class)) {
                         f.set(action, RunnerConnectionFactoryImpl.createNewFactory());

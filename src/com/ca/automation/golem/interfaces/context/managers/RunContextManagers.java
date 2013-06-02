@@ -14,39 +14,39 @@ import com.ca.automation.golem.interfaces.context.managers.RunDelayIntervalManag
  *
  * @author maslu02
  */
-public interface RunContextManagers<T, C, K, V> extends RunContext<T, K, V> {
+public interface RunContextManagers<T, C, V> extends RunContext<T, V> {
 
     /**
      *
      * @param manager
      */
-    public void setCycleManager(RunCycleManager<T, K, V> manager);
+    public void setCycleManager(RunCycleManager<T, V> manager);
 
     /**
      *
      * @return
      */
-    public RunCycleManager<T, K, V> getCycleManager();
+    public RunCycleManager<T, V> getCycleManager();
 
-    public RunCycleManager<T, K, V> getInitializedCycleManager();
+    public RunCycleManager<T, V> getInitializedCycleManager();
 
-    public void setDelayManager(RunDelayIntervalManager<T, K, V> manager);
+    public void setDelayManager(RunDelayIntervalManager<T, V> manager);
 
-    public RunDelayIntervalManager<T, K, V> getDelayManager();
+    public RunDelayIntervalManager<T, V> getDelayManager();
 
-    public RunDelayIntervalManager<T, K, V> getInitializedDelayManager();
+    public RunDelayIntervalManager<T, V> getInitializedDelayManager();
 
-    public void setStackManager(RunActionStackManager<T, K, V> manager);
+    public void setStackManager(RunActionStackManager<T, V> manager);
 
-    public RunActionStackManager<T, K, V> getStackManager();
+    public RunActionStackManager<T, V> getStackManager();
 
-    public RunActionStackManager<T, K, V> getInitializedStackManager();
+    public RunActionStackManager<T, V> getInitializedStackManager();
 
-    public void setConditionManager(RunCondManager<T, C, K, V> manager);
+    public void setConditionManager(RunCondManager<T, C, V> manager);
 
-    public RunCondManager<T, C, K, V> getConditionManager();
+    public RunCondManager<T, C, V> getConditionManager();
 
-    public RunCondManager<T, C, K, V> getInitializedConditionManager();
+    public RunCondManager<T, C, V> getInitializedConditionManager();
 
     public boolean validateResult(C result, boolean isAction);
 }

@@ -6,9 +6,7 @@ import com.ca.automation.golem.interfaces.context.managers.RunActionStackManager
 
 /**
  *
- * @param <T> 
  * @author maslu02
  */
-public interface RunActionStackManagerContext extends RunActionStackManager<Object, String, Object> {
-
+public interface RunActionStackManagerContext extends RunActionStackManager<Object, Object> {
 }

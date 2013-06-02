@@ -27,21 +27,20 @@ import java.util.Iterator;
  * @author maslu02
  * @param <T> - type for action objects
  * @param <C> - type used for validating result of actions
- * @param <K> - type used in parameter spool like key
  * @param <V> - type used in parameter spool like value
  */
-public class RunContextImpl<T, C, K, V> implements RunContextManagers<T, C, K, V>, Iterator<T> {
+public class RunContextImpl<T, C, V> implements RunContextManagers<T, C, V>, Iterator<T> {
 
-    protected ActionStream<T, K, V> currentStream;
+    protected ActionStream<T, V> currentStream;
     private ResetableIterator<T> it;
     protected T currentAction;
-    protected RunCycleManager<T, K, V> cycle;
-    protected RunDelayIntervalManager<T, K, V> timer;
-    protected RunActionStackManager<T, K, V> stack;
-    protected RunCondManager<T, C, K, V> conds;
+    protected RunCycleManager<T, V> cycle;
+    protected RunDelayIntervalManager<T, V> timer;
+    protected RunActionStackManager<T, V> stack;
+    protected RunCondManager<T, C, V> conds;
 
     @Override
-    public void setActionStream(ActionStream<T, K, V> stream) {
+    public void setActionStream(ActionStream<T, V> stream) {
         if(stream==null){
             throw new NullPointerException("RunContext cannot be intilized by null ActionStream");
         }
@@ -50,7 +49,7 @@ public class RunContextImpl<T, C, K, V> implements RunContextManagers<T, C, K, V
     }
 
     @Override
-    public ActionStream<T, K, V> getActionStream() {
+    public ActionStream<T, V> getActionStream() {
         return currentStream;
     }
 
@@ -148,20 +147,20 @@ public class RunContextImpl<T, C, K, V> implements RunContextManagers<T, C, K, V
      * @return
      */
     @Override
-    public RunDelayIntervalManager<T, K, V> getDelayManager() {
+    public RunDelayIntervalManager<T, V> getDelayManager() {
         return timer;
     }
 
     @Override
-    public RunDelayIntervalManager<T, K, V> getInitializedDelayManager() {
+    public RunDelayIntervalManager<T, V> getInitializedDelayManager() {
         if(timer==null){
-            timer = new RunDelayIntervalManagerImpl<T, C, K, V>(this);
+            timer = new RunDelayIntervalManagerImpl<T, C, V>(this);
         }
         return timer;
     }
 
     @Override
-    public void setDelayManager(RunDelayIntervalManager<T, K, V> manager) {
+    public void setDelayManager(RunDelayIntervalManager<T, V> manager) {
         timer = manager;
     }
 
@@ -170,7 +169,7 @@ public class RunContextImpl<T, C, K, V> implements RunContextManagers<T, C, K, V
      * @return
      */
     @Override
-    public RunCycleManager<T, K, V> getCycleManager() {
+    public RunCycleManager<T, V> getCycleManager() {
         return cycle;
     }
 
@@ -179,14 +178,14 @@ public class RunContextImpl<T, C, K, V> implements RunContextManagers<T, C, K, V
      * @param manager
      */
     @Override
-    public void setCycleManager(RunCycleManager<T, K, V> manager) {
+    public void setCycleManager(RunCycleManager<T, V> manager) {
         cycle = manager;
     }
 
     @Override
-    public RunCycleManager<T, K, V> getInitializedCycleManager() {
+    public RunCycleManager<T, V> getInitializedCycleManager() {
         if(cycle==null){
-            cycle = new RunCycleManagerImpl<T, C, K, V>(this);
+            cycle = new RunCycleManagerImpl<T, C, V>(this);
         }
         return cycle;
     }
@@ -196,7 +195,7 @@ public class RunContextImpl<T, C, K, V> implements RunContextManagers<T, C, K, V
      * @param manager
      */
     @Override
-    public void setStackManager(RunActionStackManager<T, K, V> manager) {
+    public void setStackManager(RunActionStackManager<T, V> manager) {
         stack = manager;
     }
 
@@ -205,32 +204,32 @@ public class RunContextImpl<T, C, K, V> implements RunContextManagers<T, C, K, V
      * @return
      */
     @Override
-    public RunActionStackManager<T, K, V> getStackManager() {
+    public RunActionStackManager<T, V> getStackManager() {
         return stack;
     }    
 
     @Override
-    public RunActionStackManager<T, K, V> getInitializedStackManager() {
+    public RunActionStackManager<T, V> getInitializedStackManager() {
         if(stack == null){
-            stack = new RunActionStackManagerImpl<T, C, K, V>(this);
+            stack = new RunActionStackManagerImpl<T, C, V>(this);
         }
         return stack;
     }
 
     @Override
-    public void setConditionManager(RunCondManager<T, C, K, V> manager) {
+    public void setConditionManager(RunCondManager<T, C, V> manager) {
         conds = manager;
     }
 
     @Override
-    public RunCondManager<T, C, K, V> getConditionManager() {
+    public RunCondManager<T, C, V> getConditionManager() {
         return conds;
     }
 
     @Override
-    public RunCondManager<T, C, K, V> getInitializedConditionManager() {
+    public RunCondManager<T, C, V> getInitializedConditionManager() {
         if(conds == null){
-            conds = new RunCondManagerImpl<T, C, K, V>(this);
+            conds = new RunCondManagerImpl<T, C, V>(this);
         }
         return conds;
     }

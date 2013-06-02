@@ -15,14 +15,14 @@ import java.util.logging.Logger;
  * @param <T>
  * @author maslu02
  */
-public class RunActionStackManagerImpl<T, C, K, V> extends AbstractContextManager<T, C, RunActionStack<T>, K, V> implements RunActionStackManager<T, K, V> {
+public class RunActionStackManagerImpl<T, C, V> extends AbstractContextManager<T, C, RunActionStack<T>, V> implements RunActionStackManager<T, V> {
 
     /**
      * Cosntructor fot this type of manager.
      *
      * @param context this context must refered to RunnerContext implementation
      */
-    public RunActionStackManagerImpl(RunContextImpl<T, C, K, V> context) {
+    public RunActionStackManagerImpl(RunContextImpl<T, C, V> context) {
         super(context);
     }
 

@@ -17,13 +17,17 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RunConnection {
      /**
-     *
+     * Name used to identify connection in spool.
+     * 
      * @return
      */
     String name() default "";
      /**
-     *
-     * @return
+     * Pointer to value which identify value in spool. Value in parameter map 
+     * must be type of string or object which implements @class ConnectionKey 
+     * interface.
+     * 
+     * @return empty string if not defined, otherwise string which represent key
      */
-    String key() default "";
+    String pointer() default "";
 }
