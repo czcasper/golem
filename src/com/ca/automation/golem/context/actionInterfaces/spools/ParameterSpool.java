@@ -5,7 +5,7 @@
 package com.ca.automation.golem.context.actionInterfaces.spools;
 
 import com.ca.automation.golem.interfaces.spools.AbstractSpool;
-import com.ca.automation.golem.interfaces.spools.ParameterKey;
+import com.ca.automation.golem.interfaces.spools.keys.ParameterKey;
 
 /**
  *

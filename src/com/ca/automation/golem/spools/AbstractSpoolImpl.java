@@ -4,8 +4,8 @@ package com.ca.automation.golem.spools;
 
 import com.ca.automation.golem.annotations.fields.RunConnection;
 import com.ca.automation.golem.interfaces.spools.AbstractSpool;
-import com.ca.automation.golem.interfaces.spools.AbstractSpoolKey;
-import com.ca.automation.golem.interfaces.spools.ParameterKey;
+import com.ca.automation.golem.interfaces.spools.keys.AbstractSpoolKey;
+import com.ca.automation.golem.interfaces.spools.keys.ParameterKey;
 import com.ca.automation.golem.spools.keys.SimpleParameterKey;
 import java.lang.reflect.Field;
 import java.util.LinkedHashMap;
@@ -17,8 +17,9 @@ import java.util.logging.Logger;
  *
  * @author maslu02
  */
-public abstract class AbstractSpoolImpl<A, K extends AbstractSpoolKey, V> extends LinkedHashMap<K, V> implements AbstractSpool<A, K, V>, Cloneable {
+public abstract class AbstractSpoolImpl<A, K extends AbstractSpoolKey<?>, V> extends LinkedHashMap<K, V> implements AbstractSpool<A, K, V>, Cloneable {
 
+    protected static AbstractSpoolImpl global;
     protected K searchProxy = null;
 
     public AbstractSpoolImpl() {
@@ -43,13 +44,17 @@ public abstract class AbstractSpoolImpl<A, K extends AbstractSpoolKey, V> extend
         initProxy();
     }
 
+    public static <A, K extends AbstractSpoolKey, V> AbstractSpool<A, K, V> getGlobal() {
+        return global;
+    }
+
     @Override
     public V put(String key, V value) {
         return this.put(createKey(key), value);
     }
 
     @Override
-    public <P> V put(A action, Field f, AbstractSpool<A, ParameterKey, P> parameters, V value) {
+    public <P> V put(A action, Field f, AbstractSpool<A, ParameterKey<?>, P> parameters, V value) {
         V retValue = null;
         K tmpKey = buildKey(action, f, parameters, true);
         if (tmpKey != null) {
@@ -71,7 +76,7 @@ public abstract class AbstractSpoolImpl<A, K extends AbstractSpoolKey, V> extend
     }
 
     @Override
-    public <P> V get(A action, Field f, AbstractSpool<A, ParameterKey, P> parameters) {
+    public <P> V get(A action, Field f, AbstractSpool<A, ParameterKey<?>, P> parameters) {
         V retValue = null;
         K tmpKey = buildKey(action, f, parameters, false);
         if ((tmpKey != null) && (containsKey(tmpKey))) {
@@ -80,7 +85,7 @@ public abstract class AbstractSpoolImpl<A, K extends AbstractSpoolKey, V> extend
         return retValue;
     }
 
-    protected <P> K buildKey(A action, Field f, Map<ParameterKey, P> parameters, boolean createNewFlag) {
+    protected <P> K buildKey(A action, Field f, Map<ParameterKey<?>, P> parameters, boolean createNewFlag) {
         K retValue = null;
         if ((f != null) && (action != null)) {
             RunConnection fieldAnnotation = f.getAnnotation(RunConnection.class);

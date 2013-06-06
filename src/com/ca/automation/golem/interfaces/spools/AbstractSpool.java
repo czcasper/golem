@@ -4,6 +4,8 @@
  */
 package com.ca.automation.golem.interfaces.spools;
 
+import com.ca.automation.golem.interfaces.spools.keys.AbstractSpoolKey;
+import com.ca.automation.golem.interfaces.spools.keys.ParameterKey;
 import java.lang.reflect.Field;
 import java.util.Map;
 
@@ -11,14 +13,19 @@ import java.util.Map;
  *
  * @author maslu02
  */
-public interface AbstractSpool<A,K extends AbstractSpoolKey,V> extends Map<K,V> {
-    
-    public V put(String key,V value);
-    public <P> V put(A action, Field f,AbstractSpool<A,ParameterKey,P> parameters,V value);
+public interface AbstractSpool<A, K extends AbstractSpoolKey, V> extends Map<K, V> {
+
+    public AbstractSpool<A, K, V> newInstance();
+
+    public V put(String key, V value);
+
+    public <P> V put(A action, Field f, AbstractSpool<A, ParameterKey<?>, P> parameters, V value);
+
     public boolean contains(String key);
-    
+
     public V get(String key);
-    public <P> V get(A action, Field f,AbstractSpool<A,ParameterKey,P> parameters);
+
+    public <P> V get(A action, Field f, AbstractSpool<A, ParameterKey<?>, P> parameters);
+
     public Object clone();
-    
 }

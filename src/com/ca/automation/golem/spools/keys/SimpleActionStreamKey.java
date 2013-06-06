@@ -2,17 +2,17 @@
  */
 package com.ca.automation.golem.spools.keys;
 
-import com.ca.automation.golem.interfaces.spools.keys.ParameterKey;
+import com.ca.automation.golem.interfaces.spools.keys.ActionStreamKey;
 
 /**
  *
  * @author maslu02
  */
-public class SimpleParameterKey implements ParameterKey<String>, Cloneable {
+public class SimpleActionStreamKey implements ActionStreamKey<String>, Cloneable {
 
     protected String key;
 
-    public SimpleParameterKey(String key) {
+    public SimpleActionStreamKey(String key) {
         this.key = key;
     }
 
@@ -32,23 +32,9 @@ public class SimpleParameterKey implements ParameterKey<String>, Cloneable {
     }
 
     @Override
-    public boolean load(String key) {
-        if (key == null) {
-            return false;
-        }
-        this.key = key;
-        return true;
-    }
-
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
-
-    @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 37 * hash + (this.key != null ? this.key.hashCode() : 0);
+        int hash = 5;
+        hash = 59 * hash + (this.key != null ? this.key.hashCode() : 0);
         return hash;
     }
 
@@ -60,7 +46,7 @@ public class SimpleParameterKey implements ParameterKey<String>, Cloneable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final SimpleParameterKey other = (SimpleParameterKey) obj;
+        final SimpleActionStreamKey other = (SimpleActionStreamKey) obj;
         if ((this.key == null) ? (other.key != null) : !this.key.equals(other.key)) {
             return false;
         }
@@ -68,7 +54,17 @@ public class SimpleParameterKey implements ParameterKey<String>, Cloneable {
     }
 
     @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+
+    @Override
     public String toString() {
-        return key;
+        return super.toString();
+    }
+
+    @Override
+    public boolean load(String key) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

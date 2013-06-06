@@ -6,7 +6,7 @@ package com.ca.automation.golem.interfaces;
 
 import com.ca.automation.golem.common.iterators.ResetableIterator;
 import com.ca.automation.golem.interfaces.spools.AbstractSpool;
-import com.ca.automation.golem.interfaces.spools.ParameterKey;
+import com.ca.automation.golem.interfaces.spools.keys.ParameterKey;
 import java.util.List;
 
 /**
@@ -17,9 +17,9 @@ public interface ActionStream<A, V> extends Cloneable {
 
     public List<A> getActionList();
 
-    public void setParameter(AbstractSpool<A,ParameterKey,V> actionParams);
+    public void setParameter(AbstractSpool<A,ParameterKey<?>,V> actionParams);
 
-    public AbstractSpool<A,ParameterKey,V> getParameterMap();
+    public AbstractSpool<A,ParameterKey<?>,V> getParameterMap();
 
     public ResetableIterator<A> resetableIterator();
 

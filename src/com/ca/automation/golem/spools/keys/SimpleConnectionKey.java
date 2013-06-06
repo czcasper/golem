@@ -2,13 +2,13 @@
  */
 package com.ca.automation.golem.spools.keys;
 
-import com.ca.automation.golem.interfaces.spools.ConnectionKey;
+import com.ca.automation.golem.interfaces.spools.keys.ConnectionKey;
 
 /**
  *
  * @author maslu02
  */
-public class SimpleConnectionKey implements ConnectionKey {
+public class SimpleConnectionKey implements ConnectionKey<String>, Cloneable {
 
     protected String key;
 
@@ -17,8 +17,23 @@ public class SimpleConnectionKey implements ConnectionKey {
     }
 
     @Override
+    public boolean set(String key) {
+        boolean retValue = false;
+        if ((key != null) && (!key.isEmpty())) {
+            this.key = key;
+            retValue = true;
+        }
+        return retValue;
+    }
+
+    @Override
+    public String get() {
+        return key;
+    }
+
+    @Override
     public boolean load(String key) {
-        if(key==null){
+        if (key == null) {
             return false;
         }
         this.key = key;
@@ -56,6 +71,4 @@ public class SimpleConnectionKey implements ConnectionKey {
     public String toString() {
         return key;
     }
-    
-    
 }

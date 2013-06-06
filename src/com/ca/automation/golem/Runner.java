@@ -20,17 +20,23 @@ import com.ca.automation.golem.context.actionInterfaces.managers.RunDelayInterva
 import com.ca.automation.golem.context.actionInterfaces.spools.ParameterSpool;
 import com.ca.automation.golem.interfaces.ActionStream;
 import com.ca.automation.golem.interfaces.connections.Connection;
-import com.ca.automation.golem.interfaces.spools.ParameterKey;
+import com.ca.automation.golem.interfaces.context.ActionInfoProxy;
+import com.ca.automation.golem.interfaces.spools.keys.ParameterKey;
 import com.ca.automation.golem.interfaces.context.managers.RunCondManager;
 import com.ca.automation.golem.interfaces.context.managers.RunContextManagers;
 import com.ca.automation.golem.interfaces.spools.AbstractSpool;
-import com.ca.automation.golem.interfaces.spools.ConnectionKey;
+import com.ca.automation.golem.interfaces.spools.ActionInformationSpool;
+import com.ca.automation.golem.interfaces.spools.keys.ConnectionKey;
 import com.ca.automation.golem.spools.ParameterSpoolImpl;
-import com.ca.automation.golem.spools.actions.ActionInformationSpool;
+import com.ca.automation.golem.spools.ActionInformationSpoolImpl;
+import com.ca.automation.golem.spools.enums.ActionFieldProxyType;
+import com.ca.automation.golem.spools.enums.ActionMethodProxyType;
 import com.ca.automation.golem.toRefactor.RunnerConnectionFactoryImpl;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -48,7 +54,7 @@ import javax.ejb.Stateless;
 public class Runner {
 
     @EJB
-    protected ActionInformationSpool actionData;
+    protected ActionInformationSpool<Object> actionData;
     protected AbstractSpool<Object, ConnectionKey, Connection> connSpool;
     protected RunContextImpl<Object, Boolean, Object> run;
 
@@ -60,7 +66,7 @@ public class Runner {
     public static Runner createNew() {
         @SuppressWarnings("UseInjectionInsteadOfInstantion")
         Runner retValue = new Runner();
-        retValue.actionData = ActionInformationSpool.getDefaultInstance();
+        retValue.actionData = ActionInformationSpoolImpl.getGlobal();
         retValue.run = new RunContextImpl<Object, Boolean, Object>();
         return retValue;
     }
@@ -68,7 +74,7 @@ public class Runner {
     public boolean run(ActionStream<Object, Object> actions) {
         boolean retValue = true;
         run.setActionStream(actions);
-        AbstractSpool<Object, ParameterKey, Object> runParameterMap = actions.getParameterMap();
+        AbstractSpool<Object, ParameterKey<?>, Object> runParameterMap = actions.getParameterMap();
         for (Object o : run) {
             boolean runAction = runAction(o, runParameterMap);
             if (!run.validateResult(runAction, true)) {
@@ -84,17 +90,18 @@ public class Runner {
         return run;
     }
 
-    protected boolean runAction(Object leaf, AbstractSpool<Object, ParameterKey, Object> runParameterMap) {
+    protected boolean runAction(Object leaf, AbstractSpool<Object, ParameterKey<?>, Object> runParameterMap) {
         boolean retValue = false;
-        if (actionData.isAction(leaf)) {
-            injectParameters(leaf, runParameterMap);
+        if (actionData.isValidAction(leaf)) {
+            ActionInfoProxy proxy = actionData.get(leaf);
+            injectParameters(leaf, proxy, runParameterMap);
 
-            injectContexts(leaf, runParameterMap);
+            injectContexts(leaf,proxy, runParameterMap);
 
-            injectConnections(leaf, runParameterMap);
+            injectConnections(leaf,proxy, runParameterMap);
 
             if (executeAction(leaf)) {
-                retrieveRetValues(leaf, runParameterMap);
+                retrieveRetValues(leaf,proxy, runParameterMap);
                 retValue = true;
             }
         }
@@ -103,35 +110,47 @@ public class Runner {
     }
 
     protected boolean executeAction(Object action) {
-        boolean retValue = false;
-
-        if ((executeActionMethodsGroup(actionData.getInits(action), action))
-                && (executeActionMethodsGroup(actionData.getRuns(action), action))
-                && (executeActionMethodsGroup(actionData.getValidates(action), action))) {
-            retValue = true;
+        boolean retValue = true;
+        ActionInfoProxy tmp = actionData.get(action);
+        for(ActionMethodProxyType type : ActionMethodProxyType.getCallOrder()){
+            if(!executeActionMethodsGroup(tmp.getMethod(type), action)){
+                retValue = false;
+                break;
+            }
         }
         return retValue;
     }
 
-    protected boolean executeActionMethodsGroup(List<Method> actionMethods, Object action) {
+    protected boolean executeActionMethodsGroup(Collection<Method> actionMethods, Object action) {
         boolean retValue = true;
         if ((actionMethods != null) && (!actionMethods.isEmpty())) {
+            Map<Class<?>, ActionMethodProxyType> tmp = ActionMethodProxyType.getAnnotationMap();
             for (Method m : actionMethods) {
                 try {
                     Object invoke = m.invoke(action);
                     if ((invoke != null) && (invoke instanceof Boolean)) {
-                        Boolean method;
-                        if (m.isAnnotationPresent(Init.class)) {
-                            Init init = m.getAnnotation(Init.class);
-                            method = init.isCritical();
-                        } else if (m.isAnnotationPresent(Run.class)) {
-                            Run criticalFlag = m.getAnnotation(Run.class);
-                            method = criticalFlag.isCritical();
-                        } else {
-                            Validate valid = m.getAnnotation(Validate.class);
-                            method = valid.isCritical();
+                        ActionMethodProxyType methodType= null;
+                        for(Annotation a : m.getAnnotations()){
+                            if(tmp.containsKey(a.getClass())){
+                                methodType = tmp.get(a.getClass());
+                                break;
+                            }
                         }
-
+                        Boolean method=null;
+                        if(methodType!=null){
+                            switch(methodType){
+                                case Initialize :
+                                    method = m.getAnnotation(Init.class).isCritical();
+                                    break;
+                                case Run :
+                                    method = m.getAnnotation(Run.class).isCritical();
+                                    break;
+                                case Validate:
+                                    method = m.getAnnotation(Validate.class).isCritical();
+                                    break;
+                            }
+                        }
+                        
                         if (method != null && method) {
                             if (run.validateResult((Boolean) invoke, false)) {
                                 retValue = false;
@@ -153,8 +172,8 @@ public class Runner {
         return retValue;
     }
 
-    protected void retrieveRetValues(Object action, AbstractSpool<Object, ParameterKey, Object> parmMap) {
-        List<Field> retValues = actionData.getRetValues(action);
+    protected void retrieveRetValues(Object action, ActionInfoProxy proxy,AbstractSpool<Object, ParameterKey<?>, Object> parmMap) {
+        List<Field> retValues = proxy.getField(ActionFieldProxyType.ReturnValues);
         if (retValues != null && !retValues.isEmpty()) {
             if (parmMap == null) {
                 parmMap = new ParameterSpoolImpl<Object, Object>();
@@ -163,6 +182,7 @@ public class Runner {
             for (Field f : retValues) {
                 try {
                     Object value = f.get(action);
+                    
                     parmMap.put(action, f, parmMap, value);
                 } catch (IllegalArgumentException ex) {
                     Logger.getLogger(Runner.class.getName()).log(Level.SEVERE, null, ex);
@@ -173,8 +193,8 @@ public class Runner {
         }
     }
 
-    protected void injectConnections(Object action, AbstractSpool<Object, ParameterKey, Object> parmMap) {
-        List<Field> connections = actionData.getConnections(action);
+    protected void injectConnections(Object action, ActionInfoProxy proxy,AbstractSpool<Object, ParameterKey<?>, Object> parmMap) {
+        List<Field> connections = proxy.getField(ActionFieldProxyType.Connections);
         if ((connections != null) && (!connections.isEmpty())) {
             for (Field f : connections) {
                 Connection connection = connSpool.get(action, f, parmMap);
@@ -196,8 +216,8 @@ public class Runner {
         }
     }
 
-    protected void injectParameters(Object action, AbstractSpool<Object, ParameterKey, Object> parmMap) {
-        List<Field> fields = actionData.getFields(action);
+    protected void injectParameters(Object action, ActionInfoProxy proxy, AbstractSpool<Object, ParameterKey<?>, Object> parmMap) {
+        Collection<Field> fields = proxy.getField(ActionFieldProxyType.Parameters);
         if ((fields != null) && (!fields.isEmpty()) && (parmMap != null) && (!parmMap.isEmpty())) {
             for (Field f : fields) {
                 try {
@@ -215,8 +235,8 @@ public class Runner {
 
     }
 
-    protected void injectContexts(Object action, Map<ParameterKey, Object> parmMap) {
-        List<Field> contexts = actionData.getContexts(action);
+    protected void injectContexts(Object action, ActionInfoProxy proxy, Map<ParameterKey<?>, Object> parmMap) {
+        List<Field> contexts = proxy.getField(ActionFieldProxyType.Contexts);
         if ((contexts != null) && (!contexts.isEmpty())) {
             for (Field f : contexts) {
                 Class<?> type = f.getType();
