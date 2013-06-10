@@ -6,7 +6,7 @@ import com.ca.automation.golem.common.AddressArrayList;
 import com.ca.automation.golem.common.iterators.ResetableIterator;
 import com.ca.automation.golem.context.RunContextImpl;
 import com.ca.automation.golem.context.RunCycleImpl;
-import com.ca.automation.golem.context.SimpleActionStream;
+import com.ca.automation.golem.spools.actions.SimpleActionStream;
 import com.ca.automation.golem.interfaces.context.RunCycle;
 import com.ca.automation.golem.interfaces.context.managers.RunCycleManager;
 import java.util.Iterator;
@@ -24,7 +24,7 @@ import org.junit.Test;
 public class RunCycleManagerImplTest {
 
     private AddressArrayList<Object> steps;
-    private RunContextImpl initializedRun;
+    private RunContextImpl<Object, Boolean, Object> initializedRun;
 
     public RunCycleManagerImplTest() {
         steps = new AddressArrayList<Object>();
@@ -43,7 +43,7 @@ public class RunCycleManagerImplTest {
 
     @Before
     public void setUp() {
-        initializedRun = new RunContextImpl();
+        initializedRun = new RunContextImpl<Object, Boolean, Object>();
         initializedRun.setActionStream(new SimpleActionStream(steps));
         initializedRun.setCycleManager(new RunCycleManagerImpl(initializedRun));
     }
@@ -58,10 +58,10 @@ public class RunCycleManagerImplTest {
      */
     @Test
     public void testHasNext() {
-        RunCycleManager instance = new RunCycleManagerImpl(null);
+        RunCycleManager<Object,Object> instance = new RunCycleManagerImpl<Object, Boolean, Object>(null);
         assertFalse(instance.hasNext());
 
-        instance = new RunCycleManagerImpl(initializedRun);
+        instance = new RunCycleManagerImpl<Object, Boolean, Object>(initializedRun);
         assertFalse(instance.hasNext());
         long repeatCount = 2;
         boolean setup = instance.setup(steps.get(0), repeatCount, steps.size() - 1);
@@ -254,7 +254,7 @@ public class RunCycleManagerImplTest {
         Object action = null;
         long repeatCount = 0L;
         int actionCount = 0;
-        RunCycleManagerImpl instance = new RunCycleManagerImpl(null);
+        RunCycleManagerImpl<Object, Boolean, Object> instance = new RunCycleManagerImpl<Object, Boolean, Object>(null);
         boolean result = instance.setup(action, repeatCount, actionCount);
         assertFalse(result);
 
@@ -295,7 +295,7 @@ public class RunCycleManagerImplTest {
      */
     @Test
     public void testGetCurrentCycle() {
-        RunCycleManagerImpl instance = new RunCycleManagerImpl(null);
+        RunCycleManagerImpl<Object, Boolean, Object> instance = new RunCycleManagerImpl<Object, Boolean, Object>(null);
         RunCycle result = instance.getCurrent();
         assertNull(result);
 

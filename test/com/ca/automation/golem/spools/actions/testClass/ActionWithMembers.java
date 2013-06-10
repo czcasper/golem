@@ -6,6 +6,7 @@ import com.ca.automation.golem.annotations.RunAction;
 import com.ca.automation.golem.annotations.fields.RunParameter;
 import com.ca.automation.golem.annotations.methods.Init;
 import com.ca.automation.golem.annotations.methods.Run;
+import com.ca.automation.golem.annotations.methods.Validate;
 
 /**
  *
@@ -33,6 +34,11 @@ public class ActionWithMembers {
             print = print.toUpperCase();
         }
         System.out.print(print);
+    }
+    
+    @Validate
+    public boolean valid(){
+        return (text!=null);
     }
 
     public String getText() {

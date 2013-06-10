@@ -4,7 +4,7 @@ package com.ca.automation.golem.context.managers;
 
 import com.ca.automation.golem.common.AddressArrayList;
 import com.ca.automation.golem.context.RunContextImpl;
-import com.ca.automation.golem.context.SimpleActionStream;
+import com.ca.automation.golem.spools.actions.SimpleActionStream;
 import com.ca.automation.golem.interfaces.context.managers.RunDelayIntervalManager;
 import org.junit.After;
 import org.junit.AfterClass;
