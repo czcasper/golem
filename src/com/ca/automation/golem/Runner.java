@@ -96,12 +96,12 @@ public class Runner {
             ActionInfoProxy proxy = actionData.get(leaf);
             injectParameters(leaf, proxy, runParameterMap);
 
-            injectContexts(leaf,proxy, runParameterMap);
+            injectContexts(leaf, proxy, runParameterMap);
 
-            injectConnections(leaf,proxy, runParameterMap);
+            injectConnections(leaf, proxy, runParameterMap);
 
             if (executeAction(leaf)) {
-                retrieveRetValues(leaf,proxy, runParameterMap);
+                retrieveRetValues(leaf, proxy, runParameterMap);
                 retValue = true;
             }
         }
@@ -112,8 +112,8 @@ public class Runner {
     protected boolean executeAction(Object action) {
         boolean retValue = true;
         ActionInfoProxy tmp = actionData.get(action);
-        for(ActionMethodProxyType type : ActionMethodProxyType.getCallOrder()){
-            if(!executeActionMethodsGroup(tmp.getMethod(type), action)){
+        for (ActionMethodProxyType type : ActionMethodProxyType.values()) {
+            if (!executeActionMethodsGroup(type,tmp.getMethod(type), action)) {
                 retValue = false;
                 break;
             }
@@ -121,37 +121,16 @@ public class Runner {
         return retValue;
     }
 
-    protected boolean executeActionMethodsGroup(Collection<Method> actionMethods, Object action) {
+    protected boolean executeActionMethodsGroup(ActionMethodProxyType type, Collection<Method> actionMethods, Object action) {
         boolean retValue = true;
         if ((actionMethods != null) && (!actionMethods.isEmpty())) {
-            Map<Class<?>, ActionMethodProxyType> tmp = ActionMethodProxyType.getAnnotationMap();
             for (Method m : actionMethods) {
                 try {
                     Object invoke = m.invoke(action);
                     if ((invoke != null) && (invoke instanceof Boolean)) {
-                        ActionMethodProxyType methodType= null;
-                        for(Annotation a : m.getAnnotations()){
-                            if(tmp.containsKey(a.getClass())){
-                                methodType = tmp.get(a.getClass());
-                                break;
-                            }
-                        }
-                        Boolean method=null;
-                        if(methodType!=null){
-                            switch(methodType){
-                                case Initialize :
-                                    method = m.getAnnotation(Init.class).isCritical();
-                                    break;
-                                case Run :
-                                    method = m.getAnnotation(Run.class).isCritical();
-                                    break;
-                                case Validate:
-                                    method = m.getAnnotation(Validate.class).isCritical();
-                                    break;
-                            }
-                        }
-                        
-                        if (method != null && method) {
+                        Annotation annotation = m.getAnnotation(type.getAnnotation());
+                        boolean critical = type.isCritical(annotation);
+                        if (critical) {
                             if (run.validateResult((Boolean) invoke, false)) {
                                 retValue = false;
                                 break;
@@ -172,7 +151,7 @@ public class Runner {
         return retValue;
     }
 
-    protected void retrieveRetValues(Object action, ActionInfoProxy proxy,AbstractSpool<Object, ParameterKey<?>, Object> parmMap) {
+    protected void retrieveRetValues(Object action, ActionInfoProxy proxy, AbstractSpool<Object, ParameterKey<?>, Object> parmMap) {
         List<Field> retValues = proxy.getField(ActionFieldProxyType.ReturnValues);
         if (retValues != null && !retValues.isEmpty()) {
             if (parmMap == null) {
@@ -182,7 +161,7 @@ public class Runner {
             for (Field f : retValues) {
                 try {
                     Object value = f.get(action);
-                    
+
                     parmMap.put(action, f, parmMap, value);
                 } catch (IllegalArgumentException ex) {
                     Logger.getLogger(Runner.class.getName()).log(Level.SEVERE, null, ex);
@@ -193,7 +172,7 @@ public class Runner {
         }
     }
 
-    protected void injectConnections(Object action, ActionInfoProxy proxy,AbstractSpool<Object, ParameterKey<?>, Object> parmMap) {
+    protected void injectConnections(Object action, ActionInfoProxy proxy, AbstractSpool<Object, ParameterKey<?>, Object> parmMap) {
         List<Field> connections = proxy.getField(ActionFieldProxyType.Connections);
         if ((connections != null) && (!connections.isEmpty())) {
             for (Field f : connections) {

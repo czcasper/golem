@@ -32,12 +32,22 @@ public interface ActionInfoProxy {
     public Field getField(String name);
 
     public SortedSet<Method> getMethod(ActionMethodProxyType type);
-    
-    public Map<ActionFieldProxyType,List<Field>> getFields();
-    
-    public Map<ActionMethodProxyType,SortedSet<Method>> getMethods();
-    
-    public Map<String,Field> getFieldNames();
-    
+
+    public Map<ActionFieldProxyType, List<Field>> getFields();
+
+    public Map<ActionMethodProxyType, SortedSet<Method>> getMethods();
+
+    public Map<String, Field> getFieldNames();
+
     public <A> boolean loadAction(Class<?> action, AbstractSpool<A, ActionInfoKey<Class<?>>, ActionInfoProxy> loaded);
+
+    public boolean isEmpty();
+
+    public void clear();
+
+    @Override
+    public int hashCode();
+
+    @Override
+    public boolean equals(Object obj);
 }

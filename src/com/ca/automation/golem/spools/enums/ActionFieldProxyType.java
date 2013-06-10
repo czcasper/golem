@@ -18,19 +18,37 @@ import java.util.Map;
 public enum ActionFieldProxyType {
 
     Parameters, Connections, ReturnValues, Contexts;
-    
-    protected static Map<Class<?>,ActionFieldProxyType> annotationMap;
-    
-    static{
-        annotationMap = new HashMap<Class<?>, ActionFieldProxyType>();
-        annotationMap.put(RunContext.class, Contexts);
-        annotationMap.put(RunParameter.class, Parameters);
-        annotationMap.put(RunConnection.class, Connections);
+ 
+    public static ActionFieldProxyType getType(Class<? extends Annotation> annotation){
+        ActionFieldProxyType retValue = null;
+        if(annotation!=null){
+            if(RunParameter.class.equals(annotation)){
+                retValue = Parameters;
+            }else if(RunConnection.class.equals(annotation)){
+                retValue = Connections;
+            }else if (RunContext.class.equals(annotation)){
+                retValue = Contexts;
+            }
+        }
+        return retValue;
     }
-
-    public static Map<Class<?>, ActionFieldProxyType> getAnnotationMap() {
-        return annotationMap;
+    
+    public Class<? extends Annotation> getAnnotation() {
+        Class<? extends Annotation> retValue = null;
+        switch (this) {
+            case Parameters:
+                retValue = RunParameter.class;
+                break;
+            case Connections:
+                retValue = RunConnection.class;
+                break;
+            case Contexts:
+                retValue = RunContext.class;
+                break;
+            case ReturnValues:
+                retValue = null;
+                break;
+        }
+        return retValue;
     }
-    
-    
 }

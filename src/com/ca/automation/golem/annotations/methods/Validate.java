@@ -29,5 +29,5 @@ public @interface Validate {
      *
      * @return
      */
-    int order() default Integer.MIN_VALUE;
+    int order() default 0;
 }

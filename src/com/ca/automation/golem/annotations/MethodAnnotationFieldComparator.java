@@ -61,11 +61,15 @@ public class MethodAnnotationFieldComparator<A extends Annotation> implements Co
             } catch (InvocationTargetException ex) {
                 Logger.getLogger(MethodAnnotationFieldComparator.class.getName()).log(Level.SEVERE, null, ex);
             }
+            if(retValue==0){
+                retValue = o1.getName().compareTo(o2.getName());
+            }
         } else if (o1.isAnnotationPresent(annotationClass)) {
             retValue = -1;
         } else if (o2.isAnnotationPresent(annotationClass)) {
             retValue = 1;
         }
+        
         return retValue;
     }
 

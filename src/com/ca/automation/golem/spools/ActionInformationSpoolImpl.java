@@ -34,9 +34,10 @@ public class ActionInformationSpoolImpl<A> extends AbstractSpoolImpl<A, ActionIn
         global = new ActionInformationSpoolImpl<Object>();
     }
 
-    public static ActionInformationSpool<Object> getGlobal(){
+    public static ActionInformationSpool<Object> getGlobal() {
         return (ActionInformationSpool<Object>) global;
     }
+
     @Override
     protected ActionInfoKey createKey(String key) {
         try {
@@ -82,7 +83,6 @@ public class ActionInformationSpoolImpl<A> extends AbstractSpoolImpl<A, ActionIn
         return retValue;
     }
 
-    
     @Override
     public boolean isValidAction(Class<?> action) {
         boolean retValue = false;
@@ -104,7 +104,12 @@ public class ActionInformationSpoolImpl<A> extends AbstractSpoolImpl<A, ActionIn
 
     @Override
     public boolean containsKey(Object key) {
-        return isValidAction(key);
+        if (key instanceof Class) {
+            searchProxy.set((Class<?>) key);
+        } else {
+            searchProxy.set(key.getClass());
+        }
+        return super.containsKey(searchProxy);
     }
 
     @Override
