@@ -5,6 +5,8 @@
 package com.ca.automation.golem.spools.enums;
 
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -22,10 +24,19 @@ public class ActionFieldProxyTypeTest {
      */
     @Test
     public void testGetType() {
-        Class<? extends Annotation> annotation = null;
-        ActionFieldProxyType expResult = null;
-        ActionFieldProxyType result = ActionFieldProxyType.getType(annotation);
-        assertEquals(expResult, result);
+        List<Class<? extends Annotation>> annotations = new ArrayList<Class<? extends Annotation>>();
+        for(ActionFieldProxyType t : ActionFieldProxyType.values()){
+            Class<? extends Annotation> annotation = t.getAnnotation();
+            if(annotation!=null){
+                annotations.add(annotation);
+            }
+        }
+        assertFalse(annotations.isEmpty());
+        
+        for(Class<? extends Annotation> cl : annotations){
+            assertNotNull(ActionFieldProxyType.getType(cl));
+        }
+        
     }
 
     /**
@@ -33,12 +44,13 @@ public class ActionFieldProxyTypeTest {
      */
     @Test
     public void testGetAnnotation() {
-        System.out.println("getAnnotation");
-        ActionFieldProxyType instance = null;
-        Class expResult = null;
-        Class result = instance.getAnnotation();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        List<Class<? extends Annotation>> annotations = new ArrayList<Class<? extends Annotation>>();
+        for(ActionFieldProxyType t : ActionFieldProxyType.values()){
+            Class<? extends Annotation> annotation = t.getAnnotation();
+            if(annotation!=null){
+                annotations.add(annotation);
+            }
+        }
+        assertFalse((annotations.isEmpty()));        
     }
 }
