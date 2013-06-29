@@ -6,7 +6,7 @@ package com.ca.automation.golem.spools.enums;
 
 import com.ca.automation.golem.interfaces.context.ActionInfoProxy;
 import com.ca.automation.golem.spools.actions.ActionInfoProxyImpl;
-import com.ca.automation.golem.spools.actions.testClass.ActionWithMembers;
+import com.ca.automation.testClasses.actions.dummy.valid.ActionWithMembers;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;

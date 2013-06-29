@@ -5,6 +5,11 @@
 package com.ca.automation.golem.annotations;
 
 import com.ca.automation.golem.annotations.methods.Init;
+import com.ca.automation.golem.annotations.methods.Run;
+import com.ca.automation.golem.annotations.methods.Validate;
+import com.ca.automation.testClasses.actions.dummy.ordering.ActionWithMethodsForOrderingInit;
+import com.ca.automation.testClasses.actions.dummy.ordering.ActionWithMethodsForOrderingRun;
+import com.ca.automation.testClasses.actions.dummy.ordering.ActionWithMethodsForOrderingValidate;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collections;
@@ -73,9 +78,14 @@ public class MethodAnnotationFieldComparatorTest {
 
     @Test
     public void testCompare03() throws NoSuchMethodException {
+        /**
+         * Declare variables for testing of sorting methods defined in reverse
+         * order and numers are in one numeric line. Testing comparator for
+         * method annotation Init.
+         */
         String testName = "order";
         MethodAnnotationFieldComparator instance = new MethodAnnotationFieldComparator(Init.class, testName);
-        Test01Class obj = new Test01Class();
+        ActionWithMethodsForOrderingInit obj = new ActionWithMethodsForOrderingInit();
         Method[] testMethods = obj.getClass().getDeclaredMethods();
         List<Method> tmpList = Arrays.asList(testMethods);
         Collections.sort(tmpList, instance);
@@ -85,57 +95,36 @@ public class MethodAnnotationFieldComparatorTest {
             String format = String.format("method%02d", index--);
             assertEquals(format, s);
         }
-    }
 
-    @RunAction
-    private class Test01Class {
-
-        @Init(order = 5)
-        public void method00() {
+        /**
+         * Initialize object for testing sorting of method with Run annotation declared in random order.
+         */
+        ActionWithMethodsForOrderingRun runObj = new ActionWithMethodsForOrderingRun();
+        instance = new MethodAnnotationFieldComparator(Run.class, testName);
+        testMethods = runObj.getClass().getDeclaredMethods();
+        tmpList = Arrays.asList(testMethods);
+        Collections.sort(tmpList, instance);
+        index = 0;
+        for (Method m : tmpList) {
+            String s = m.getName();
+            String format = String.format("method%02d", index++);
+            assertEquals(format, s);
         }
 
-        @Init(order = 4)
-        public void method01() {
+        /**
+         * Initialize and test sorting of method annotatted by Validate annotation and defined in sorded order.
+         */
+        ActionWithMethodsForOrderingValidate valObj = new ActionWithMethodsForOrderingValidate();
+        instance= new MethodAnnotationFieldComparator(Validate.class, testName);
+        testMethods = valObj.getClass().getDeclaredMethods();
+        tmpList = Arrays.asList(testMethods);
+        Collections.sort(tmpList, instance);
+        index = 0;
+        for (Method m : tmpList) {
+            String s = m.getName();
+            String format = String.format("method%02d", index++);
+            assertEquals(format, s);
         }
-
-        @Init(order = 3)
-        public void method02() {
-        }
-
-        @Init(order = 2)
-        public void method03() {
-        }
-
-        @Init(order = 1)
-        public void method04() {
-        }
-
-        @Init(order = 0)
-        public void method05() {
-        }
-
-        @Init(order = -1)
-        public void method06() {
-        }
-
-        @Init(order = -2)
-        public void method07() {
-        }
-
-        @Init(order = -3)
-        public void method08() {
-        }
-
-        @Init(order = -4)
-        public void method09() {
-        }
-
-        @Init(order = -5)
-        public void method10() {
-        }
-
-        @Init
-        public void method11() {
-        }
+        
     }
 }
