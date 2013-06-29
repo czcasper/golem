@@ -32,7 +32,7 @@ public class SimpleConnectionKey implements ConnectionKey<String>, Cloneable {
     }
 
     @Override
-    public boolean load(String key) {
+    public boolean fromString(String key) {
         if (key == null) {
             return false;
         }

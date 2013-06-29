@@ -4,6 +4,7 @@ package com.ca.automation.golem.spools;
 
 import com.ca.automation.golem.interfaces.ActionStream;
 import com.ca.automation.golem.interfaces.spools.AbstractSpool;
+import com.ca.automation.golem.interfaces.spools.ActionStreamSpool;
 import com.ca.automation.golem.interfaces.spools.keys.ActionStreamKey;
 import com.ca.automation.golem.spools.keys.SimpleActionStreamKey;
 import java.util.Map;
@@ -14,11 +15,10 @@ import java.util.logging.Logger;
  *
  * @author maslu02
  */
-public class ActionStreamSpoolImpl<A, V> extends AbstractSpoolImpl<A, ActionStreamKey<?>, ActionStream<A, V>> {
+public class ActionStreamSpoolImpl<A, V> extends AbstractSpoolImpl<A, ActionStreamKey<?>, ActionStream<A, V>> implements ActionStreamSpool<A, V> {
 
-    static {
-        global = new ActionStreamSpoolImpl<Object, Object>();
-    }
+    protected static ActionStreamSpool<Object,Object> global = new ActionStreamSpoolImpl<Object, Object>();
+    
 
     public ActionStreamSpoolImpl() {
         super();
@@ -40,6 +40,10 @@ public class ActionStreamSpoolImpl<A, V> extends AbstractSpoolImpl<A, ActionStre
         super(initialCapacity, loadFactor, accessOrder);
     }
 
+    public static ActionStreamSpool<Object,Object> getGlobal(){
+        return global;
+    }
+    
     @Override
     protected ActionStreamKey createKey(String key) {
         return new SimpleActionStreamKey(key);
@@ -56,7 +60,7 @@ public class ActionStreamSpoolImpl<A, V> extends AbstractSpoolImpl<A, ActionStre
     }
 
     @Override
-    public AbstractSpool<A, ActionStreamKey<?>, ActionStream<A, V>> newInstance() {
+    public ActionStreamSpool<A,V> newInstance() {
         return new ActionStreamSpoolImpl<A, V>();
     }
 

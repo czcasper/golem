@@ -4,6 +4,7 @@ package com.ca.automation.golem.spools;
 
 import com.ca.automation.golem.interfaces.connections.Connection;
 import com.ca.automation.golem.interfaces.spools.AbstractSpool;
+import com.ca.automation.golem.interfaces.spools.ConnectionSpool;
 import com.ca.automation.golem.interfaces.spools.keys.ConnectionKey;
 import com.ca.automation.golem.spools.keys.SimpleConnectionKey;
 import java.util.Map;
@@ -12,14 +13,12 @@ import java.util.Map;
  *
  * @author maslu02
  */
-public class ConnectionSpoolImpl<A> extends AbstractSpoolImpl<A, ConnectionKey<?>, Connection> {
-    
-    static{
-        global = new ConnectionSpoolImpl<Object>();
-    }
+public class ConnectionSpoolImpl<A> extends AbstractSpoolImpl<A, ConnectionKey<?>, Connection> implements ConnectionSpool<A> {
+
+    protected static ConnectionSpool<Object> global = new ConnectionSpoolImpl<Object>();
 
     public ConnectionSpoolImpl() {
-        super();        
+        super();
     }
 
     public ConnectionSpoolImpl(int initialCapacity, float loadFactor) {
@@ -37,9 +36,13 @@ public class ConnectionSpoolImpl<A> extends AbstractSpoolImpl<A, ConnectionKey<?
     public ConnectionSpoolImpl(int initialCapacity, float loadFactor, boolean accessOrder) {
         super(initialCapacity, loadFactor, accessOrder);
     }
+    
+    public static ConnectionSpool<Object> getGlobal(){
+        return global;
+    }
 
     @Override
-    public AbstractSpool<A, ConnectionKey<?>, Connection> newInstance() {
+    public ConnectionSpool<A> newInstance() {
         return new ConnectionSpoolImpl<A>();
     }
 
@@ -57,6 +60,4 @@ public class ConnectionSpoolImpl<A> extends AbstractSpoolImpl<A, ConnectionKey<?
     protected ConnectionKey initProxyKey() {
         return new SimpleConnectionKey(null);
     }
-
-
 }

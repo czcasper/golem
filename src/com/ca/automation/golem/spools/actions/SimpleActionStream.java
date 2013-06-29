@@ -5,9 +5,8 @@ package com.ca.automation.golem.spools.actions;
 import com.ca.automation.golem.common.AddressArrayList;
 import com.ca.automation.golem.common.iterators.ResetableIterator;
 import com.ca.automation.golem.interfaces.ActionStream;
-import com.ca.automation.golem.interfaces.spools.AbstractSpool;
 import com.ca.automation.golem.interfaces.spools.ActionInformationSpool;
-import com.ca.automation.golem.interfaces.spools.keys.ParameterKey;
+import com.ca.automation.golem.interfaces.spools.ParameterSpool;
 import com.ca.automation.golem.spools.ActionInformationSpoolImpl;
 import java.util.List;
 import java.util.logging.Level;
@@ -19,7 +18,7 @@ import java.util.logging.Logger;
  */
 public class SimpleActionStream<A,V> implements ActionStream<A, V> {
 
-    protected AbstractSpool<A,ParameterKey<?>,V> parmSpool;
+    protected ParameterSpool<A ,V> parmSpool;
     protected List<A> actions;
     protected ResetableIterator<A> it;
 
@@ -48,12 +47,12 @@ public class SimpleActionStream<A,V> implements ActionStream<A, V> {
     }
 
     @Override
-    public void setParameter(AbstractSpool<A,ParameterKey<?>,V> actionParams) {
+    public void setParameter(ParameterSpool<A ,V> actionParams) {
         this.parmSpool = actionParams;
     }
 
     @Override
-    public AbstractSpool<A,ParameterKey<?>,V> getParameterMap() {
+    public ParameterSpool<A ,V> getParameterMap() {
         return parmSpool;
     }
 
@@ -67,7 +66,7 @@ public class SimpleActionStream<A,V> implements ActionStream<A, V> {
         SimpleActionStream<A,V> retValue = (SimpleActionStream<A,V>) super.clone();
         retValue.it = new ResetableIterator<A>(retValue.actions.iterator());
         if (parmSpool != null) {
-            retValue.parmSpool = (AbstractSpool<A,ParameterKey<?>,V>) parmSpool.clone();
+            retValue.parmSpool =  (ParameterSpool<A, V>) parmSpool.clone();
         }
         return retValue;
     }

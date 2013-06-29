@@ -29,13 +29,29 @@ import javax.ejb.Singleton;
 public class ActionInformationSpoolImpl<A> extends AbstractSpoolImpl<A, ActionInfoKey<Class<?>>, ActionInfoProxy> implements ActionInformationSpool<A> {
 
     protected Map<ActionMethodProxyType, Comparator<Method>> methodComparator = ActionInfoProxyImpl.createNewComparators();
+    protected static ActionInformationSpool<Object> global = new ActionInformationSpoolImpl<Object>();
 
-    static {
-        global = new ActionInformationSpoolImpl<Object>();
+    public ActionInformationSpoolImpl() {
+    }
+
+    public ActionInformationSpoolImpl(int initialCapacity, float loadFactor) {
+        super(initialCapacity, loadFactor);
+    }
+
+    public ActionInformationSpoolImpl(int initialCapacity) {
+        super(initialCapacity);
+    }
+
+    public ActionInformationSpoolImpl(Map<? extends ActionInfoKey<Class<?>>, ? extends ActionInfoProxy> m) {
+        super(m);
+    }
+
+    public ActionInformationSpoolImpl(int initialCapacity, float loadFactor, boolean accessOrder) {
+        super(initialCapacity, loadFactor, accessOrder);
     }
 
     public static ActionInformationSpool<Object> getGlobal() {
-        return (ActionInformationSpool<Object>) global;
+        return global;
     }
 
     @Override
@@ -59,7 +75,7 @@ public class ActionInformationSpoolImpl<A> extends AbstractSpoolImpl<A, ActionIn
     }
 
     @Override
-    public AbstractSpool<A, ActionInfoKey<Class<?>>, ActionInfoProxy> newInstance() {
+    public ActionInformationSpool<A> newInstance() {
         return new ActionInformationSpoolImpl<A>();
     }
 
@@ -115,7 +131,7 @@ public class ActionInformationSpoolImpl<A> extends AbstractSpoolImpl<A, ActionIn
     @Override
     public ActionInfoProxy get(String key) {
         ActionInfoProxy retValue = null;
-        searchProxy.load(key);
+        searchProxy.fromString(key);
         if (isValidAction(searchProxy)) {
             retValue = super.get(searchProxy);
         }

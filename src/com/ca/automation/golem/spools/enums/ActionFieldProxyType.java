@@ -8,8 +8,7 @@ import com.ca.automation.golem.annotations.fields.RunConnection;
 import com.ca.automation.golem.annotations.fields.RunContext;
 import com.ca.automation.golem.annotations.fields.RunParameter;
 import java.lang.annotation.Annotation;
-import java.util.HashMap;
-import java.util.Map;
+import java.lang.reflect.Field;
 
 /**
  *
@@ -18,21 +17,34 @@ import java.util.Map;
 public enum ActionFieldProxyType {
 
     Parameters, Connections, ReturnValues, Contexts;
- 
-    public static ActionFieldProxyType getType(Class<? extends Annotation> annotation){
+
+    public static ActionFieldProxyType getType(Field field) {
         ActionFieldProxyType retValue = null;
-        if(annotation!=null){
-            if(RunParameter.class.equals(annotation)){
+        if (field != null) {
+            for (Annotation a : field.getDeclaredAnnotations()) {
+                retValue = getType(a.annotationType());
+                if (retValue != null) {
+                    break;
+                }
+            }
+        }
+        return retValue;
+    }
+
+    public static ActionFieldProxyType getType(Class<? extends Annotation> annotation) {
+        ActionFieldProxyType retValue = null;
+        if (annotation != null) {
+            if (RunParameter.class.equals(annotation)) {
                 retValue = Parameters;
-            }else if(RunConnection.class.equals(annotation)){
+            } else if (RunConnection.class.equals(annotation)) {
                 retValue = Connections;
-            }else if (RunContext.class.equals(annotation)){
+            } else if (RunContext.class.equals(annotation)) {
                 retValue = Contexts;
             }
         }
         return retValue;
     }
-    
+
     public Class<? extends Annotation> getAnnotation() {
         Class<? extends Annotation> retValue = null;
         switch (this) {
@@ -48,6 +60,49 @@ public enum ActionFieldProxyType {
             case ReturnValues:
                 retValue = null;
                 break;
+        }
+        return retValue;
+    }
+
+    public String getPointer(Field f) {
+        String retValue = null;
+        if (f != null) {
+            switch (this) {
+                case Parameters:
+                    if (f.isAnnotationPresent(RunParameter.class)) {
+                        retValue = f.getAnnotation(RunParameter.class).pointer();
+                    }
+                    break;
+                case Connections:
+                    if (f.isAnnotationPresent(RunConnection.class)) {
+                        retValue = f.getAnnotation(RunConnection.class).pointer();
+                    }
+                    break;
+                case Contexts:
+                    if (f.isAnnotationPresent(RunContext.class)) {
+                        retValue = f.getAnnotation(RunContext.class).pointer();
+                    }
+                    break;
+            }
+        }
+        return retValue;
+    }
+
+    public String getName(Field f) {
+        String retValue = null;
+        if (f != null) {
+            switch (this) {
+                case Connections:
+                    if (f.isAnnotationPresent(RunConnection.class)) {
+                        retValue = f.getAnnotation(RunConnection.class).name();
+                    }
+                    break;
+                case Parameters:
+                    if (f.isAnnotationPresent(RunParameter.class)) {
+                        retValue = f.getAnnotation(RunParameter.class).name();
+                    }
+                    break;
+            }
         }
         return retValue;
     }

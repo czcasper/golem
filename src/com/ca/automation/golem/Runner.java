@@ -2,9 +2,6 @@
  */
 package com.ca.automation.golem;
 
-import com.ca.automation.golem.annotations.methods.Init;
-import com.ca.automation.golem.annotations.methods.Run;
-import com.ca.automation.golem.annotations.methods.Validate;
 import com.ca.automation.golem.context.RunContextImpl;
 import com.ca.automation.golem.context.actionInterfaces.RunConditionContext;
 import com.ca.automation.golem.context.actionInterfaces.RunConditionsListContext;
@@ -17,7 +14,7 @@ import com.ca.automation.golem.context.actionInterfaces.managers.RunActionStackM
 import com.ca.automation.golem.context.actionInterfaces.managers.RunCondManagerContext;
 import com.ca.automation.golem.context.actionInterfaces.managers.RunCycleManagerContext;
 import com.ca.automation.golem.context.actionInterfaces.managers.RunDelayIntervalManagerContext;
-import com.ca.automation.golem.context.actionInterfaces.spools.ParameterSpool;
+import com.ca.automation.golem.context.actionInterfaces.spools.ParameterSpoolContext;
 import com.ca.automation.golem.interfaces.ActionStream;
 import com.ca.automation.golem.interfaces.connections.Connection;
 import com.ca.automation.golem.interfaces.context.ActionInfoProxy;
@@ -26,6 +23,7 @@ import com.ca.automation.golem.interfaces.context.managers.RunCondManager;
 import com.ca.automation.golem.interfaces.context.managers.RunContextManagers;
 import com.ca.automation.golem.interfaces.spools.AbstractSpool;
 import com.ca.automation.golem.interfaces.spools.ActionInformationSpool;
+import com.ca.automation.golem.interfaces.spools.ParameterSpool;
 import com.ca.automation.golem.interfaces.spools.keys.ConnectionKey;
 import com.ca.automation.golem.spools.ParameterSpoolImpl;
 import com.ca.automation.golem.spools.ActionInformationSpoolImpl;
@@ -74,7 +72,7 @@ public class Runner {
     public boolean run(ActionStream<Object, Object> actions) {
         boolean retValue = true;
         run.setActionStream(actions);
-        AbstractSpool<Object, ParameterKey<?>, Object> runParameterMap = actions.getParameterMap();
+        ParameterSpool<Object,Object> runParameterMap = actions.getParameterMap();
         for (Object o : run) {
             boolean runAction = runAction(o, runParameterMap);
             if (!run.validateResult(runAction, true)) {
@@ -90,7 +88,7 @@ public class Runner {
         return run;
     }
 
-    protected boolean runAction(Object leaf, AbstractSpool<Object, ParameterKey<?>, Object> runParameterMap) {
+    protected boolean runAction(Object leaf, ParameterSpool<Object,Object> runParameterMap) {
         boolean retValue = false;
         if (actionData.isValidAction(leaf)) {
             ActionInfoProxy proxy = actionData.get(leaf);
@@ -151,7 +149,7 @@ public class Runner {
         return retValue;
     }
 
-    protected void retrieveRetValues(Object action, ActionInfoProxy proxy, AbstractSpool<Object, ParameterKey<?>, Object> parmMap) {
+    protected void retrieveRetValues(Object action, ActionInfoProxy proxy, ParameterSpool<Object,Object> parmMap) {
         List<Field> retValues = proxy.getField(ActionFieldProxyType.ReturnValues);
         if (retValues != null && !retValues.isEmpty()) {
             if (parmMap == null) {
@@ -160,9 +158,7 @@ public class Runner {
 
             for (Field f : retValues) {
                 try {
-                    Object value = f.get(action);
-
-                    parmMap.put(action, f, parmMap, value);
+                    parmMap.put(action, f, parmMap);
                 } catch (IllegalArgumentException ex) {
                     Logger.getLogger(Runner.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (IllegalAccessException ex) {
@@ -172,30 +168,36 @@ public class Runner {
         }
     }
 
-    protected void injectConnections(Object action, ActionInfoProxy proxy, AbstractSpool<Object, ParameterKey<?>, Object> parmMap) {
+    protected void injectConnections(Object action, ActionInfoProxy proxy, ParameterSpool<Object,Object> parmMap) {
         List<Field> connections = proxy.getField(ActionFieldProxyType.Connections);
         if ((connections != null) && (!connections.isEmpty())) {
             for (Field f : connections) {
-                Connection connection = connSpool.get(action, f, parmMap);
-                if (connection != null) {
-                    Class<?> type = f.getType();
-                    if (type.isAssignableFrom(connection.getClass())) {
-                        try {
-                            f.set(action, connection);
-                        } catch (IllegalArgumentException ex) {
-                            Logger.getLogger(Runner.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (IllegalAccessException ex) {
-                            Logger.getLogger(Runner.class.getName()).log(Level.SEVERE, null, ex);
+                try {
+                    Connection connection = connSpool.get(action, f, parmMap);
+                    if (connection != null) {
+                        Class<?> type = f.getType();
+                        if (type.isAssignableFrom(connection.getClass())) {
+                            try {
+                                f.set(action, connection);
+                            } catch (IllegalArgumentException ex) {
+                                Logger.getLogger(Runner.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (IllegalAccessException ex) {
+                                Logger.getLogger(Runner.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        } else {
+                            Logger.getLogger(Runner.class.getName()).log(Level.FINE, "Field:{0} in action:{1} request type:{2} which is not compatible with type of stored connection:{3}", new Object[]{f.getName(), action.getClass().getName(), type.getName(), connection.getClass().getName()});
                         }
-                    } else {
-                        Logger.getLogger(Runner.class.getName()).log(Level.FINE, "Field:{0} in action:{1} request type:{2} which is not compatible with type of stored connection:{3}", new Object[]{f.getName(), action.getClass().getName(), type.getName(), connection.getClass().getName()});
                     }
+                } catch (IllegalArgumentException ex) {
+                    Logger.getLogger(Runner.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IllegalAccessException ex) {
+                    Logger.getLogger(Runner.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
     }
 
-    protected void injectParameters(Object action, ActionInfoProxy proxy, AbstractSpool<Object, ParameterKey<?>, Object> parmMap) {
+    protected void injectParameters(Object action, ActionInfoProxy proxy, ParameterSpool<Object,Object> parmMap) {
         Collection<Field> fields = proxy.getField(ActionFieldProxyType.Parameters);
         if ((fields != null) && (!fields.isEmpty()) && (parmMap != null) && (!parmMap.isEmpty())) {
             for (Field f : fields) {
@@ -229,7 +231,7 @@ public class Runner {
                         RunCondManager<Object, Boolean, Object> man = run.getInitializedConditionManager();
                         f.set(action, man.getActive());
 
-                    } else if (type.isAssignableFrom(ParameterSpool.class)) {
+                    } else if (type.isAssignableFrom(ParameterSpoolContext.class)) {
                         f.set(action, parmMap);
                     } else if (type.isAssignableFrom(RunConnectionFactory.class)) {
                         f.set(action, RunnerConnectionFactoryImpl.createNewFactory());

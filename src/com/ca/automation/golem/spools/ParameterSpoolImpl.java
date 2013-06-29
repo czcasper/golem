@@ -4,7 +4,7 @@
  */
 package com.ca.automation.golem.spools;
 
-import com.ca.automation.golem.interfaces.spools.AbstractSpool;
+import com.ca.automation.golem.interfaces.spools.ParameterSpool;
 import com.ca.automation.golem.interfaces.spools.keys.ParameterKey;
 import com.ca.automation.golem.spools.keys.SimpleParameterKey;
 import java.util.Map;
@@ -13,11 +13,9 @@ import java.util.Map;
  *
  * @author maslu02
  */
-public class ParameterSpoolImpl<A, V> extends AbstractSpoolImpl<A, ParameterKey<?>, V> {
+public class ParameterSpoolImpl<A, V> extends AbstractSpoolImpl<A, ParameterKey<?>, V> implements ParameterSpool<A, V> {
 
-    static {
-        global = new ParameterSpoolImpl<Object, Object>();
-    }
+    protected static ParameterSpool<Object, Object> global = new ParameterSpoolImpl<Object, Object>();
 
     public ParameterSpoolImpl() {
         super();
@@ -39,8 +37,12 @@ public class ParameterSpoolImpl<A, V> extends AbstractSpoolImpl<A, ParameterKey<
         super(initialCapacity, loadFactor, accessOrder);
     }
 
+    public static ParameterSpool<Object, Object> getGlobal() {
+        return global;
+    }
+
     @Override
-    public AbstractSpool<A, ParameterKey<?>, V> newInstance() {
+    public ParameterSpool<A, V> newInstance() {
         return new ParameterSpoolImpl<A, V>();
     }
 

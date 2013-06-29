@@ -64,7 +64,7 @@ public class SimpleActionStreamKey implements ActionStreamKey<String>, Cloneable
     }
 
     @Override
-    public boolean load(String key) {
+    public boolean fromString(String key) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

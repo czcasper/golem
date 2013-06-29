@@ -914,7 +914,7 @@ public class ActionInfoProxyImplTest {
         assertNull(put);
 
         /**
-         * Create new instance and load without using spool cache into test
+         * Create new instance and fromString without using spool cache into test
          * instance.
          */
         instance = new ActionInfoProxyImpl(comparators);

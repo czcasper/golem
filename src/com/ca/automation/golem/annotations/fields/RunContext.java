@@ -16,5 +16,14 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RunContext {
-    
+
+    /**
+     * Pointer to value which identify value in spool. Value in parameter map
+     * must be type of string or object which implements
+     *
+     * @class ConnectionKey interface.
+     *
+     * @return empty string if not defined, otherwise string which represent key
+     */
+    String pointer() default "";
 }

@@ -2,14 +2,17 @@
  */
 package com.ca.automation.golem.spools;
 
-import com.ca.automation.golem.annotations.fields.RunConnection;
 import com.ca.automation.golem.interfaces.spools.AbstractSpool;
+import com.ca.automation.golem.interfaces.spools.ParameterSpool;
 import com.ca.automation.golem.interfaces.spools.keys.AbstractSpoolKey;
-import com.ca.automation.golem.interfaces.spools.keys.ParameterKey;
+import com.ca.automation.golem.spools.enums.ActionFieldProxyType;
 import com.ca.automation.golem.spools.keys.SimpleParameterKey;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,7 +22,6 @@ import java.util.logging.Logger;
  */
 public abstract class AbstractSpoolImpl<A, K extends AbstractSpoolKey<?>, V> extends LinkedHashMap<K, V> implements AbstractSpool<A, K, V>, Cloneable {
 
-    protected static AbstractSpoolImpl global;
     protected K searchProxy = null;
 
     public AbstractSpoolImpl() {
@@ -44,20 +46,21 @@ public abstract class AbstractSpoolImpl<A, K extends AbstractSpoolKey<?>, V> ext
         initProxy();
     }
 
-    public static <A, K extends AbstractSpoolKey, V> AbstractSpool<A, K, V> getGlobal() {
-        return global;
-    }
-
     @Override
     public V put(String key, V value) {
-        return this.put(createKey(key), value);
+        V retValue = null;
+        if ((key != null) && (!key.isEmpty())) {
+            retValue = this.put(createKey(key), value);
+        }
+        return retValue;
     }
 
     @Override
-    public <P> V put(A action, Field f, AbstractSpool<A, ParameterKey<?>, P> parameters, V value) {
+    public <P> V put(A action, Field f, ParameterSpool<A, P> parameters) throws IllegalArgumentException, IllegalAccessException {
         V retValue = null;
         K tmpKey = buildKey(action, f, parameters, true);
         if (tmpKey != null) {
+            V value = (V) f.get(action);
             retValue = put(tmpKey, value);
         }
         return retValue;
@@ -65,41 +68,42 @@ public abstract class AbstractSpoolImpl<A, K extends AbstractSpoolKey<?>, V> ext
 
     @Override
     public boolean contains(String key) {
-        searchProxy.load(key);
+        searchProxy.fromString(key);
         return this.containsKey(searchProxy);
     }
 
     @Override
     public V get(String key) {
-        searchProxy.load(key);
+        searchProxy.fromString(key);
         return this.get(searchProxy);
     }
 
     @Override
-    public <P> V get(A action, Field f, AbstractSpool<A, ParameterKey<?>, P> parameters) {
+    public <P> V get(A action, Field f, ParameterSpool<A, P> parameters) throws IllegalArgumentException, IllegalAccessException {
         V retValue = null;
         K tmpKey = buildKey(action, f, parameters, false);
         if ((tmpKey != null) && (containsKey(tmpKey))) {
-            retValue = get(tmpKey);
+            retValue = (V) f.get(action);
+            f.set(action, get(tmpKey));
         }
         return retValue;
     }
 
-    protected <P> K buildKey(A action, Field f, Map<ParameterKey<?>, P> parameters, boolean createNewFlag) {
+    protected <P> K buildKey(A action, Field f, ParameterSpool<A, P> parameters, boolean createNewFlag) {
         K retValue = null;
-        if ((f != null) && (action != null)) {
-            RunConnection fieldAnnotation = f.getAnnotation(RunConnection.class);
-            if (parameters != null) {
-                String pointerKey = fieldAnnotation.pointer();
-                if (pointerKey != null && !pointerKey.isEmpty()) {
-                    SimpleParameterKey tmpKey = new SimpleParameterKey(pointerKey);
+        if ((action != null) && (f != null)) {
+            ActionFieldProxyType type = ActionFieldProxyType.getType(f);
+            if (type != null) {
+                String pointer = type.getPointer(f);
+                if ((pointer != null) && (!pointer.isEmpty())) {
+                    SimpleParameterKey tmpKey = new SimpleParameterKey(pointer);
                     if (parameters.containsKey(tmpKey)) {
                         P tmp = parameters.get(tmpKey);
                         if (tmp instanceof String) {
                             if (createNewFlag) {
                                 retValue = createKey((String) tmp);
                             } else {
-                                searchProxy.load((String) tmp);
+                                searchProxy.fromString((String) tmp);
                                 retValue = searchProxy;
                             }
 
@@ -111,23 +115,26 @@ public abstract class AbstractSpoolImpl<A, K extends AbstractSpoolKey<?>, V> ext
                             Logger.getLogger(ConnectionSpoolImpl.class.getName()).log(Level.FINEST, "Pointer is pointing to unsuported type:{0}. Connection key can be String or class with implemented ConnectionKey interface.", tmp.getClass().getName());
                         }
                     } else {
-                        Logger.getLogger(ConnectionSpoolImpl.class.getName()).log(Level.FINEST, "Non existing pointer value:{0} used in class:{1} on field:{2}", new Object[]{pointerKey, action.getClass().getName(), f.getName()});
+                        Logger.getLogger(ConnectionSpoolImpl.class.getName()).log(Level.FINEST, "Non existing pointer value:{0} used in class:{1} on field:{2}", new Object[]{pointer, action.getClass().getName(), f.getName()});
                     }
                 }
-            }
 
-            if (retValue == null) {
-                String name = fieldAnnotation.name();
-                if (name == null || name.isEmpty()) {
-                    name = action.getClass().getName() + f.getName();
+                if (retValue == null) {
+                    String name = type.getName(f);
+                    if (name != null) {
+                        if (name.isEmpty()) {
+                            name = action.getClass().getName() + "." + f.getName();
+                        }
+                        if (createNewFlag) {
+                            retValue = createKey(name);
+                        } else {
+                            searchProxy.fromString(name);
+                            retValue = searchProxy;
+                        }
+
+                    }
                 }
 
-                if (createNewFlag) {
-                    retValue = createKey(name);
-                } else {
-                    searchProxy.load(name);
-                    retValue = searchProxy;
-                }
             }
         }
         return retValue;
@@ -139,7 +146,20 @@ public abstract class AbstractSpoolImpl<A, K extends AbstractSpoolKey<?>, V> ext
 
     @Override
     public Object clone() {
-        return super.clone();
+        LinkedHashMap<K, V> retValue = (LinkedHashMap<K, V>) super.clone();
+        for (Entry<K, V> e : retValue.entrySet()) {
+            if (e.getValue() instanceof Cloneable) {
+                V cl = e.getValue();
+                try {
+                    Method clone = cl.getClass().getDeclaredMethod("clone");
+                    clone.setAccessible(true);
+                    retValue.put(e.getKey(), (V) clone.invoke(cl));
+                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException ex) {
+                    Logger.getLogger(AbstractSpoolImpl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+        return retValue;
     }
 
     protected abstract K createKey(String key);

@@ -10,7 +10,6 @@ package com.ca.automation.golem.interfaces.spools.keys;
  */
 public interface AbstractSpoolKey<T> extends Cloneable {
     
-    public boolean load(String key);
     
     public boolean set(T key);
     
@@ -27,4 +26,5 @@ public interface AbstractSpoolKey<T> extends Cloneable {
     @Override
     public String toString();
         
+    public boolean fromString(String key);
 }

@@ -38,7 +38,7 @@ public class SimpleActionInfoKey implements ActionInfoKey<Class<?>>, Cloneable {
     }
 
     @Override
-    public boolean load(String key) {
+    public boolean fromString(String key) {
         if (key == null) {
             return false;
         }
