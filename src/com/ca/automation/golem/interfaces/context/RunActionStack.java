@@ -19,7 +19,7 @@ public interface RunActionStack<T> extends CloneableIterator<T> {
      *
      * @return true if stack is correctly initialized, otherwise false.
      */
-    public boolean setupStack(T action, T... actions);
+    public boolean setupStack(T action, T[] actions);
 
     /**
      * Get action where stack is defined to start.

@@ -9,7 +9,7 @@ import java.lang.reflect.InvocationTargetException;
  *
  * @author maslu02
  */
-// TODO Documentation: Create javadoc for ClonableObject
+// TODO Documentation: Create javadoc on Class and public methods.
 public class CloneableObject<T> implements Cloneable {
 
     private T value;

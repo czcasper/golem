@@ -16,6 +16,7 @@ import java.util.logging.Logger;
  *
  * @author maslu02
  */
+// TODO Documentation: Create Javadoc on class and public method level.
 public class SimpleActionStream<A,V> implements ActionStream<A, V> {
 
     protected ParameterSpool<A ,V> parmSpool;
@@ -26,8 +27,8 @@ public class SimpleActionStream<A,V> implements ActionStream<A, V> {
         if (actions == null) {
             throw new NullPointerException("Action stream cannot be initializet by null array of actions");
         }
-        this.actions = new AddressArrayList<A>(actions.size());
-        ActionInformationSpool<A> spool = (ActionInformationSpool<A>) ActionInformationSpoolImpl.getGlobal();
+        this.actions = new AddressArrayList<>(actions.size());
+        ActionInformationSpool<Object> spool = ActionInformationSpoolImpl.getGlobal();
         for (A action : actions) {
             if (spool.isValidAction(action)) {
                 this.actions.add(action);
@@ -38,7 +39,7 @@ public class SimpleActionStream<A,V> implements ActionStream<A, V> {
         if (this.actions.isEmpty()) {
             throw new NullPointerException("List doesnt contains valid actions");
         }
-        it = new ResetableIterator<A>(this.actions.iterator());
+        it = new ResetableIterator<>(this.actions.iterator());
     }
 
     @Override
@@ -62,10 +63,12 @@ public class SimpleActionStream<A,V> implements ActionStream<A, V> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Object clone() throws CloneNotSupportedException {
         SimpleActionStream<A,V> retValue = (SimpleActionStream<A,V>) super.clone();
-        retValue.it = new ResetableIterator<A>(retValue.actions.iterator());
+        retValue.it = new ResetableIterator<>(retValue.actions.iterator());
         if (parmSpool != null) {
+            
             retValue.parmSpool =  (ParameterSpool<A, V>) parmSpool.clone();
         }
         return retValue;

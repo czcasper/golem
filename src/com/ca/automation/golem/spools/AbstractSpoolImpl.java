@@ -12,7 +12,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,6 +19,8 @@ import java.util.logging.Logger;
  *
  * @author maslu02
  */
+// TODO Documentation: Create JavaDoc on class and public method level.
+// TODO Refactoring: Methods with suppressing warning unchecked should be validated and refactored to be more type save (put, get, buildKey)
 public abstract class AbstractSpoolImpl<A, K extends AbstractSpoolKey<?>, V> extends LinkedHashMap<K, V> implements AbstractSpool<A, K, V>, Cloneable {
 
     protected K searchProxy = null;
@@ -56,6 +57,7 @@ public abstract class AbstractSpoolImpl<A, K extends AbstractSpoolKey<?>, V> ext
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <P> V put(A action, Field f, ParameterSpool<A, P> parameters) throws IllegalArgumentException, IllegalAccessException {
         V retValue = null;
         K tmpKey = buildKey(action, f, parameters, true);
@@ -79,6 +81,7 @@ public abstract class AbstractSpoolImpl<A, K extends AbstractSpoolKey<?>, V> ext
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <P> V get(A action, Field f, ParameterSpool<A, P> parameters) throws IllegalArgumentException, IllegalAccessException {
         V retValue = null;
         K tmpKey = buildKey(action, f, parameters, false);
@@ -89,6 +92,7 @@ public abstract class AbstractSpoolImpl<A, K extends AbstractSpoolKey<?>, V> ext
         return retValue;
     }
 
+    @SuppressWarnings("unchecked")
     protected <P> K buildKey(A action, Field f, ParameterSpool<A, P> parameters, boolean createNewFlag) {
         K retValue = null;
         if ((action != null) && (f != null)) {
@@ -145,6 +149,7 @@ public abstract class AbstractSpoolImpl<A, K extends AbstractSpoolKey<?>, V> ext
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Object clone() {
         LinkedHashMap<K, V> retValue = (LinkedHashMap<K, V>) super.clone();
         for (Entry<K, V> e : retValue.entrySet()) {

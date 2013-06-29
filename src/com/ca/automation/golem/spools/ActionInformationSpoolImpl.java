@@ -5,7 +5,6 @@
 package com.ca.automation.golem.spools;
 
 import com.ca.automation.golem.interfaces.context.ActionInfoProxy;
-import com.ca.automation.golem.interfaces.spools.AbstractSpool;
 import com.ca.automation.golem.interfaces.spools.ActionInformationSpool;
 import com.ca.automation.golem.interfaces.spools.keys.ActionInfoKey;
 import com.ca.automation.golem.spools.actions.ActionInfoProxyImpl;
@@ -16,20 +15,17 @@ import java.util.Comparator;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.ejb.LocalBean;
-import javax.ejb.Singleton;
 
 /**
  * This class is storage for
  *
  * @author maslu02
  */
-@Singleton
-@LocalBean
+// TODO Documentation: Create JavaDoc on class and public method level.
 public class ActionInformationSpoolImpl<A> extends AbstractSpoolImpl<A, ActionInfoKey<Class<?>>, ActionInfoProxy> implements ActionInformationSpool<A> {
 
     protected Map<ActionMethodProxyType, Comparator<Method>> methodComparator = ActionInfoProxyImpl.createNewComparators();
-    protected static ActionInformationSpool<Object> global = new ActionInformationSpoolImpl<Object>();
+    protected static ActionInformationSpool<Object> global = new ActionInformationSpoolImpl<>();
 
     public ActionInformationSpoolImpl() {
     }
@@ -55,7 +51,7 @@ public class ActionInformationSpoolImpl<A> extends AbstractSpoolImpl<A, ActionIn
     }
 
     @Override
-    protected ActionInfoKey createKey(String key) {
+    protected ActionInfoKey<Class<?>> createKey(String key) {
         try {
             return new SimpleActionInfoKey(key);
         } catch (ClassNotFoundException ex) {
@@ -70,13 +66,13 @@ public class ActionInformationSpoolImpl<A> extends AbstractSpoolImpl<A, ActionIn
     }
 
     @Override
-    protected ActionInfoKey initProxyKey() {
+    protected ActionInfoKey<Class<?>> initProxyKey() {
         return new SimpleActionInfoKey((Class<A>) null);
     }
 
     @Override
     public ActionInformationSpool<A> newInstance() {
-        return new ActionInformationSpoolImpl<A>();
+        return new ActionInformationSpoolImpl<>();
     }
 
     @Override
@@ -109,7 +105,7 @@ public class ActionInformationSpoolImpl<A> extends AbstractSpoolImpl<A, ActionIn
             } else {
                 ActionInfoProxy info = new ActionInfoProxyImpl(methodComparator);
                 if (info.loadAction(action, this)) {
-                    ActionInfoKey tmpKey = new SimpleActionInfoKey(action.getClass());
+                    ActionInfoKey<Class<?>> tmpKey = new SimpleActionInfoKey(action.getClass());
                     super.put(tmpKey, info);
                     retValue = true;
                 }

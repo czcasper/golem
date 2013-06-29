@@ -13,6 +13,7 @@ import java.util.LinkedList;
  * @param <T> 
  * @author maslu02
  */
+// TODO Documentation: Finish JavaDoc on class and pulblic methods level.
 public class RunActionStackImpl<T> implements RunActionStack<T>, Iterator<T>, Cloneable {
 
     /**
@@ -28,7 +29,7 @@ public class RunActionStackImpl<T> implements RunActionStack<T>, Iterator<T>, Cl
      *
      */
     public RunActionStackImpl() {
-        actions = new FastStack<T>();
+        actions = new FastStack<>();
     }
 
     @Override
@@ -107,7 +108,7 @@ public class RunActionStackImpl<T> implements RunActionStack<T>, Iterator<T>, Cl
      * @return true if stack is correctly initialized, otherwise false.
      */
     @Override
-    public boolean setupStack(T action, T... actions) {
+    public boolean setupStack(T action, T[] actions) {
         boolean retValue = false;
         if ((this.actions != null) && (actions != null) && (actions.length > 0)) {
             for (T o : actions) {
@@ -133,7 +134,7 @@ public class RunActionStackImpl<T> implements RunActionStack<T>, Iterator<T>, Cl
     @Override
     public Object clone() throws CloneNotSupportedException {
         RunActionStackImpl<T> retValue = (RunActionStackImpl<T>) super.clone();
-        retValue.actions = new LinkedList<T>(actions);
+        retValue.actions = new LinkedList<>(actions);
         return retValue;
     }
 }

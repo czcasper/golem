@@ -26,7 +26,7 @@ import org.junit.Test;
  *
  * @author maslu02
  */
-// TODO Documentation: Create javadoc on class level and methods. For methods javadoc use comments inside methods to describe all test step inside method. Class ParameterSpoolImplTest.
+// TODO Documentation: Create javadoc on class level and methods. For methods javadoc use comments inside methods to describe all test step inside method.
 public class ParameterSpoolImplTest {
 
     public ParameterSpoolImplTest() {
