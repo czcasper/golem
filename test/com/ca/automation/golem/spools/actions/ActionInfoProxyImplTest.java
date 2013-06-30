@@ -694,7 +694,7 @@ public class ActionInfoProxyImplTest {
          */
         ActionInfoProxy instance = new ActionInfoProxyImpl(comparators);
         ActionMethodProxyType type = null;
-        SortedSet result = instance.getMethod(type);
+        SortedSet<Method> result = instance.getMethod(type);
         assertNull(result);
         for (ActionMethodProxyType t : ActionMethodProxyType.values()) {
             assertNull(instance.getMethod(t));
@@ -705,20 +705,20 @@ public class ActionInfoProxyImplTest {
          * testing steps. Class for testing must contains just methods annotated
          * by specific type of golem annotation.
          */
-        Map<ActionMethodProxyType, Collection<Method>> testMethods = new EnumMap<ActionMethodProxyType, Collection<Method>>(ActionMethodProxyType.class);
+        Map<ActionMethodProxyType, Collection<Method>> testMethods = new EnumMap<>(ActionMethodProxyType.class);
         for (ActionMethodProxyType t : ActionMethodProxyType.values()) {
             Collection<Method> methods;
             switch (t) {
                 case Initialize:
-                    methods = new ArrayList<Method>();
+                    methods = new ArrayList<>();
                     methods.addAll(Arrays.asList(ActionWithInit.class.getDeclaredMethods()));
                     break;
                 case Run:
-                    methods = new ArrayList<Method>();
+                    methods = new ArrayList<>();
                     methods.addAll(Arrays.asList(ActionWithRun.class.getDeclaredMethods()));
                     break;
                 case Validate:
-                    methods = new ArrayList<Method>();
+                    methods = new ArrayList<>();
                     methods.addAll(Arrays.asList(ActionWithValidate.class.getDeclaredMethods()));
                     break;
                 default:
@@ -753,20 +753,20 @@ public class ActionInfoProxyImplTest {
          * parameter order. Initialize test methods which should be used befor
          * default values.
          */
-        Map<ActionMethodProxyType, Collection<Method>> beforeTestMethods = new EnumMap<ActionMethodProxyType, Collection<Method>>(ActionMethodProxyType.class);
+        Map<ActionMethodProxyType, Collection<Method>> beforeTestMethods = new EnumMap<>(ActionMethodProxyType.class);
         for (ActionMethodProxyType t : ActionMethodProxyType.values()) {
             Collection<Method> methods;
             switch (t) {
                 case Initialize:
-                    methods = new ArrayList<Method>();
+                    methods = new ArrayList<>();
                     methods.addAll(Arrays.asList(ActionWithBeforeInit.class.getDeclaredMethods()));
                     break;
                 case Run:
-                    methods = new ArrayList<Method>();
+                    methods = new ArrayList<>();
                     methods.addAll(Arrays.asList(ActionWithBeforeRun.class.getDeclaredMethods()));
                     break;
                 case Validate:
-                    methods = new ArrayList<Method>();
+                    methods = new ArrayList<>();
                     methods.addAll(Arrays.asList(ActionWithBeforeValidate.class.getDeclaredMethods()));
                     break;
                 default:
@@ -781,20 +781,20 @@ public class ActionInfoProxyImplTest {
         /**
          * Initialize methods which should be used after default method.
          */
-        Map<ActionMethodProxyType, Collection<Method>> afterTestMethods = new EnumMap<ActionMethodProxyType, Collection<Method>>(ActionMethodProxyType.class);
+        Map<ActionMethodProxyType, Collection<Method>> afterTestMethods = new EnumMap<>(ActionMethodProxyType.class);
         for (ActionMethodProxyType t : ActionMethodProxyType.values()) {
             Collection<Method> methods;
             switch (t) {
                 case Initialize:
-                    methods = new ArrayList<Method>();
+                    methods = new ArrayList<>();
                     methods.addAll(Arrays.asList(ActionWithAfterInit.class.getDeclaredMethods()));
                     break;
                 case Run:
-                    methods = new ArrayList<Method>();
+                    methods = new ArrayList<>();
                     methods.addAll(Arrays.asList(ActionWithAfterRun.class.getDeclaredMethods()));
                     break;
                 case Validate:
-                    methods = new ArrayList<Method>();
+                    methods = new ArrayList<>();
                     methods.addAll(Arrays.asList(ActionWithAfterValidate.class.getDeclaredMethods()));
                     break;
                 default:

@@ -30,11 +30,14 @@ public class CloneableObject<T> implements Cloneable {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
+    
     protected Object clone() throws CloneNotSupportedException {
         CloneableObject<T> retValue = (CloneableObject<T>) super.clone();
         try {
             Class<? extends Object> vClass = value.getClass();
             Constructor<? extends Object> constructor = vClass.getConstructor(vClass);
+            // TODO Refactoring: Find more type save way how to provide same functionality.
             retValue.value = (T) constructor.newInstance(value);
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException ex) {
             throw new CloneNotSupportedException(ex.getLocalizedMessage());

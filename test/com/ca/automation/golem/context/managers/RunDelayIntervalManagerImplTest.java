@@ -20,8 +20,8 @@ import org.junit.Test;
  */
 public class RunDelayIntervalManagerImplTest {
 
-    private AddressArrayList<ActionForTestingContext<Integer>> steps;
-    private RunContextImpl initializedRun;
+    private AddressArrayList<Object> steps;
+    private RunContextImpl<Object, Boolean, Object> initializedRun;
 
     public RunDelayIntervalManagerImplTest() {
         steps = new AddressArrayList<>();
@@ -41,9 +41,9 @@ public class RunDelayIntervalManagerImplTest {
 
     @Before
     public void setUp() {
-        initializedRun = new RunContextImpl();
-        initializedRun.setActionStream(new SimpleActionStream(steps));
-        initializedRun.setDelayManager(new RunDelayIntervalManagerImpl(initializedRun));
+        initializedRun = new RunContextImpl<>();
+        initializedRun.setActionStream(new SimpleActionStream<>(steps));
+        initializedRun.setDelayManager(new RunDelayIntervalManagerImpl<>(initializedRun));
     }
 
     @After
@@ -56,7 +56,7 @@ public class RunDelayIntervalManagerImplTest {
      */
     @Test
     public void testHasNext() throws Exception {
-        RunDelayIntervalManager instance = new RunDelayIntervalManagerImpl(null);
+        RunDelayIntervalManager<Object,Object> instance = new RunDelayIntervalManagerImpl<>(null);
         assertFalse(instance.hasNext());
 
         long actionCount = steps.size();
@@ -92,7 +92,7 @@ public class RunDelayIntervalManagerImplTest {
      */
     @Test
     public void testNext() {
-        RunDelayIntervalManager instance = new RunDelayIntervalManagerImpl(null);
+        RunDelayIntervalManager<Object,Object> instance = new RunDelayIntervalManagerImpl<>(null);
         assertFalse(instance.hasNext());
 
         long actionCount = steps.size();
@@ -127,7 +127,7 @@ public class RunDelayIntervalManagerImplTest {
     
     @Test
     public void testSetup(){
-        RunDelayIntervalManager instance = new RunDelayIntervalManagerImpl(null);
+        RunDelayIntervalManager<Object,Object> instance = new RunDelayIntervalManagerImpl<>(null);
         assertFalse(instance.hasNext());
 
         long actionCount = steps.size();

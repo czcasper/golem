@@ -677,6 +677,7 @@ public class ParameterSpoolImplTest {
      * Test of clone method, of class AbstractSpoolImpl.
      */
     @Test
+    @SuppressWarnings("unchecked")
     public void testClone() {
         /**
          * Initialize testing instance and test if clone create different
