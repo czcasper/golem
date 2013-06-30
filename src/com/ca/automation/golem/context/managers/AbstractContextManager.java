@@ -52,7 +52,7 @@ public abstract class AbstractContextManager<T, C extends Object, M extends Iter
      */
     public AbstractContextManager(RunContextImpl<T, C, V> context) {
         this.context = context;
-        managed = new HashMap<T, List<M>>();
+        managed = new HashMap<>();
     }
 
     /**
@@ -70,7 +70,7 @@ public abstract class AbstractContextManager<T, C extends Object, M extends Iter
             if (managed.containsKey(action)) {
                 tmpList = managed.get(action);
             } else {
-                tmpList = new AddressArrayList<M>();
+                tmpList = new AddressArrayList<>();
                 managed.put(action, tmpList);
             }
             tmpList.add(man);

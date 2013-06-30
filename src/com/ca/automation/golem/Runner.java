@@ -18,15 +18,15 @@ import com.ca.automation.golem.context.actionInterfaces.spools.ParameterSpoolCon
 import com.ca.automation.golem.interfaces.ActionStream;
 import com.ca.automation.golem.interfaces.connections.Connection;
 import com.ca.automation.golem.interfaces.context.ActionInfoProxy;
-import com.ca.automation.golem.interfaces.spools.keys.ParameterKey;
 import com.ca.automation.golem.interfaces.context.managers.RunCondManager;
 import com.ca.automation.golem.interfaces.context.managers.RunContextManagers;
 import com.ca.automation.golem.interfaces.spools.AbstractSpool;
 import com.ca.automation.golem.interfaces.spools.ActionInformationSpool;
 import com.ca.automation.golem.interfaces.spools.ParameterSpool;
 import com.ca.automation.golem.interfaces.spools.keys.ConnectionKey;
-import com.ca.automation.golem.spools.ParameterSpoolImpl;
+import com.ca.automation.golem.interfaces.spools.keys.ParameterKey;
 import com.ca.automation.golem.spools.ActionInformationSpoolImpl;
+import com.ca.automation.golem.spools.ParameterSpoolImpl;
 import com.ca.automation.golem.spools.enums.ActionFieldProxyType;
 import com.ca.automation.golem.spools.enums.ActionMethodProxyType;
 import com.ca.automation.golem.toRefactor.RunnerConnectionFactoryImpl;
@@ -65,7 +65,7 @@ public class Runner {
         @SuppressWarnings("UseInjectionInsteadOfInstantion")
         Runner retValue = new Runner();
         retValue.actionData = ActionInformationSpoolImpl.getGlobal();
-        retValue.run = new RunContextImpl<Object, Boolean, Object>();
+        retValue.run = new RunContextImpl<>();
         return retValue;
     }
 

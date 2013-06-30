@@ -4,8 +4,9 @@ package com.ca.automation.golem.context.managers;
 
 import com.ca.automation.golem.common.AddressArrayList;
 import com.ca.automation.golem.context.RunContextImpl;
-import com.ca.automation.golem.spools.actions.SimpleActionStream;
 import com.ca.automation.golem.interfaces.context.managers.RunDelayIntervalManager;
+import com.ca.automation.golem.spools.actions.SimpleActionStream;
+import com.ca.automation.testClasses.actions.dummy.valid.ActionForTestingContext;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.*;
@@ -19,13 +20,13 @@ import org.junit.Test;
  */
 public class RunDelayIntervalManagerImplTest {
 
-    private AddressArrayList<Object> steps;
+    private AddressArrayList<ActionForTestingContext<Integer>> steps;
     private RunContextImpl initializedRun;
 
     public RunDelayIntervalManagerImplTest() {
-        steps = new AddressArrayList<Object>();
+        steps = new AddressArrayList<>();
         for (int i = 0; i < 5; i++) {
-            steps.add(new Integer(i));
+            steps.add(new ActionForTestingContext<>(new Integer(i)));
         }
 
     }

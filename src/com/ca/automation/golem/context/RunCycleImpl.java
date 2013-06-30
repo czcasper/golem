@@ -52,7 +52,7 @@ public class RunCycleImpl<T> implements RunCycle<T>, Cloneable {
      * @param steps
      */
     public RunCycleImpl(List<T> steps) {
-        this(steps, new ResetableIterator<T>(steps.iterator()));
+        this(steps, new ResetableIterator<>(steps.iterator()));
     }
 
     /**
@@ -69,7 +69,7 @@ public class RunCycleImpl<T> implements RunCycle<T>, Cloneable {
         }
 
         if (!(steps instanceof AddressArrayList)) {
-            steps = new AddressArrayList<T>(steps);
+            steps = new AddressArrayList<>(steps);
         }
 
         this.steps = steps;

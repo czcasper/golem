@@ -206,7 +206,7 @@ public class RunActionStackTest {
         Integer result = instance.getAction();
         assertNull(result);
         
-        boolean setup = instance.setupStack(Integer.MAX_VALUE, 1,2,3,4,5,6,7);
+        boolean setup = instance.setupStack(Integer.MAX_VALUE, new Integer[]{1,2,3,4,5,6,7});
         assertTrue(setup);
         
         result = instance.getAction();

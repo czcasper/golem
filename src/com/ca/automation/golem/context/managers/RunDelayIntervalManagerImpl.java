@@ -97,7 +97,7 @@ public class RunDelayIntervalManagerImpl<T, C, V> extends AbstractContextManager
     @Override
     protected void loadManger(T action) {
         if (currentList == null) {
-            currentList = new LinkedList<RunDelayInterval<T>>();
+            currentList = new LinkedList<>();
         }
         List<RunDelayInterval<T>> found = managed.get(action);
         if (!found.isEmpty()) {
@@ -128,7 +128,7 @@ public class RunDelayIntervalManagerImpl<T, C, V> extends AbstractContextManager
         RunDelayInterval<T> retValue = null;
         if ((context != null) && (action != null) && (params.length == 2) && (params instanceof Number[])) {
             Number[] parm = (Number[]) params;
-            RunDelayInterval<T> in = new RunDelayIntervalImpl<T>();
+            RunDelayInterval<T> in = new RunDelayIntervalImpl<>();
             if (in.setupTimer(action, parm[0].longValue(), parm[1].longValue())) {
                 retValue = in;
             }

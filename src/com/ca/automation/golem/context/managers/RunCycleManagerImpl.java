@@ -41,9 +41,9 @@ public class RunCycleManagerImpl<T, C, V> extends AbstractContextManager<T, C, R
      */
     public RunCycleManagerImpl(RunContextImpl<T, C, V> context) {
         super(context);
-        curentStack = new FastStack<RunCycle<T>>();
-        currentCycleStack = new FastStack<List<RunCycle<T>>>();
-        arrayIndexStack = new FastStack<Integer>();
+        curentStack = new FastStack<>();
+        currentCycleStack = new FastStack<>();
+        arrayIndexStack = new FastStack<>();
     }
 
     /**
@@ -72,7 +72,13 @@ public class RunCycleManagerImpl<T, C, V> extends AbstractContextManager<T, C, R
      *
      */
     @Override
+    @SuppressWarnings("unchecked")
     protected void afterNextInList() {
+        try {
+            current = (RunCycle<T>) current.clone();
+        } catch (CloneNotSupportedException ex) {
+            Logger.getLogger(RunCycleManagerImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
         if (!zeroLenFlag) {
             current.updateIt(current.getStartAction());
             if (current.isZeroLength()) {
@@ -155,7 +161,7 @@ public class RunCycleManagerImpl<T, C, V> extends AbstractContextManager<T, C, R
         RunCycleImpl<T> retValue = null;
         if ((context != null) && (context.getActionStream() != null) && (params.length == 2) && (params instanceof Number[])) {
             Number[] parm = (Number[]) params;
-            RunCycleImpl<T> cycle = new RunCycleImpl<T>(context.getActionStream().getActionList(), context.resetableIterator());
+            RunCycleImpl<T> cycle = new RunCycleImpl<>(context.getActionStream().getActionList(), context.resetableIterator());
             if (cycle.setupCycle(action, parm[0].longValue(), parm[1].intValue())) {
                 retValue = cycle;
             }

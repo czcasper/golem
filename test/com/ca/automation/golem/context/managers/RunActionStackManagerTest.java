@@ -7,6 +7,7 @@ package com.ca.automation.golem.context.managers;
 import com.ca.automation.golem.common.AddressArrayList;
 import com.ca.automation.golem.context.RunContextImpl;
 import com.ca.automation.golem.spools.actions.SimpleActionStream;
+import com.ca.automation.testClasses.actions.dummy.valid.ActionForTestingContext;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -20,15 +21,17 @@ import org.junit.Test;
  *
  * @author maslu02
  */
+// TODO Documentation: Create JavaDoc on class and method level
+// TODO Refactoring: Improve test to fully cover functionality expeceted from this class.
 public class RunActionStackManagerTest {
 
-    private AddressArrayList<Object> steps;
+    private AddressArrayList<ActionForTestingContext<Integer>> steps;
     private RunContextImpl initializedRun;
 
     public RunActionStackManagerTest() {
-        steps = new AddressArrayList<Object>();
+        steps = new AddressArrayList<>();
         for (int i = 0; i < 5; i++) {
-            steps.add(new Integer(i));
+            steps.add(new ActionForTestingContext<>(new Integer(i)));
         }
     }
 
@@ -46,11 +49,11 @@ public class RunActionStackManagerTest {
 
     @Test
     public void testHasNext() throws Exception {
-        RunActionStackManagerImpl<Object,Boolean,Object> instance = new RunActionStackManagerImpl<Object,Boolean,Object>(null);
+        RunActionStackManagerImpl<Object,Boolean,Object> instance = new RunActionStackManagerImpl<>(null);
         assertFalse(instance.hasNext());
 
         instance = (RunActionStackManagerImpl<Object,Boolean,Object>) initializedRun.getStackManager();
-        List<Object> actions = new ArrayList<Object>();
+        List<Object> actions = new ArrayList<>();
         for (int i = 0; i < 7; i++) {
             actions.add(i);
         }
@@ -97,13 +100,13 @@ public class RunActionStackManagerTest {
 
     @Test
     public void testNext() {
-        RunActionStackManagerImpl<Object,Boolean,Object> instance = new RunActionStackManagerImpl<Object,Boolean,Object>(null);
+        RunActionStackManagerImpl<Object,Boolean,Object> instance = new RunActionStackManagerImpl<>(null);
         assertNull(instance.next());
 
         instance = (RunActionStackManagerImpl<Object,Boolean,Object>) initializedRun.getStackManager();
-        List<Object> actions = new ArrayList<Object>();
+        List<ActionForTestingContext<Integer>> actions = new ArrayList<>();
         for (int i = 0; i < 7; i++) {
-            actions.add(i);
+            actions.add(new ActionForTestingContext<>(i));
         }
         Object[] tmp = new Object[actions.size()];
         tmp = actions.toArray(tmp);
@@ -112,8 +115,8 @@ public class RunActionStackManagerTest {
         Collections.reverse(actions);
 
         boolean first = true, hasNext = false;
-        Iterator<Object> stackIt = actions.iterator();
-        Iterator<Object> dataIt = steps.iterator();
+        Iterator<ActionForTestingContext<Integer>> stackIt = actions.iterator();
+        Iterator<ActionForTestingContext<Integer>> dataIt = steps.iterator();
         for (Object o : initializedRun) {
 
             if (first) {
@@ -134,9 +137,9 @@ public class RunActionStackManagerTest {
     public void testSetup() {
         RunActionStackManagerImpl<Object,Boolean,Object> instance = (RunActionStackManagerImpl<Object,Boolean,Object>) initializedRun.getStackManager();
 
-        List<Object> actions = new ArrayList<Object>();
+        List<ActionForTestingContext<Integer>> actions = new ArrayList<>();
         for (int i = 0; i < 7; i++) {
-            actions.add(i);
+            actions.add(new ActionForTestingContext<>(i));
         }
         Object[] tmp = new Object[actions.size()];
         tmp = actions.toArray(tmp);
@@ -147,8 +150,8 @@ public class RunActionStackManagerTest {
         Collections.reverse(actions);
 
         boolean first = true, hasNext = false;
-        Iterator<Object> stackIt = actions.iterator();
-        Iterator<Object> dataIt = steps.iterator();
+        Iterator<ActionForTestingContext<Integer>> stackIt = actions.iterator();
+        Iterator<ActionForTestingContext<Integer>> dataIt = steps.iterator();
         for (Object o : initializedRun) {
             if (first) {
                 assertSame(dataIt.next(), o);

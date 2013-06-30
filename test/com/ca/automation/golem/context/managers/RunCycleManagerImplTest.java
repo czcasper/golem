@@ -6,9 +6,10 @@ import com.ca.automation.golem.common.AddressArrayList;
 import com.ca.automation.golem.common.iterators.ResetableIterator;
 import com.ca.automation.golem.context.RunContextImpl;
 import com.ca.automation.golem.context.RunCycleImpl;
-import com.ca.automation.golem.spools.actions.SimpleActionStream;
 import com.ca.automation.golem.interfaces.context.RunCycle;
 import com.ca.automation.golem.interfaces.context.managers.RunCycleManager;
+import com.ca.automation.golem.spools.actions.SimpleActionStream;
+import com.ca.automation.testClasses.actions.dummy.valid.ActionForTestingContext;
 import java.util.Iterator;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -21,15 +22,16 @@ import org.junit.Test;
  *
  * @author maslu02
  */
+// TODO Documentation: Create JavaDoc on class, method and field level
 public class RunCycleManagerImplTest {
 
-    private AddressArrayList<Object> steps;
+    private AddressArrayList<ActionForTestingContext<Integer>> steps;
     private RunContextImpl<Object, Boolean, Object> initializedRun;
 
     public RunCycleManagerImplTest() {
-        steps = new AddressArrayList<Object>();
+        steps = new AddressArrayList<>();
         for (int i = 0; i < 10; i++) {
-            steps.add(new Integer(i));
+            steps.add(new ActionForTestingContext<>(new Integer(i)));
         }
     }
 
@@ -43,7 +45,7 @@ public class RunCycleManagerImplTest {
 
     @Before
     public void setUp() {
-        initializedRun = new RunContextImpl<Object, Boolean, Object>();
+        initializedRun = new RunContextImpl<>();
         initializedRun.setActionStream(new SimpleActionStream(steps));
         initializedRun.setCycleManager(new RunCycleManagerImpl(initializedRun));
     }
@@ -58,10 +60,16 @@ public class RunCycleManagerImplTest {
      */
     @Test
     public void testHasNext() {
-        RunCycleManager<Object,Object> instance = new RunCycleManagerImpl<Object, Boolean, Object>(null);
+        /**
+         * Initialize and test protection of method agains instance initialized by null RunContext.
+         */
+        RunCycleManager<Object, Object> instance = new RunCycleManagerImpl<>(null);
         assertFalse(instance.hasNext());
 
-        instance = new RunCycleManagerImpl<Object, Boolean, Object>(initializedRun);
+        /**
+         * Testing instance created with valid RunContext and seting up first cycle.
+         */
+        instance = new RunCycleManagerImpl<>(initializedRun);
         assertFalse(instance.hasNext());
         long repeatCount = 2;
         boolean setup = instance.setup(steps.get(0), repeatCount, steps.size() - 1);
@@ -70,10 +78,12 @@ public class RunCycleManagerImplTest {
         ResetableIterator it = initializedRun.resetableIterator();
         assertTrue(it.hasNext());
 
+        /**
+         * Testing feature interaction with break cycle feature.
+         */
         instance = initializedRun.getCycleManager();
         setup = instance.setup(steps.get(0), repeatCount, steps.size() - 1);
         assertTrue(setup);
-
         initializedRun.next();
         assertTrue(instance.hasNext());
 
@@ -86,10 +96,13 @@ public class RunCycleManagerImplTest {
         instance.getCurrent().setBreak();
         assertFalse(instance.hasNext());
 
+        /**
+         * Test reusability of defined cycles after two succesfull break's.
+         */
         it.setIt(steps.iterator());
         boolean firstRun = true;
         for (int i = 0; i < (2 * repeatCount); i++) {
-            Iterator<Object> valid = steps.iterator();
+            Iterator<ActionForTestingContext<Integer>> valid = steps.iterator();
             for (int j = 0; j < steps.size(); j++) {
                 if (firstRun) {
                     firstRun = false;
@@ -104,16 +117,18 @@ public class RunCycleManagerImplTest {
         assertFalse(instance.hasNext());
         assertFalse(initializedRun.hasNext());
 
+        /**
+         * 
+         */
         it.setIt(steps.iterator());
         int halfSize = steps.size() / 2;
         setup = instance.setup(steps.get(halfSize), repeatCount, steps.size() - halfSize - 1);
         assertTrue(setup);
         setup = instance.setup(steps.get(halfSize), repeatCount, steps.size() - halfSize - 1);
         assertTrue(setup);
-
         firstRun = true;
         for (int i = 0; i < (2 * repeatCount); i++) {
-            Iterator<Object> valid = steps.iterator();
+            Iterator<ActionForTestingContext<Integer>> valid = steps.iterator();
             for (int j = 0; j < halfSize; j++) {
                 if (firstRun) {
                     firstRun = false;
@@ -136,15 +151,17 @@ public class RunCycleManagerImplTest {
         assertFalse(instance.hasNext());
         assertFalse(initializedRun.hasNext());
 
+        /**
+         * 
+         */
         it.setIt(steps.iterator());
         setup = instance.setup(steps.get(halfSize + 1), repeatCount, 0);
         assertTrue(setup);
         setup = instance.setup(steps.get(halfSize + 1), repeatCount, 0);
         assertTrue(setup);
-
         firstRun = true;
         for (int i = 0; i < (2 * repeatCount); i++) {
-            Iterator<Object> valid = steps.iterator();
+            Iterator<ActionForTestingContext<Integer>> valid = steps.iterator();
             for (int j = 0; j < halfSize; j++) {
                 if (firstRun) {
                     firstRun = false;
@@ -199,7 +216,7 @@ public class RunCycleManagerImplTest {
         boolean setup = instance.setup(steps.get(0), repeatCount, steps.size() - 1);
         assertTrue(setup);
 
-        Iterator<Object> validIt = steps.iterator();
+        Iterator<ActionForTestingContext<Integer>> validIt = steps.iterator();
         boolean first = true;
         while (initializedRun.hasNext()) {
             assertSame(validIt.next(), initializedRun.next());
@@ -254,7 +271,7 @@ public class RunCycleManagerImplTest {
         Object action = null;
         long repeatCount = 0L;
         int actionCount = 0;
-        RunCycleManagerImpl<Object, Boolean, Object> instance = new RunCycleManagerImpl<Object, Boolean, Object>(null);
+        RunCycleManagerImpl<Object, Boolean, Object> instance = new RunCycleManagerImpl<>(null);
         boolean result = instance.setup(action, repeatCount, actionCount);
         assertFalse(result);
 
@@ -268,11 +285,11 @@ public class RunCycleManagerImplTest {
             assertTrue(result);
         }
 
-        Iterator<Object> validIt = steps.iterator();
+        Iterator<ActionForTestingContext<Integer>> validIt = steps.iterator();
         int counter = 0;
         Object tmp = validIt.next();
         for (Object o : initializedRun) {
-            if (counter == (repeatCount+1)) {
+            if (counter == (repeatCount + 1)) {
                 tmp = validIt.next();
                 counter = 0;
             }
@@ -295,7 +312,7 @@ public class RunCycleManagerImplTest {
      */
     @Test
     public void testGetCurrentCycle() {
-        RunCycleManagerImpl<Object, Boolean, Object> instance = new RunCycleManagerImpl<Object, Boolean, Object>(null);
+        RunCycleManagerImpl<Object, Boolean, Object> instance = new RunCycleManagerImpl<>(null);
         RunCycle result = instance.getCurrent();
         assertNull(result);
 
