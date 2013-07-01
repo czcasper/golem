@@ -4,14 +4,19 @@
  */
 package com.ca.automation.golem.spools;
 
+import com.ca.automation.golem.common.AddressArrayList;
+import com.ca.automation.golem.interfaces.ActionStream;
 import com.ca.automation.golem.interfaces.context.ActionInfoProxy;
 import com.ca.automation.golem.interfaces.spools.ActionInformationSpool;
 import com.ca.automation.golem.interfaces.spools.keys.ActionInfoKey;
 import com.ca.automation.golem.spools.actions.ActionInfoProxyImpl;
+import com.ca.automation.golem.spools.actions.SimpleActionStream;
 import com.ca.automation.golem.spools.enums.ActionMethodProxyType;
 import com.ca.automation.golem.spools.keys.SimpleActionInfoKey;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -76,6 +81,11 @@ public class ActionInformationSpoolImpl<A> extends AbstractSpoolImpl<A, ActionIn
     }
 
     @Override
+    protected boolean validateFieldType(Field f) throws IllegalAccessException {
+        throw new IllegalAccessException("Action information spool doesn't support direct action interaction with action fields");        
+    }
+    
+    @Override
     public boolean isValidAction(Object action) {
         boolean retValue = false;
         if (action != null) {
@@ -109,6 +119,48 @@ public class ActionInformationSpoolImpl<A> extends AbstractSpoolImpl<A, ActionIn
                     super.put(tmpKey, info);
                     retValue = true;
                 }
+            }
+        }
+        return retValue;
+    }
+
+    @Override
+    public <V> ActionStream<A, V> createNewFromObject(List<A> actions) {
+        ActionStream<A, V> retValue = null;
+        if ((actions != null) && (!actions.isEmpty())) {
+            AddressArrayList<A> tmpActions = new AddressArrayList<>(actions.size());
+            for (A a : actions) {
+                if (isValidAction(a)) {
+                    tmpActions.add(a);
+                } else {
+                    Logger.getLogger(ActionInformationSpool.class.getName()).log(Level.INFO, "Action {0} is not valid runner action.", a.toString());
+                }
+            }
+            if (!tmpActions.isEmpty()) {
+                retValue = new SimpleActionStream<>(tmpActions);
+            }
+        }
+        return retValue;
+    }
+
+    @Override
+    public <V> ActionStream<A, V> createNewFromClasses(List<Class<?>> actions) {
+        ActionStream<A, V> retValue = null;
+        if ((actions != null) && (!actions.isEmpty())) {
+            AddressArrayList<A> tmpActions = new AddressArrayList<>(actions.size());
+            for (Class<?> cl : actions) {
+                if (isValidAction(cl)) {
+                    try {
+                        tmpActions.add((A) cl.newInstance());
+                    } catch (InstantiationException | IllegalAccessException ex) {
+                        Logger.getLogger(ActionInformationSpool.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                } else {
+                    Logger.getLogger(ActionInformationSpool.class.getName()).log(Level.INFO, "Action class {0} is not valid runner action.", cl.toString());
+                }
+            }
+            if (!tmpActions.isEmpty()) {
+                retValue = new SimpleActionStream<>(tmpActions);
             }
         }
         return retValue;

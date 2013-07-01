@@ -7,12 +7,14 @@ package com.ca.automation.golem.spools;
 import com.ca.automation.golem.interfaces.spools.ParameterSpool;
 import com.ca.automation.golem.interfaces.spools.keys.AbstractSpoolKey;
 import com.ca.automation.golem.interfaces.spools.keys.ParameterKey;
+import com.ca.automation.golem.spools.enums.ActionFieldProxyType;
+import com.ca.automation.golem.spools.keys.AbstractSpoolKeyImpl;
+import com.ca.automation.golem.spools.keys.SimpleParameterKey;
+import com.ca.automation.testClasses.actions.dummy.valid.ActionWithConnection;
 import com.ca.automation.testClasses.actions.dummy.valid.ActionWithMembers;
 import com.ca.automation.testClasses.actions.dummy.valid.ActionWithNamedMembers;
 import com.ca.automation.testClasses.actions.dummy.valid.ActionWithPointerToContext;
 import com.ca.automation.testClasses.actions.dummy.valid.ActionWithPointersOnMembers;
-import com.ca.automation.golem.spools.keys.AbstractSpoolKeyImpl;
-import com.ca.automation.golem.spools.keys.SimpleParameterKey;
 import com.ca.automation.testClasses.common.CloneableObject;
 import java.lang.reflect.Field;
 import java.math.BigInteger;
@@ -20,7 +22,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import static org.junit.Assert.*;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 /**
  *
@@ -28,6 +32,9 @@ import org.junit.Test;
  */
 // TODO Documentation: Create javadoc on class level and methods. For methods javadoc use comments inside methods to describe all test step inside method.
 public class ParameterSpoolImplTest {
+
+    @Rule
+    public ExpectedException testException = ExpectedException.none();
 
     public ParameterSpoolImplTest() {
     }
@@ -55,6 +62,26 @@ public class ParameterSpoolImplTest {
             keyValue = new BigInteger(key);
             return true;
         }
+    }
+
+    @Test
+    public void testGetGlobal() {
+        /**
+         * Initialize and test one common usecase scenarion for globally defined
+         * spool.
+         */
+        ParameterSpool<Object, Object> instance = ParameterSpoolImpl.getGlobal();
+        assertNotNull(instance);
+        Integer value = new Integer(5);
+        instance.put("test", value);
+        assertFalse(instance.isEmpty());
+        instance = null;
+        assertNull(instance);
+
+        instance = ParameterSpoolImpl.getGlobal();
+        assertFalse(instance.isEmpty());
+        Object result = instance.get("test");
+        assertSame(value, result);
     }
 
     /**
@@ -501,6 +528,23 @@ public class ParameterSpoolImplTest {
 
     }
 
+    @Test
+    public void testPut_3Args_WrongFieldType() throws NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
+        /**
+         * Initialize testing instance and test get method with unsuported type
+         * of field Connection.
+         */
+        ParameterSpool<Object, Object> instance = new ParameterSpoolImpl<>();
+        assertTrue(instance.isEmpty());
+
+        ActionWithConnection testCl = new ActionWithConnection();
+        Field f = ActionWithConnection.class.getDeclaredField("connectionSimulatat");
+
+        testException.expect(IllegalAccessException.class);
+        testException.expectMessage("Parameter spool doesn''t supports field annotated by type:" + ActionFieldProxyType.Connections.toString());
+        instance.put(testCl, f, instance);
+    }
+
     /**
      * Test of get method, of class AbstractSpoolImpl.
      */
@@ -671,6 +715,23 @@ public class ParameterSpoolImplTest {
         result = instance.get(action2, field, instance);
         assertSame(nonPointerValue, result);
         assertSame(newStrValue, action2.getDummy());
+    }
+
+    @Test
+    public void testGet_3Args_WrongFieldType() throws NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
+        /**
+         * Initialize testing instance and test put method with unsuported type
+         * of field Connection.
+         */
+        ParameterSpool<Object, Object> instance = new ParameterSpoolImpl<>();
+        assertTrue(instance.isEmpty());
+
+        ActionWithConnection testCl = new ActionWithConnection();
+        Field f = ActionWithConnection.class.getDeclaredField("connectionSimulatat");
+
+        testException.expect(IllegalAccessException.class);
+        testException.expectMessage("Parameter spool doesn''t supports field annotated by type:" + ActionFieldProxyType.Connections.toString());
+        instance.get(testCl, f, instance);
     }
 
     /**

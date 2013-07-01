@@ -10,7 +10,8 @@ import com.ca.automation.golem.interfaces.spools.keys.ParameterKey;
  *
  * @author maslu02
  */
-public interface ParameterSpool<A,V> extends AbstractSpool<A, ParameterKey<?>, V> {
+public interface ParameterSpool<A, V> extends AbstractSpool<A, ParameterKey<?>, V> {
+
     @Override
     public ParameterSpool<A, V> newInstance();
 }

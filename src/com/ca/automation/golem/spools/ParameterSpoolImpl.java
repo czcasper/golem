@@ -6,7 +6,9 @@ package com.ca.automation.golem.spools;
 
 import com.ca.automation.golem.interfaces.spools.ParameterSpool;
 import com.ca.automation.golem.interfaces.spools.keys.ParameterKey;
+import com.ca.automation.golem.spools.enums.ActionFieldProxyType;
 import com.ca.automation.golem.spools.keys.SimpleParameterKey;
+import java.lang.reflect.Field;
 import java.util.Map;
 
 /**
@@ -15,7 +17,7 @@ import java.util.Map;
  */
 public class ParameterSpoolImpl<A, V> extends AbstractSpoolImpl<A, ParameterKey<?>, V> implements ParameterSpool<A, V> {
 
-    protected static ParameterSpool<Object, Object> global = new ParameterSpoolImpl<Object, Object>();
+    protected static ParameterSpool<Object, Object> global = new ParameterSpoolImpl<>();
 
     public ParameterSpoolImpl() {
         super();
@@ -43,7 +45,7 @@ public class ParameterSpoolImpl<A, V> extends AbstractSpoolImpl<A, ParameterKey<
 
     @Override
     public ParameterSpool<A, V> newInstance() {
-        return new ParameterSpoolImpl<A, V>();
+        return new ParameterSpoolImpl<>();
     }
 
     @Override
@@ -60,4 +62,19 @@ public class ParameterSpoolImpl<A, V> extends AbstractSpoolImpl<A, ParameterKey<
     protected ParameterKey initProxyKey() {
         return new SimpleParameterKey(null);
     }
+
+    @Override
+    protected boolean validateFieldType(Field f) throws IllegalAccessException {
+        boolean retValue = true;
+        if (f != null) {
+            ActionFieldProxyType type = ActionFieldProxyType.getType(f);
+            if ((type != null) && ((type == ActionFieldProxyType.Contexts) || (type == ActionFieldProxyType.Parameters))) {
+                retValue = true;
+            } else {
+                throw new IllegalAccessException("Parameter spool doesn''t supports field annotated by type:"+type.toString());
+            }
+        }        
+        return retValue;
+    }
+    
 }

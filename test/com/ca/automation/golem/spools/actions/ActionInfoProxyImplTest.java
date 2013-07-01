@@ -27,6 +27,7 @@ import com.ca.automation.testClasses.actions.wrong.WrongNoRunMethod;
 import com.ca.automation.golem.spools.enums.ActionFieldProxyType;
 import com.ca.automation.golem.spools.enums.ActionMethodProxyType;
 import com.ca.automation.golem.spools.keys.SimpleActionInfoKey;
+import com.ca.automation.testClasses.actions.wrong.WrongActionNoDefCOnstructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -844,7 +845,7 @@ public class ActionInfoProxyImplTest {
     @Test
     public void testLoadAction() {
         /**
-         * Initialize test instance and tes protection agans null parameter.
+         * Initialize test instance and test protection agans null parameter.
          */
         ActionInfoProxy instance = new ActionInfoProxyImpl(comparators);
         Class<?> testActionClass = null;
@@ -884,6 +885,19 @@ public class ActionInfoProxyImplTest {
         }
 
         /**
+         * Test protection agains action without default empty constructor.
+         */
+        testActionClass = WrongActionNoDefCOnstructor.class;
+        result = instance.loadAction(testActionClass, null);
+        assertFalse(result);
+        for (ActionFieldProxyType t : ActionFieldProxyType.values()) {
+            assertNull(instance.getField(t));
+        }
+        for (ActionMethodProxyType t : ActionMethodProxyType.values()) {
+            assertNull(instance.getMethod(t));
+        }        
+        
+        /**
          * Test loading action with members and methods.
          */
         testActionClass = ActionWithMembers.class;
@@ -905,7 +919,7 @@ public class ActionInfoProxyImplTest {
          * Initialize spool of actions for testing feature of acceleration of
          * loading by using information from previously loaded actions.
          */
-        ActionInformationSpool<Object> testingSpool = new ActionInformationSpoolImpl<Object>();
+        ActionInformationSpool<Object> testingSpool = new ActionInformationSpoolImpl<>();
         ActionInfoKey<Class<?>> key = new SimpleActionInfoKey(testActionClass);
         ActionInfoProxy put = testingSpool.put(key, instance);
         assertNull(put);

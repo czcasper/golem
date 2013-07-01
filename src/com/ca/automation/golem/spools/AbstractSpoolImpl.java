@@ -60,10 +60,12 @@ public abstract class AbstractSpoolImpl<A, K extends AbstractSpoolKey<?>, V> ext
     @SuppressWarnings("unchecked")
     public <P> V put(A action, Field f, ParameterSpool<A, P> parameters) throws IllegalArgumentException, IllegalAccessException {
         V retValue = null;
-        K tmpKey = buildKey(action, f, parameters, true);
-        if (tmpKey != null) {
-            V value = (V) f.get(action);
-            retValue = put(tmpKey, value);
+        if (validateFieldType(f)) {
+            K tmpKey = buildKey(action, f, parameters, true);
+            if (tmpKey != null) {
+                V value = (V) f.get(action);
+                retValue = put(tmpKey, value);
+            }
         }
         return retValue;
     }
@@ -84,10 +86,12 @@ public abstract class AbstractSpoolImpl<A, K extends AbstractSpoolKey<?>, V> ext
     @SuppressWarnings("unchecked")
     public <P> V get(A action, Field f, ParameterSpool<A, P> parameters) throws IllegalArgumentException, IllegalAccessException {
         V retValue = null;
-        K tmpKey = buildKey(action, f, parameters, false);
-        if ((tmpKey != null) && (containsKey(tmpKey))) {
-            retValue = (V) f.get(action);
-            f.set(action, get(tmpKey));
+        if (validateFieldType(f)) {
+            K tmpKey = buildKey(action, f, parameters, false);
+            if ((tmpKey != null) && (containsKey(tmpKey))) {
+                retValue = (V) f.get(action);
+                f.set(action, get(tmpKey));
+            }
         }
         return retValue;
     }
@@ -172,4 +176,6 @@ public abstract class AbstractSpoolImpl<A, K extends AbstractSpoolKey<?>, V> ext
     protected abstract <P> boolean instancOfKey(P value);
 
     protected abstract K initProxyKey();
+
+    protected abstract boolean validateFieldType(Field f) throws IllegalAccessException;
 }

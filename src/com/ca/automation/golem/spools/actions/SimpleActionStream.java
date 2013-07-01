@@ -27,18 +27,23 @@ public class SimpleActionStream<A,V> implements ActionStream<A, V> {
         if (actions == null) {
             throw new NullPointerException("Action stream cannot be initializet by null array of actions");
         }
-        this.actions = new AddressArrayList<>(actions.size());
-        ActionInformationSpool<Object> spool = ActionInformationSpoolImpl.getGlobal();
-        for (A action : actions) {
-            if (spool.isValidAction(action)) {
-                this.actions.add(action);
-            } else {
-                Logger.getLogger(SimpleActionStream.class.getName()).log(Level.INFO, "Action {0} is not valid runner action.", action.toString());
-            }
+        if(actions instanceof AddressArrayList){
+            this.actions = actions;
+        }else {
+            this.actions = new AddressArrayList<>(actions);
         }
-        if (this.actions.isEmpty()) {
-            throw new NullPointerException("List doesnt contains valid actions");
-        }
+//        this.actions = new AddressArrayList<>(actions.size());
+//        ActionInformationSpool<Object> spool = ActionInformationSpoolImpl.getGlobal();
+//        for (A action : actions) {
+//            if (spool.isValidAction(action)) {
+//                this.actions.add(action);
+//            } else {
+//                Logger.getLogger(SimpleActionStream.class.getName()).log(Level.INFO, "Action {0} is not valid runner action.", action.toString());
+//            }
+//        }
+//        if (this.actions.isEmpty()) {
+//            throw new NullPointerException("List doesnt contains valid actions");
+//        }
         it = new ResetableIterator<>(this.actions.iterator());
     }
 

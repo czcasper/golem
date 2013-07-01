@@ -3,10 +3,11 @@
 package com.ca.automation.golem.spools;
 
 import com.ca.automation.golem.interfaces.connections.Connection;
-import com.ca.automation.golem.interfaces.spools.AbstractSpool;
 import com.ca.automation.golem.interfaces.spools.ConnectionSpool;
 import com.ca.automation.golem.interfaces.spools.keys.ConnectionKey;
+import com.ca.automation.golem.spools.enums.ActionFieldProxyType;
 import com.ca.automation.golem.spools.keys.SimpleConnectionKey;
+import java.lang.reflect.Field;
 import java.util.Map;
 
 /**
@@ -15,7 +16,7 @@ import java.util.Map;
  */
 public class ConnectionSpoolImpl<A> extends AbstractSpoolImpl<A, ConnectionKey<?>, Connection> implements ConnectionSpool<A> {
 
-    protected static ConnectionSpool<Object> global = new ConnectionSpoolImpl<Object>();
+    protected static ConnectionSpool<Object> global = new ConnectionSpoolImpl<>();
 
     public ConnectionSpoolImpl() {
         super();
@@ -43,7 +44,7 @@ public class ConnectionSpoolImpl<A> extends AbstractSpoolImpl<A, ConnectionKey<?
 
     @Override
     public ConnectionSpool<A> newInstance() {
-        return new ConnectionSpoolImpl<A>();
+        return new ConnectionSpoolImpl<>();
     }
 
     @Override
@@ -60,4 +61,20 @@ public class ConnectionSpoolImpl<A> extends AbstractSpoolImpl<A, ConnectionKey<?
     protected ConnectionKey initProxyKey() {
         return new SimpleConnectionKey(null);
     }
+
+    @Override
+    protected boolean validateFieldType(Field f) throws IllegalAccessException {
+        boolean retValue = true;
+        if (f != null) {
+            ActionFieldProxyType type = ActionFieldProxyType.getType(f);
+            if ((type != null) && (type == ActionFieldProxyType.Connections)) {
+                retValue = true;
+            } else {
+                throw new IllegalAccessException("Parameter spool doesn''t supports field annotated by type:"+type.toString());
+            }
+        }        
+        return retValue;
+    }
+    
+    
 }

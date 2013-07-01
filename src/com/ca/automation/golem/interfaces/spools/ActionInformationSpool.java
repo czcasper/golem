@@ -4,8 +4,10 @@
  */
 package com.ca.automation.golem.interfaces.spools;
 
+import com.ca.automation.golem.interfaces.ActionStream;
 import com.ca.automation.golem.interfaces.context.ActionInfoProxy;
 import com.ca.automation.golem.interfaces.spools.keys.ActionInfoKey;
+import java.util.List;
 
 /**
  *
@@ -16,7 +18,11 @@ public interface ActionInformationSpool<A> extends AbstractSpool<A, ActionInfoKe
     public boolean isValidAction(Object action);
 
     public boolean isValidAction(Class<?> action);
-    
+
+    public <V> ActionStream<A, V> createNewFromObject(List<A> actions);
+
+    public <V> ActionStream<A, V> createNewFromClasses(List<Class<?>> actions);
+
     @Override
     public ActionInfoProxy get(Object key);
 }

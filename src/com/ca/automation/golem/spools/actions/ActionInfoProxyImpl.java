@@ -33,11 +33,12 @@ import java.util.logging.Logger;
  *
  * @author maslu02
  */
+// TODO Documentation: Create JavaDoc on class and public Method level (minimally) protected method should be included also.
 public class ActionInfoProxyImpl implements ActionInfoProxy {
 
-    protected Map<ActionFieldProxyType, List<Field>> fieldsData = new EnumMap<ActionFieldProxyType, List<Field>>(ActionFieldProxyType.class);
-    protected Map<String, Field> fieldNameMap = new HashMap<String, Field>();
-    protected Map<ActionMethodProxyType, SortedSet<Method>> methodsData = new EnumMap<ActionMethodProxyType, SortedSet<Method>>(ActionMethodProxyType.class);
+    protected Map<ActionFieldProxyType, List<Field>> fieldsData = new EnumMap<>(ActionFieldProxyType.class);
+    protected Map<String, Field> fieldNameMap = new HashMap<>();
+    protected Map<ActionMethodProxyType, SortedSet<Method>> methodsData = new EnumMap<>(ActionMethodProxyType.class);
     protected Map<ActionMethodProxyType, Comparator<Method>> methodComparators;
 
     public ActionInfoProxyImpl(Map<ActionMethodProxyType, Comparator<Method>> methodComparators) {
@@ -48,11 +49,11 @@ public class ActionInfoProxyImpl implements ActionInfoProxy {
     }
 
     public static Map<ActionMethodProxyType, Comparator<Method>> createNewComparators() {
-        Map<ActionMethodProxyType, Comparator<Method>> retValue = new EnumMap<ActionMethodProxyType, Comparator<Method>>(ActionMethodProxyType.class);
+        Map<ActionMethodProxyType, Comparator<Method>> retValue = new EnumMap<>(ActionMethodProxyType.class);
         try {
-            retValue.put(ActionMethodProxyType.Initialize, new MethodAnnotationFieldComparator<Init>(Init.class, "order"));
-            retValue.put(ActionMethodProxyType.Run, new MethodAnnotationFieldComparator<Run>(Run.class, "order"));
-            retValue.put(ActionMethodProxyType.Validate, new MethodAnnotationFieldComparator<Validate>(Validate.class, "order"));
+            retValue.put(ActionMethodProxyType.Initialize, new MethodAnnotationFieldComparator<>(Init.class, "order"));
+            retValue.put(ActionMethodProxyType.Run, new MethodAnnotationFieldComparator<>(Run.class, "order"));
+            retValue.put(ActionMethodProxyType.Validate, new MethodAnnotationFieldComparator<>(Validate.class, "order"));
         } catch (NoSuchMethodException ex) {
             Logger.getLogger(ActionInfoProxyImpl.class.getName()).log(Level.SEVERE, null, ex);
             retValue = null;
@@ -91,7 +92,7 @@ public class ActionInfoProxyImpl implements ActionInfoProxy {
                         if (fieldsData.containsKey(type)) {
                             fieldList = fieldsData.get(type);
                         } else {
-                            fieldList = new ArrayList<Field>(fields.size());
+                            fieldList = new ArrayList<>(fields.size());
                             fieldsData.put(type, fieldList);
                         }
                         fieldNameMap.put(f.getName(), f);
@@ -103,7 +104,7 @@ public class ActionInfoProxyImpl implements ActionInfoProxy {
                                 if (fieldsData.containsKey(ActionFieldProxyType.ReturnValues)) {
                                     retValues = fieldsData.get(ActionFieldProxyType.ReturnValues);
                                 } else {
-                                    retValues = new ArrayList<Field>();
+                                    retValues = new ArrayList<>();
                                     fieldsData.put(ActionFieldProxyType.ReturnValues, retValues);
                                 }
                                 retValues.add(f);
@@ -147,7 +148,7 @@ public class ActionInfoProxyImpl implements ActionInfoProxy {
                         if (methodsData.containsKey(type)) {
                             methodSet = methodsData.get(type);
                         } else {
-                            methodSet = new TreeSet<Method>(methodComparators.get(type));
+                            methodSet = new TreeSet<>(methodComparators.get(type));
                             methodsData.put(type, methodSet);
                         }
                         if (!methodSet.add(m)) {
@@ -173,35 +174,43 @@ public class ActionInfoProxyImpl implements ActionInfoProxy {
     @Override
     public <A> boolean loadAction(Class<?> actionClass, AbstractSpool<A, ActionInfoKey<Class<?>>, ActionInfoProxy> loaded) {
         boolean retValue = false;
-        ActionInfoKey<Class<?>> ak = new SimpleActionInfoKey(actionClass);
+        try {
+            if ((actionClass != null) && (actionClass.getConstructor() != null)) {
+                ActionInfoKey<Class<?>> ak = new SimpleActionInfoKey(actionClass);
 
-        Map<ActionFieldProxyType, List<Field>> tmpfieldsData = new EnumMap<ActionFieldProxyType, List<Field>>(ActionFieldProxyType.class);
-        Map<String, Field> tmpfieldNameMap = new HashMap<String, Field>();
-        Map<ActionMethodProxyType, SortedSet<Method>> tmpmethodsData = new EnumMap<ActionMethodProxyType, SortedSet<Method>>(ActionMethodProxyType.class);
+                Map<ActionFieldProxyType, List<Field>> tmpfieldsData = new EnumMap<>(ActionFieldProxyType.class);
+                Map<String, Field> tmpfieldNameMap = new HashMap<>();
+                Map<ActionMethodProxyType, SortedSet<Method>> tmpmethodsData = new EnumMap<>(ActionMethodProxyType.class);
 
-        while ((actionClass != null) && (!actionClass.equals(Object.class))) {
-            if ((loaded != null) && (loaded.containsKey(ak))) {
-                ActionInfoProxy load = loaded.get(ak);
-                tmpfieldNameMap.putAll(load.getFieldNames());
-                tmpfieldsData.putAll(load.getFields());
-                tmpmethodsData.putAll(load.getMethods());
-                break;
+                while ((actionClass != null) && (!actionClass.equals(Object.class))) {
+                    if ((loaded != null) && (loaded.containsKey(ak))) {
+                        ActionInfoProxy load = loaded.get(ak);
+                        tmpfieldNameMap.putAll(load.getFieldNames());
+                        tmpfieldsData.putAll(load.getFields());
+                        tmpmethodsData.putAll(load.getMethods());
+                        break;
+                    }
+                    if (actionClass.isAnnotationPresent(RunAction.class)) {
+                        loadFields(actionClass, tmpfieldsData, tmpfieldNameMap);
+                        loadMethods(actionClass, tmpmethodsData);
+                    }
+                    actionClass = actionClass.getSuperclass();
+                    ak.set(actionClass);
+                }
+                if (tmpmethodsData.containsKey(ActionMethodProxyType.Run)) {
+                    SortedSet<Method> tmp = tmpmethodsData.get(ActionMethodProxyType.Run);
+                    if ((tmp != null) && (!tmp.isEmpty())) {
+                        methodsData.putAll(tmpmethodsData);
+                        fieldNameMap.putAll(tmpfieldNameMap);
+                        fieldsData.putAll(tmpfieldsData);
+                        retValue = true;
+                    }
+                }
             }
-            if (actionClass.isAnnotationPresent(RunAction.class)) {
-                loadFields(actionClass, tmpfieldsData, tmpfieldNameMap);
-                loadMethods(actionClass, tmpmethodsData);
-            }
-            actionClass = actionClass.getSuperclass();
-            ak.set(actionClass);
-        }
-        if (tmpmethodsData.containsKey(ActionMethodProxyType.Run)) {
-            SortedSet<Method> tmp = tmpmethodsData.get(ActionMethodProxyType.Run);
-            if ((tmp != null) && (!tmp.isEmpty())) {
-                methodsData.putAll(tmpmethodsData);
-                fieldNameMap.putAll(tmpfieldNameMap);
-                fieldsData.putAll(tmpfieldsData);
-                retValue = true;
-            }
+        } catch (NoSuchMethodException ex) {
+            Logger.getLogger(ActionInfoProxyImpl.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SecurityException ex) {
+            Logger.getLogger(ActionInfoProxyImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
         return retValue;
     }
@@ -243,7 +252,7 @@ public class ActionInfoProxyImpl implements ActionInfoProxy {
                     if (fields.containsKey(type)) {
                         dstFileds = fields.get(type);
                     } else {
-                        dstFileds = new ArrayList<Field>();
+                        dstFileds = new ArrayList<>();
                         fields.put(type, dstFileds);
                     }
                     dstFileds.add(f);
@@ -253,7 +262,7 @@ public class ActionInfoProxyImpl implements ActionInfoProxy {
                             if (fieldsData.containsKey(ActionFieldProxyType.ReturnValues)) {
                                 retValues = fieldsData.get(ActionFieldProxyType.ReturnValues);
                             } else {
-                                retValues = new ArrayList<Field>();
+                                retValues = new ArrayList<>();
                                 fieldsData.put(ActionFieldProxyType.ReturnValues, retValues);
                             }
                             retValues.add(f);
@@ -274,7 +283,7 @@ public class ActionInfoProxyImpl implements ActionInfoProxy {
                     if (methods.containsKey(type)) {
                         dstMethods = methods.get(type);
                     } else if (methodComparators.containsKey(type)) {
-                        dstMethods = new TreeSet<Method>(methodComparators.get(type));
+                        dstMethods = new TreeSet<>(methodComparators.get(type));
                         methods.put(type, dstMethods);
                     } else {
                         dstMethods = null;

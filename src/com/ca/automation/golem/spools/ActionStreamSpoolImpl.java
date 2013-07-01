@@ -3,10 +3,10 @@
 package com.ca.automation.golem.spools;
 
 import com.ca.automation.golem.interfaces.ActionStream;
-import com.ca.automation.golem.interfaces.spools.AbstractSpool;
 import com.ca.automation.golem.interfaces.spools.ActionStreamSpool;
 import com.ca.automation.golem.interfaces.spools.keys.ActionStreamKey;
 import com.ca.automation.golem.spools.keys.SimpleActionStreamKey;
+import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,7 +17,7 @@ import java.util.logging.Logger;
  */
 public class ActionStreamSpoolImpl<A, V> extends AbstractSpoolImpl<A, ActionStreamKey<?>, ActionStream<A, V>> implements ActionStreamSpool<A, V> {
 
-    protected static ActionStreamSpool<Object,Object> global = new ActionStreamSpoolImpl<Object, Object>();
+    protected static ActionStreamSpool<Object,Object> global = new ActionStreamSpoolImpl<>();
     
 
     public ActionStreamSpoolImpl() {
@@ -55,13 +55,18 @@ public class ActionStreamSpoolImpl<A, V> extends AbstractSpoolImpl<A, ActionStre
     }
 
     @Override
+    protected boolean validateFieldType(Field f) throws IllegalAccessException {
+        throw new IllegalAccessException("Action stream spool doesn't support direct action interaction with action fields");
+    }
+
+    @Override
     protected ActionStreamKey initProxyKey() {
         return new SimpleActionStreamKey(null);
     }
 
     @Override
     public ActionStreamSpool<A,V> newInstance() {
-        return new ActionStreamSpoolImpl<A, V>();
+        return new ActionStreamSpoolImpl<>();
     }
 
     @SuppressWarnings("unchecked")
