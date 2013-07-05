@@ -44,6 +44,7 @@ public class ActionForTestingContext<T> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public boolean equals(Object obj) {
         if (obj == null) {
             return false;

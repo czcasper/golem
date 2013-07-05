@@ -82,9 +82,9 @@ public class ActionInformationSpoolImpl<A> extends AbstractSpoolImpl<A, ActionIn
 
     @Override
     protected boolean validateFieldType(Field f) throws IllegalAccessException {
-        throw new IllegalAccessException("Action information spool doesn't support direct action interaction with action fields");        
+        throw new IllegalAccessException("Action information spool doesn't support direct action interaction with action fields");
     }
-    
+
     @Override
     public boolean isValidAction(Object action) {
         boolean retValue = false;
@@ -95,11 +95,9 @@ public class ActionInformationSpoolImpl<A> extends AbstractSpoolImpl<A, ActionIn
             }
             if (action instanceof Class) {
                 testClass = (Class<?>) action;
-
             } else {
                 testClass = action.getClass();
             }
-
             retValue = isValidAction(testClass);
         }
         return retValue;
@@ -115,7 +113,7 @@ public class ActionInformationSpoolImpl<A> extends AbstractSpoolImpl<A, ActionIn
             } else {
                 ActionInfoProxy info = new ActionInfoProxyImpl(methodComparator);
                 if (info.loadAction(action, this)) {
-                    ActionInfoKey<Class<?>> tmpKey = new SimpleActionInfoKey(action.getClass());
+                    ActionInfoKey<Class<?>> tmpKey = new SimpleActionInfoKey(action);
                     super.put(tmpKey, info);
                     retValue = true;
                 }
@@ -125,13 +123,24 @@ public class ActionInformationSpoolImpl<A> extends AbstractSpoolImpl<A, ActionIn
     }
 
     @Override
+    @SuppressWarnings("unchecked")
+    // TODO Refactoring: validate if the is chance to provide same functionality with more type save implementation.
     public <V> ActionStream<A, V> createNewFromObject(List<A> actions) {
         ActionStream<A, V> retValue = null;
         if ((actions != null) && (!actions.isEmpty())) {
             AddressArrayList<A> tmpActions = new AddressArrayList<>(actions.size());
             for (A a : actions) {
                 if (isValidAction(a)) {
-                    tmpActions.add(a);
+                    if (a instanceof Class) {
+                        Class<?> aClass = (Class<?>) a;
+                        try {
+                            tmpActions.add((A) aClass.newInstance());
+                        } catch (InstantiationException | IllegalAccessException ex) {
+                            Logger.getLogger(ActionInformationSpoolImpl.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    } else {
+                        tmpActions.add(a);
+                    }
                 } else {
                     Logger.getLogger(ActionInformationSpool.class.getName()).log(Level.INFO, "Action {0} is not valid runner action.", a.toString());
                 }
@@ -144,6 +153,8 @@ public class ActionInformationSpoolImpl<A> extends AbstractSpoolImpl<A, ActionIn
     }
 
     @Override
+    @SuppressWarnings("unchecked")
+    // TODO Refactoring: try to find type save way how to provide same functionality.
     public <V> ActionStream<A, V> createNewFromClasses(List<Class<?>> actions) {
         ActionStream<A, V> retValue = null;
         if ((actions != null) && (!actions.isEmpty())) {
@@ -167,27 +178,66 @@ public class ActionInformationSpoolImpl<A> extends AbstractSpoolImpl<A, ActionIn
     }
 
     @Override
-    public boolean containsKey(Object key) {
-        if (key instanceof Class) {
-            searchProxy.set((Class<?>) key);
-        } else {
-            searchProxy.set(key.getClass());
-        }
-        return super.containsKey(searchProxy);
-    }
+    @SuppressWarnings("unchecked")
+    // TODO Refactoring: Try to find more type save way how to provide same functionality.
+    public boolean containsFrom(Object key) {
+        boolean retValue = false;
+        if (key != null) {
+            ActionInfoKey<Class<?>> tmpKey = null;
+            if (key instanceof ActionInfoKey) {
+                tmpKey = (ActionInfoKey<Class<?>>) key;
+            } else if (key instanceof Class) {
+                searchProxy.set((Class<?>) key);
+                tmpKey = searchProxy;
+            } else if (key instanceof String) {
+                if (searchProxy.fromString((String) key)) {
+                    tmpKey = searchProxy;
+                }
+            } else {
+                searchProxy.set(key.getClass());
+                tmpKey = searchProxy;
+            }
+            if (tmpKey != null) {
+                retValue = super.containsKey(tmpKey);
+            }
 
-    @Override
-    public ActionInfoProxy get(String key) {
-        ActionInfoProxy retValue = null;
-        searchProxy.fromString(key);
-        if (isValidAction(searchProxy)) {
-            retValue = super.get(searchProxy);
         }
         return retValue;
     }
 
     @Override
-    public ActionInfoProxy getProxyFromObject(Object key) {
+    public ActionInfoProxy put(ActionInfoKey<Class<?>> key, ActionInfoProxy value) {
+        ActionInfoProxy retValue = null;
+        if((key!=null)&&(value!=null)&&(value.isValid())){
+            retValue = super.put(key, value);
+        }
+        return retValue;
+    }
+
+    
+    
+    @Override
+    public ActionInfoProxy putFrom(String key, ActionInfoProxy value) {
+        ActionInfoProxy retValue = null;
+        if ((value != null) && (value.isValid())) {
+            retValue = super.putFrom(key, value);
+        }
+        return retValue;
+    }
+
+    @Override
+    public ActionInfoProxy getFrom(String key) {
+        ActionInfoProxy retValue = null;
+        if ((key != null) && (!key.isEmpty())) {
+            if ((searchProxy.fromString(key)) && (isValidAction(searchProxy))) {
+                retValue = super.get(searchProxy);
+            }
+        }
+        return retValue;
+    }
+
+    @Override
+    public ActionInfoProxy getFrom(Object key) {
         ActionInfoProxy retValue = null;
         if (isValidAction(key)) {
             Class<?> tmpKey;

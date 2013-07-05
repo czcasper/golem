@@ -38,7 +38,7 @@ public class SimpleActionStream<A,V> implements ActionStream<A, V> {
 //            }
 //        }
 //        if (this.actions.isEmpty()) {
-//            throw new NullPointerException("List doesnt contains valid actions");
+//            throw new NullPointerException("List doesnt containsFrom valid actions");
 //        }
         it = new ResetableIterator<>(this.actions.iterator());
     }

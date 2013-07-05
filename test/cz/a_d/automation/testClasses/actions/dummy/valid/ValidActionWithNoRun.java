@@ -35,7 +35,5 @@ public class ValidActionWithNoRun extends ActionWithMembers {
 
     public void setLabel(String label) {
         this.label = label;
-    }
-    
-    
+    }    
 }

@@ -66,14 +66,42 @@ public class ActionInfoProxyImpl implements ActionInfoProxy {
         boolean retValue = false;
         if (proxy != null) {
             Map<ActionFieldProxyType, List<Field>> fields = proxy.getFields();
-            Map<ActionMethodProxyType, SortedSet<Method>> methods = proxy.getMethods();
+            Map<String, Field> fieldNames = proxy.getFieldNames();
             if ((fields != null) && (!fields.isEmpty())) {
-                fieldsData.putAll(fields);
-                fieldNameMap.putAll(proxy.getFieldNames());
+                fieldNameMap.putAll(fieldNames);
+                for (ActionFieldProxyType type : fields.keySet()) {
+                    List<Field> srcFields = fields.get(type);
+                    if ((srcFields != null) && (!srcFields.isEmpty())) {
+                        List<Field> dstFields = null;
+                        if (fieldsData.containsKey(type)) {
+                            dstFields = fieldsData.get(type);
+                        }
+                        if (dstFields != null) {
+                            dstFields.addAll(srcFields);
+                        } else {
+                            fieldsData.put(type, srcFields);
+                        }
+                    }
+                }
                 retValue = true;
             }
+
+            Map<ActionMethodProxyType, SortedSet<Method>> methods = proxy.getMethods();
             if ((methods != null) && (!methods.isEmpty())) {
-                methodsData.putAll(methods);
+                for (ActionMethodProxyType type : methods.keySet()) {
+                    SortedSet<Method> srcMethods = methods.get(type);
+                    if ((srcMethods != null) && (!srcMethods.isEmpty())) {
+                        SortedSet<Method> dstMethods = null;
+                        if (methodsData.containsKey(type)) {
+                            dstMethods = methodsData.get(type);
+                        }
+                        if (dstMethods != null) {
+                            dstMethods.addAll(srcMethods);
+                        } else {
+                            methodsData.put(type, srcMethods);
+                        }
+                    }
+                }
                 retValue = true;
             }
         }
@@ -177,34 +205,24 @@ public class ActionInfoProxyImpl implements ActionInfoProxy {
         try {
             if ((actionClass != null) && (actionClass.getConstructor() != null)) {
                 ActionInfoKey<Class<?>> ak = new SimpleActionInfoKey(actionClass);
-
-                Map<ActionFieldProxyType, List<Field>> tmpfieldsData = new EnumMap<>(ActionFieldProxyType.class);
-                Map<String, Field> tmpfieldNameMap = new HashMap<>();
-                Map<ActionMethodProxyType, SortedSet<Method>> tmpmethodsData = new EnumMap<>(ActionMethodProxyType.class);
+                ActionInfoProxyImpl tmpAction = new ActionInfoProxyImpl(methodComparators);
 
                 while ((actionClass != null) && (!actionClass.equals(Object.class))) {
                     if ((loaded != null) && (loaded.containsKey(ak))) {
                         ActionInfoProxy load = loaded.get(ak);
-                        tmpfieldNameMap.putAll(load.getFieldNames());
-                        tmpfieldsData.putAll(load.getFields());
-                        tmpmethodsData.putAll(load.getMethods());
+                        tmpAction.addActionInfoProxy(load);
                         break;
                     }
                     if (actionClass.isAnnotationPresent(RunAction.class)) {
-                        loadFields(actionClass, tmpfieldsData, tmpfieldNameMap);
-                        loadMethods(actionClass, tmpmethodsData);
+                        loadFields(actionClass, tmpAction.fieldsData, tmpAction.fieldNameMap);
+                        loadMethods(actionClass, tmpAction.methodsData);
                     }
                     actionClass = actionClass.getSuperclass();
                     ak.set(actionClass);
                 }
-                if (tmpmethodsData.containsKey(ActionMethodProxyType.Run)) {
-                    SortedSet<Method> tmp = tmpmethodsData.get(ActionMethodProxyType.Run);
-                    if ((tmp != null) && (!tmp.isEmpty())) {
-                        methodsData.putAll(tmpmethodsData);
-                        fieldNameMap.putAll(tmpfieldNameMap);
-                        fieldsData.putAll(tmpfieldsData);
-                        retValue = true;
-                    }
+                if (tmpAction.isValid()) {
+                    this.addActionInfoProxy(tmpAction);
+                    retValue = true;
                 }
             }
         } catch (NoSuchMethodException | SecurityException ex) {
@@ -216,6 +234,18 @@ public class ActionInfoProxyImpl implements ActionInfoProxy {
     @Override
     public boolean isEmpty() {
         return ((fieldsData.isEmpty()) && (methodsData.isEmpty()));
+    }
+
+    @Override
+    public boolean isValid() {
+        boolean retValue = false;
+        if (methodsData.containsKey(ActionMethodProxyType.Run)) {
+            SortedSet<Method> tmp = methodsData.get(ActionMethodProxyType.Run);
+            if ((tmp != null) && (!tmp.isEmpty())) {
+                retValue = true;
+            }
+        }
+        return retValue;
     }
 
     @Override

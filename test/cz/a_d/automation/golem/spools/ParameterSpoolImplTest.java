@@ -73,14 +73,14 @@ public class ParameterSpoolImplTest {
         ParameterSpool<Object, Object> instance = ParameterSpoolImpl.getGlobal();
         assertNotNull(instance);
         Integer value = new Integer(5);
-        instance.put("test", value);
+        instance.putFrom("test", value);
         assertFalse(instance.isEmpty());
         instance = null;
         assertNull(instance);
 
         instance = ParameterSpoolImpl.getGlobal();
         assertFalse(instance.isEmpty());
-        Object result = instance.get("test");
+        Object result = instance.getFrom("test");
         assertSame(value, result);
     }
 
@@ -93,7 +93,7 @@ public class ParameterSpoolImplTest {
          * Initialize instance for testing and add data inside.
          */
         ParameterSpool<Object, Object> instance = new ParameterSpoolImpl<>();
-        Object put = instance.put("test", null);
+        Object put = instance.putFrom("test", null);
         assertNull(put);
         assertFalse(instance.isEmpty());
 
@@ -118,7 +118,7 @@ public class ParameterSpoolImplTest {
     }
 
     /**
-     * Test of put method functionality.
+     * Test of putFrom method functionality.
      */
     @Test
     public void testPut_String_GenericType() {
@@ -132,11 +132,11 @@ public class ParameterSpoolImplTest {
         /**
          * Testing protection agains null and empty parameter key.
          */
-        Object put = instance.put(strKey, parameter);
+        Object put = instance.putFrom(strKey, parameter);
         assertNull(put);
         assertTrue(instance.isEmpty());
         strKey = "";
-        put = instance.put(strKey, parameter);
+        put = instance.putFrom(strKey, parameter);
         assertNull(put);
         assertTrue(instance.isEmpty());
 
@@ -145,7 +145,7 @@ public class ParameterSpoolImplTest {
          */
         strKey = "test";
         parameter = 1;
-        put = instance.put(strKey, parameter);
+        put = instance.putFrom(strKey, parameter);
         assertNull(put);
         assertFalse(instance.isEmpty());
 
@@ -160,7 +160,7 @@ public class ParameterSpoolImplTest {
          * Test value overwriting.
          */
         Double parameter2 = 2.5;
-        put = instance.put(strKey, parameter2);
+        put = instance.putFrom(strKey, parameter2);
         assertFalse(instance.isEmpty());
         assertSame(parameter, put);
         assertEquals(1, instance.size());
@@ -169,7 +169,7 @@ public class ParameterSpoolImplTest {
     }
 
     /**
-     * Test of put method, with parameters A action, Field f,
+     * Test of putFrom method, with parameters A action, Field f,
      * ParameterSpool<A,P> parameters parameters.
      */
     @Test
@@ -220,8 +220,8 @@ public class ParameterSpoolImplTest {
         assertNull(result);
         assertFalse(instance.isEmpty());
         assertEquals(1, instance.size());
-        assertTrue(instance.contains(ActionWithMembers.class.getName() + "." + field.getName()));
-        assertSame(instance.get(ActionWithMembers.class.getName() + "." + field.getName()), action.getText());
+        assertTrue(instance.containsFrom(ActionWithMembers.class.getName() + "." + field.getName()));
+        assertSame(instance.getFrom(ActionWithMembers.class.getName() + "." + field.getName()), action.getText());
 
         /**
          * Test replacing values stored in map by new value from object field.
@@ -232,8 +232,8 @@ public class ParameterSpoolImplTest {
         assertSame(expected, result);
         assertFalse(instance.isEmpty());
         assertEquals(1, instance.size());
-        assertTrue(instance.contains(ActionWithMembers.class.getName() + "." + field.getName()));
-        assertSame(instance.get(ActionWithMembers.class.getName() + "." + field.getName()), action.getText());
+        assertTrue(instance.containsFrom(ActionWithMembers.class.getName() + "." + field.getName()));
+        assertSame(instance.getFrom(ActionWithMembers.class.getName() + "." + field.getName()), action.getText());
 
         /**
          * Test putting parameter with defined pointer value and non existing
@@ -248,8 +248,8 @@ public class ParameterSpoolImplTest {
         assertNull(result);
         assertFalse(instance.isEmpty());
         assertEquals(1, instance.size());
-        assertTrue(instance.contains(ActionWithPointersOnMembers.class.getName() + "." + field.getName()));
-        assertSame(instance.get(ActionWithPointersOnMembers.class.getName() + "." + field.getName()), action2.getTest());
+        assertTrue(instance.containsFrom(ActionWithPointersOnMembers.class.getName() + "." + field.getName()));
+        assertSame(instance.getFrom(ActionWithPointersOnMembers.class.getName() + "." + field.getName()), action2.getTest());
 
         /**
          * Initialize and test pointer feature with string type of value used by
@@ -264,10 +264,10 @@ public class ParameterSpoolImplTest {
         assertNull(result);
         assertFalse(instance.isEmpty());
         assertEquals(3, instance.size());
-        assertTrue(instance.contains(ptrValue));
-        assertSame(action2.getTest(), instance.get(ptrValue));
-        assertTrue(instance.contains(ActionWithPointersOnMembers.class.getName() + "." + field.getName()));
-        assertSame(instance.get(ActionWithPointersOnMembers.class.getName() + "." + field.getName()), expected);
+        assertTrue(instance.containsFrom(ptrValue));
+        assertSame(action2.getTest(), instance.getFrom(ptrValue));
+        assertTrue(instance.containsFrom(ActionWithPointersOnMembers.class.getName() + "." + field.getName()));
+        assertSame(instance.getFrom(ActionWithPointersOnMembers.class.getName() + "." + field.getName()), expected);
 
         /**
          * Initialize and test parameter with name feature.
@@ -281,8 +281,8 @@ public class ParameterSpoolImplTest {
         assertNull(result);
         assertFalse(instance.isEmpty());
         assertEquals(1, instance.size());
-        assertTrue(instance.contains("testingName"));
-        assertSame(action3.getTest(), instance.get("testingName"));
+        assertTrue(instance.containsFrom("testingName"));
+        assertSame(action3.getTest(), instance.getFrom("testingName"));
 
         /**
          * Initialize and test RunContext pointer functionality.
@@ -305,15 +305,15 @@ public class ParameterSpoolImplTest {
         assertNull(result);
         assertFalse(instance.isEmpty());
         assertEquals(2, instance.size());
-        assertTrue(instance.contains(ptrValue));
-        assertSame(action4.getDummy(), instance.get(ptrValue));
+        assertTrue(instance.containsFrom(ptrValue));
+        assertSame(action4.getDummy(), instance.getFrom(ptrValue));
     }
 
     /**
-     * Test of contains method, of class AbstractSpoolImpl.
+     * Test of containsFrom method, of class AbstractSpoolImpl.
      */
     @Test
-    public void testContains() {
+    public void testContainsFrom() {
         /**
          * Initialize testing instance and variables for first test(protection
          * agains null parametr value).
@@ -321,7 +321,7 @@ public class ParameterSpoolImplTest {
         ParameterSpool<Object, Object> instance = new ParameterSpoolImpl<>();
         String strKey = null;
         assertTrue(instance.isEmpty());
-        boolean result = instance.contains(strKey);
+        boolean result = instance.containsFrom(strKey);
         assertFalse(result);
 
         /**
@@ -333,9 +333,9 @@ public class ParameterSpoolImplTest {
         Object put = instance.put(key, value);
         assertNull(put);
         assertFalse(instance.isEmpty());
-        result = instance.contains(strKey);
+        result = instance.containsFrom(strKey);
         assertTrue(result);
-        assertSame(value, instance.get(strKey));
+        assertSame(value, instance.getFrom(strKey));
 
         /**
          * Test functionality with wrong implementation of custom anonymus key.
@@ -382,7 +382,7 @@ public class ParameterSpoolImplTest {
         put = instance.put(internalKey, value);
         assertNull(put);
         assertFalse(instance.isEmpty());
-        result = instance.contains(strKey);
+        result = instance.containsFrom(strKey);
         assertFalse(result);
 
         /**
@@ -454,9 +454,9 @@ public class ParameterSpoolImplTest {
         assertNull(put);
         assertFalse(instance.isEmpty());
 
-        result = instance.contains(strKey);
+        result = instance.containsFrom(strKey);
         assertTrue(result);
-        assertSame(value, instance.get(strKey));
+        assertSame(value, instance.getFrom(strKey));
 
         internalKey = new CustomKey(BigInteger.ONE);
         put = instance.put(internalKey, value);
@@ -464,16 +464,16 @@ public class ParameterSpoolImplTest {
         assertSame(value, put);
         assertFalse(instance.isEmpty());
 
-        result = instance.contains(strKey);
+        result = instance.containsFrom(strKey);
         assertTrue(result);
-        assertSame(value, instance.get(strKey));
+        assertSame(value, instance.getFrom(strKey));
     }
 
     /**
-     * Test of get method, of class AbstractSpoolImpl.
+     * Test of getFrom method, of class AbstractSpoolImpl.
      */
     @Test
-    public void testGet_String() {
+    public void testGetFrom_String() {
         /**
          * Initialize testing instance and variables for first test(protection
          * agains null parametr value).
@@ -481,11 +481,11 @@ public class ParameterSpoolImplTest {
         ParameterSpool<Object, Object> instance = new ParameterSpoolImpl<>();
         String strKey = null;
         assertTrue(instance.isEmpty());
-        Object result = instance.get(strKey);
+        Object result = instance.getFrom(strKey);
         assertNull(result);
 
         /**
-         * Initialize testing data to test instance method get with string
+         * Initialize testing data to test instance method getFrom with string
          * parameter.
          */
         Map<SimpleParameterKey, String> valid = new HashMap<>();
@@ -505,7 +505,7 @@ public class ParameterSpoolImplTest {
          * Test if all data in valid map are in tested instance.
          */
         for (SimpleParameterKey k : valid.keySet()) {
-            assertSame(valid.get(k), instance.get(k.get()));
+            assertSame(valid.get(k), instance.getFrom(k.get()));
         }
 
         /**
@@ -517,7 +517,7 @@ public class ParameterSpoolImplTest {
             r.nextBytes(by);
             strKey = new String(by);
             tmp.set(strKey);
-            result = instance.get(strKey);
+            result = instance.getFrom(strKey);
 
             if (valid.containsKey(tmp)) {
                 assertSame(valid.get(tmp), result);
@@ -531,7 +531,7 @@ public class ParameterSpoolImplTest {
     @Test
     public void testPut_3Args_WrongFieldType() throws NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
         /**
-         * Initialize testing instance and test get method with unsuported type
+         * Initialize testing instance and test getFrom method with unsuported type
          * of field Connection.
          */
         ParameterSpool<Object, Object> instance = new ParameterSpoolImpl<>();
@@ -546,7 +546,7 @@ public class ParameterSpoolImplTest {
     }
 
     /**
-     * Test of get method, of class AbstractSpoolImpl.
+     * Test of getFrom method, of class AbstractSpoolImpl.
      */
     @Test
     public void testGet_3args() throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException {
@@ -577,7 +577,7 @@ public class ParameterSpoolImplTest {
         assertNull(result);
 
         /**
-         * Testing get first element by valid values, but from empty spool.
+         * Testing getFrom first element by valid values, but from empty spool.
          */
         result = instance.get(action0, field, null);
         assertNull(result);
@@ -585,7 +585,7 @@ public class ParameterSpoolImplTest {
         assertNull(result);
 
         /**
-         * Initialize instance by first element and test get method.
+         * Initialize instance by first element and test getFrom method.
          */
         String testingStrValue = "Testing value";
         action0.setText(testingStrValue);
@@ -614,7 +614,7 @@ public class ParameterSpoolImplTest {
          * Test injection of value with key defined by spool from string value.
          */
         instance.clear();
-        instance.put(ActionWithMembers.class.getName() + "." + field.getName(), testingStrValue);
+        instance.putFrom(ActionWithMembers.class.getName() + "." + field.getName(), testingStrValue);
         result = instance.get(action0, field, instance);
         assertSame(newStrValue, result);
         assertSame(testingStrValue, action0.getText());
@@ -644,7 +644,7 @@ public class ParameterSpoolImplTest {
         assertSame(testingStrValue, action1.getTest());
 
         /**
-         * Test get with defined pointer without defined key in spool for
+         * Test getFrom with defined pointer without defined key in spool for
          * pointers.
          */
         instance.remove(ptrKey);
@@ -656,7 +656,7 @@ public class ParameterSpoolImplTest {
         /**
          * Test pointer feature with pointer key generated by instance.
          */
-        instance.put("1", ptrValue);
+        instance.putFrom("1", ptrValue);
         result = instance.get(action1, field, instance);
         assertSame(newStrValue, result);
         assertSame(testingStrValue, action1.getTest());
@@ -665,7 +665,7 @@ public class ParameterSpoolImplTest {
          * Test pointer feature with all keys needed by pointer functionality
          * generated by spool.
          */
-        instance.put("10", newStrValue);
+        instance.putFrom("10", newStrValue);
         result = instance.get(action1, field, instance);
         assertSame(testingStrValue, result);
         assertSame(newStrValue, action1.getTest());
@@ -676,7 +676,7 @@ public class ParameterSpoolImplTest {
          */
         instance.remove(ptrKey);
         String nonPointerValue = "Hello non pointers";
-        instance.put(ActionWithPointersOnMembers.class.getName() + "." + field.getName(), nonPointerValue);
+        instance.putFrom(ActionWithPointersOnMembers.class.getName() + "." + field.getName(), nonPointerValue);
         result = instance.get(action1, field, instance);
         assertSame(newStrValue, result);
         assertSame(nonPointerValue, action1.getTest());
@@ -691,7 +691,7 @@ public class ParameterSpoolImplTest {
         assertSame(newStrValue, action1.getTest());
 
         /**
-         * Test protection to get directly context from parameter spool without
+         * Test protection to getFrom directly context from parameter spool without
          * using pointer feature.
          */
         instance.clear();
@@ -699,7 +699,7 @@ public class ParameterSpoolImplTest {
         field = ActionWithPointerToContext.class.getDeclaredField("dummy");
         field.setAccessible(true);
         action2.setDummy(nonPointerValue);
-        instance.put(ActionWithPointerToContext.class.getName() + "." + field.getName(), null);
+        instance.putFrom(ActionWithPointerToContext.class.getName() + "." + field.getName(), null);
 
         result = instance.get(action2, field, instance);
         assertNull(result);
@@ -720,7 +720,7 @@ public class ParameterSpoolImplTest {
     @Test
     public void testGet_3Args_WrongFieldType() throws NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
         /**
-         * Initialize testing instance and test put method with unsuported type
+         * Initialize testing instance and test putFrom method with unsuported type
          * of field Connection.
          */
         ParameterSpool<Object, Object> instance = new ParameterSpoolImpl<>();

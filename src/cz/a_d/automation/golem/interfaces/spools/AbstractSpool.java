@@ -16,11 +16,11 @@ public interface AbstractSpool<A, K extends AbstractSpoolKey, V> extends Map<K, 
 
     public AbstractSpool<A, K, V> newInstance();
 
-    public V put(String key, V value);
+    public V putFrom(String key, V value);
 
-    public V get(String key);
+    public V getFrom(String key);
 
-    public boolean contains(String key);
+    public boolean containsFrom(String key);
 
     public <P> V put(A action, Field f, ParameterSpool<A, P> parameters) throws IllegalArgumentException, IllegalAccessException;
 

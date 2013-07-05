@@ -26,7 +26,7 @@ import org.junit.Test;
 public class RunCycleManagerImplTest {
 
     private AddressArrayList<ActionForTestingContext<Integer>> steps;
-    private RunContextImpl<Object, Boolean, Object> initializedRun;
+    private RunContextImpl<ActionForTestingContext<Integer>,Boolean, Object> initializedRun;
 
     public RunCycleManagerImplTest() {
         steps = new AddressArrayList<>();
@@ -46,8 +46,8 @@ public class RunCycleManagerImplTest {
     @Before
     public void setUp() {
         initializedRun = new RunContextImpl<>();
-        initializedRun.setActionStream(new SimpleActionStream(steps));
-        initializedRun.setCycleManager(new RunCycleManagerImpl(initializedRun));
+        initializedRun.setActionStream(new SimpleActionStream<>(steps));
+        initializedRun.setCycleManager(new RunCycleManagerImpl<>(initializedRun));
     }
 
     @After
@@ -63,7 +63,7 @@ public class RunCycleManagerImplTest {
         /**
          * Initialize and test protection of method agains instance initialized by null RunContext.
          */
-        RunCycleManager<Object, Object> instance = new RunCycleManagerImpl<>(null);
+        RunCycleManager<ActionForTestingContext<Integer>, Object> instance = new RunCycleManagerImpl<>(null);
         assertFalse(instance.hasNext());
 
         /**
@@ -75,7 +75,7 @@ public class RunCycleManagerImplTest {
         boolean setup = instance.setup(steps.get(0), repeatCount, steps.size() - 1);
         assertTrue(setup);
         assertFalse(instance.hasNext());
-        ResetableIterator it = initializedRun.resetableIterator();
+        ResetableIterator<ActionForTestingContext<Integer>> it = initializedRun.resetableIterator();
         assertTrue(it.hasNext());
 
         /**
@@ -210,8 +210,8 @@ public class RunCycleManagerImplTest {
     public void testNext() {
 
         long repeatCount = 2;
-        RunCycleManagerImpl instance = (RunCycleManagerImpl) initializedRun.getCycleManager();
-        ResetableIterator it = initializedRun.resetableIterator();
+        RunCycleManager<ActionForTestingContext<Integer>, Object> instance = initializedRun.getCycleManager();
+        ResetableIterator<ActionForTestingContext<Integer>> it = initializedRun.resetableIterator();
 
         boolean setup = instance.setup(steps.get(0), repeatCount, steps.size() - 1);
         assertTrue(setup);
@@ -268,19 +268,19 @@ public class RunCycleManagerImplTest {
      */
     @Test
     public void testInitCycle() {
-        Object action = null;
+        ActionForTestingContext<Integer> action = null;
         long repeatCount = 0L;
         int actionCount = 0;
-        RunCycleManagerImpl<Object, Boolean, Object> instance = new RunCycleManagerImpl<>(null);
+        RunCycleManager<ActionForTestingContext<Integer>, Object> instance = new RunCycleManagerImpl<>(null);
         boolean result = instance.setup(action, repeatCount, actionCount);
         assertFalse(result);
 
-        instance = (RunCycleManagerImpl) initializedRun.getCycleManager();
+        instance = initializedRun.getCycleManager();
         result = instance.setup(action, repeatCount, actionCount);
         assertFalse(result);
 
         repeatCount = 2;
-        for (Object step : steps) {
+        for (ActionForTestingContext<Integer> step : steps) {
             result = instance.setup(step, repeatCount, 0);
             assertTrue(result);
         }
@@ -312,11 +312,11 @@ public class RunCycleManagerImplTest {
      */
     @Test
     public void testGetCurrentCycle() {
-        RunCycleManagerImpl<Object, Boolean, Object> instance = new RunCycleManagerImpl<>(null);
+        RunCycleManager<ActionForTestingContext<Integer>, Object> instance = new RunCycleManagerImpl<>(null);
         RunCycle result = instance.getCurrent();
         assertNull(result);
 
-        instance = (RunCycleManagerImpl) initializedRun.getCycleManager();
+        instance = initializedRun.getCycleManager();
         assertTrue(instance.setup(steps.get(0), 4, steps.size() - 1));
         assertTrue(instance.setup(steps.get(7), 3, steps.size() - 8));
 

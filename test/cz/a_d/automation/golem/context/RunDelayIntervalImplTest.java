@@ -13,6 +13,7 @@ import org.junit.Test;
  *
  * @author maslu02
  */
+// TODO Refactoring: Validate functionality of this test and improve it to be more complex.
 public class RunDelayIntervalImplTest {
     
     public RunDelayIntervalImplTest() {
@@ -190,7 +191,7 @@ public class RunDelayIntervalImplTest {
      */
     @Test
     public void testGetTime() {
-        RunDelayIntervalImpl instance = new RunDelayIntervalImpl();
+        RunDelayIntervalImpl<Integer> instance = new RunDelayIntervalImpl<>();
         long expResult = 1L;
         boolean setTime = instance.setTime(expResult);
         assertTrue(setTime);
@@ -205,7 +206,7 @@ public class RunDelayIntervalImplTest {
     @Test
     public void testSetTime() {
         long time = 0L;
-        RunDelayIntervalImpl instance = new RunDelayIntervalImpl();
+        RunDelayIntervalImpl<Integer> instance = new RunDelayIntervalImpl<>();
         boolean result = instance.setTime(time);
         assertFalse(result);
         
@@ -237,7 +238,7 @@ public class RunDelayIntervalImplTest {
      */
     @Test
     public void testStop() {
-        RunDelayIntervalImpl instance = new RunDelayIntervalImpl();
+        RunDelayIntervalImpl<Integer> instance = new RunDelayIntervalImpl<>();
 
         long actionCount = -1;
         long time = 10;
@@ -270,7 +271,7 @@ public class RunDelayIntervalImplTest {
      */
     @Test
     public void testSetupTimer() {
-        RunDelayIntervalImpl instance = new RunDelayIntervalImpl();
+        RunDelayIntervalImpl<Integer> instance = new RunDelayIntervalImpl<>();
         boolean result = instance.setupTimer(null, 10, 0);
         assertFalse(result);
         

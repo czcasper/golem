@@ -4,6 +4,7 @@
  */
 package cz.a_d.automation.golem.annotations;
 
+import cz.a_d.automation.golem.annotations.fields.RunParameter;
 import cz.a_d.automation.golem.annotations.methods.Init;
 import cz.a_d.automation.golem.annotations.methods.Run;
 import cz.a_d.automation.golem.annotations.methods.Validate;
@@ -58,14 +59,14 @@ public class MethodAnnotationFieldComparatorTest {
     public void testCompare00() throws NoSuchMethodException {
         testException.expect(NullPointerException.class);
         testException.expectMessage("Annotation class cannot be null.");
-        MethodAnnotationFieldComparator instance = new MethodAnnotationFieldComparator(null, null);
+        MethodAnnotationFieldComparator<RunParameter> instance = new MethodAnnotationFieldComparator<>(null, null);
     }
 
     @Test
     public void testCompare01() throws NoSuchMethodException {
         testException.expect(NullPointerException.class);
         testException.expectMessage("Name of annotation field cannot be null.");
-        MethodAnnotationFieldComparator instance = new MethodAnnotationFieldComparator(Init.class, null);
+        MethodAnnotationFieldComparator<RunParameter> instance = new MethodAnnotationFieldComparator<>(RunParameter.class, null);
     }
 
     @Test
@@ -73,7 +74,7 @@ public class MethodAnnotationFieldComparatorTest {
         testException.expect(NoSuchMethodException.class);
         String testName = "jUnitTestField";
 //        testException.expectMessage(NoSuchMethodException.class.getName()+": "+Init.class.getName()+"."+testName+"()");
-        MethodAnnotationFieldComparator instance = new MethodAnnotationFieldComparator(Init.class, testName);
+        MethodAnnotationFieldComparator<RunParameter> instance = new MethodAnnotationFieldComparator<>(RunParameter.class, testName);
     }
 
     @Test
@@ -84,7 +85,7 @@ public class MethodAnnotationFieldComparatorTest {
          * method annotation Init.
          */
         String testName = "order";
-        MethodAnnotationFieldComparator instance = new MethodAnnotationFieldComparator(Init.class, testName);
+        MethodAnnotationFieldComparator<Init> instance = new MethodAnnotationFieldComparator<>(Init.class, testName);
         ActionWithMethodsForOrderingInit obj = new ActionWithMethodsForOrderingInit();
         Method[] testMethods = obj.getClass().getDeclaredMethods();
         List<Method> tmpList = Arrays.asList(testMethods);
@@ -100,10 +101,10 @@ public class MethodAnnotationFieldComparatorTest {
          * Initialize object for testing sorting of method with Run annotation declared in random order.
          */
         ActionWithMethodsForOrderingRun runObj = new ActionWithMethodsForOrderingRun();
-        instance = new MethodAnnotationFieldComparator(Run.class, testName);
+        MethodAnnotationFieldComparator<Run> runInstance = new MethodAnnotationFieldComparator<>(Run.class, testName);
         testMethods = runObj.getClass().getDeclaredMethods();
         tmpList = Arrays.asList(testMethods);
-        Collections.sort(tmpList, instance);
+        Collections.sort(tmpList, runInstance);
         index = 0;
         for (Method m : tmpList) {
             String s = m.getName();
@@ -115,10 +116,10 @@ public class MethodAnnotationFieldComparatorTest {
          * Initialize and test sorting of method annotatted by Validate annotation and defined in sorded order.
          */
         ActionWithMethodsForOrderingValidate valObj = new ActionWithMethodsForOrderingValidate();
-        instance= new MethodAnnotationFieldComparator(Validate.class, testName);
+        MethodAnnotationFieldComparator<Validate> valInstance= new MethodAnnotationFieldComparator<>(Validate.class, testName);
         testMethods = valObj.getClass().getDeclaredMethods();
         tmpList = Arrays.asList(testMethods);
-        Collections.sort(tmpList, instance);
+        Collections.sort(tmpList, valInstance);
         index = 0;
         for (Method m : tmpList) {
             String s = m.getName();

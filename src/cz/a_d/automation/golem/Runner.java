@@ -94,7 +94,7 @@ public class Runner {
             /**
              * This is expected 
              */
-            ActionInfoProxy proxy = actionData.getProxyFromObject(leaf);
+            ActionInfoProxy proxy = actionData.getFrom(leaf);
             injectParameters(leaf, proxy, runParameterMap);
 
             injectContexts(leaf, proxy, runParameterMap);
@@ -112,7 +112,7 @@ public class Runner {
 
     protected boolean executeAction(Object action) {
         boolean retValue = true;
-        ActionInfoProxy tmp = actionData.getProxyFromObject(action);
+        ActionInfoProxy tmp = actionData.getFrom(action);
         for (ActionMethodProxyType type : ActionMethodProxyType.values()) {
             if (!executeActionMethodsGroup(type, tmp.getMethod(type), action)) {
                 retValue = false;

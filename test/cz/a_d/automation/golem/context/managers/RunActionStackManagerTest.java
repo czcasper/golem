@@ -6,6 +6,7 @@ package cz.a_d.automation.golem.context.managers;
 
 import cz.a_d.automation.golem.common.AddressArrayList;
 import cz.a_d.automation.golem.context.RunContextImpl;
+import cz.a_d.automation.golem.interfaces.context.managers.RunActionStackManager;
 import cz.a_d.automation.golem.spools.actions.SimpleActionStream;
 import cz.a_d.automation.testClasses.actions.dummy.valid.ActionForTestingContext;
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ import org.junit.Test;
 public class RunActionStackManagerTest {
 
     private AddressArrayList<ActionForTestingContext<Integer>> steps;
-    private RunContextImpl initializedRun;
+    private RunContextImpl<ActionForTestingContext<Integer>,Boolean, Object> initializedRun;
 
     public RunActionStackManagerTest() {
         steps = new AddressArrayList<>();
@@ -37,9 +38,9 @@ public class RunActionStackManagerTest {
 
     @Before
     public void setUp() {
-        initializedRun = new RunContextImpl();
-        initializedRun.setActionStream(new SimpleActionStream(steps));
-        initializedRun.setStackManager(new RunActionStackManagerImpl(initializedRun));
+        initializedRun = new RunContextImpl<>();
+        initializedRun.setActionStream(new SimpleActionStream<>(steps));
+        initializedRun.setStackManager(new RunActionStackManagerImpl<>(initializedRun));
     }
 
     @After
@@ -49,10 +50,10 @@ public class RunActionStackManagerTest {
 
     @Test
     public void testHasNext() throws Exception {
-        RunActionStackManagerImpl<Object,Boolean,Object> instance = new RunActionStackManagerImpl<>(null);
+        RunActionStackManager<ActionForTestingContext<Integer>,Object> instance = new RunActionStackManagerImpl<>(null);
         assertFalse(instance.hasNext());
 
-        instance = (RunActionStackManagerImpl<Object,Boolean,Object>) initializedRun.getStackManager();
+        instance =  initializedRun.getStackManager();
         List<Object> actions = new ArrayList<>();
         for (int i = 0; i < 7; i++) {
             actions.add(i);
@@ -100,10 +101,10 @@ public class RunActionStackManagerTest {
 
     @Test
     public void testNext() {
-        RunActionStackManagerImpl<Object,Boolean,Object> instance = new RunActionStackManagerImpl<>(null);
+        RunActionStackManager<ActionForTestingContext<Integer>,Object> instance = new RunActionStackManagerImpl<>(null);
         assertNull(instance.next());
 
-        instance = (RunActionStackManagerImpl<Object,Boolean,Object>) initializedRun.getStackManager();
+        instance = initializedRun.getStackManager();
         List<ActionForTestingContext<Integer>> actions = new ArrayList<>();
         for (int i = 0; i < 7; i++) {
             actions.add(new ActionForTestingContext<>(i));
@@ -135,7 +136,7 @@ public class RunActionStackManagerTest {
 
     @Test
     public void testSetup() {
-        RunActionStackManagerImpl<Object,Boolean,Object> instance = (RunActionStackManagerImpl<Object,Boolean,Object>) initializedRun.getStackManager();
+        RunActionStackManager<ActionForTestingContext<Integer>,Object> instance = initializedRun.getStackManager();
 
         List<ActionForTestingContext<Integer>> actions = new ArrayList<>();
         for (int i = 0; i < 7; i++) {
@@ -143,7 +144,7 @@ public class RunActionStackManagerTest {
         }
         Object[] tmp = new Object[actions.size()];
         tmp = actions.toArray(tmp);
-        for (Object s : steps) {
+        for (ActionForTestingContext<Integer> s : steps) {
             boolean setupStack = instance.setup(s, tmp);
             assertTrue(setupStack);
         }

@@ -18,7 +18,7 @@ import org.junit.Test;
 public class RunCycleImplTest {
 
     private AddressArrayList<Object> steps;
-    private RunCycleImpl initialized;
+    private RunCycleImpl<Object> initialized;
     private ResetableIterator<Object> it;
 
     public RunCycleImplTest() {
@@ -43,7 +43,7 @@ public class RunCycleImplTest {
     @Before
     public void setUp() {
         it = new ResetableIterator<>(steps.iterator());
-        initialized = new RunCycleImpl(steps, it);
+        initialized = new RunCycleImpl<>(steps, it);
         initialized.setupCycle(steps.get(0), 5, steps.size() - 1);
     }
 
@@ -129,7 +129,7 @@ public class RunCycleImplTest {
         Object rootAction = null;
         int repeatCount = 0;
         int actionCount = -1;
-        RunCycleImpl instance = new RunCycleImpl(steps, it);
+        RunCycleImpl<Object> instance = new RunCycleImpl<>(steps, it);
 
         boolean result = instance.setupCycle(rootAction, repeatCount, actionCount);
         assertFalse(result);
@@ -232,7 +232,7 @@ public class RunCycleImplTest {
      */
     @Test
     public void testGetStartAction() {
-        RunCycleImpl instance = new RunCycleImpl(steps);
+        RunCycleImpl<Object> instance = new RunCycleImpl<>(steps);
         Object result = instance.getStartAction();
         assertNull(result);
         Object expResult;
@@ -251,7 +251,7 @@ public class RunCycleImplTest {
      */
     @Test
     public void testShiftRootAction() {
-        RunCycleImpl instance = new RunCycleImpl(steps);
+        RunCycleImpl<Object> instance = new RunCycleImpl<>(steps);
 
         boolean result = instance.shiftStartAction(10);
         assertFalse(result);
@@ -316,7 +316,7 @@ public class RunCycleImplTest {
      */
     @Test
     public void testGetEndAction() {
-        RunCycleImpl instance = new RunCycleImpl(steps);
+        RunCycleImpl<Object> instance = new RunCycleImpl<>(steps);
         Object expResult = null;
         Object result = instance.getEndAction();
         assertEquals(expResult, result);
@@ -341,7 +341,7 @@ public class RunCycleImplTest {
      */
     @Test
     public void testShiftEndAction() {
-        RunCycleImpl instance = new RunCycleImpl(steps);
+        RunCycleImpl<Object> instance = new RunCycleImpl<>(steps);
         boolean result = instance.shiftEndAction(10);
         assertFalse(result);
 
@@ -413,7 +413,7 @@ public class RunCycleImplTest {
      */
     @Test
     public void testSetBreak() {
-        RunCycleImpl instance = new RunCycleImpl(steps);
+        RunCycleImpl<Object> instance = new RunCycleImpl<>(steps);
         boolean result = instance.isBreak();
         assertFalse(result);
 
@@ -448,7 +448,7 @@ public class RunCycleImplTest {
      */
     @Test
     public void testGetCycleIterationNum() {
-        RunCycleImpl instance = new RunCycleImpl(steps);
+        RunCycleImpl<Object> instance = new RunCycleImpl<>(steps);
         long result = instance.getCycleIterationNum();
         assertEquals(0l, result);
 
@@ -471,7 +471,7 @@ public class RunCycleImplTest {
      */
     @Test
     public void testGetActionIndex() {
-        RunCycleImpl instance = new RunCycleImpl(steps);
+        RunCycleImpl<Object> instance = new RunCycleImpl<>(steps);
         int result = instance.getActionIndex();
         assertEquals(0, result);
 
@@ -495,7 +495,7 @@ public class RunCycleImplTest {
      */
     @Test
     public void testGetRepeatCount() {
-        RunCycleImpl instance = new RunCycleImpl(steps);
+        RunCycleImpl<Object> instance = new RunCycleImpl<>(steps);
         long result = instance.getRepeatCount();
         assertEquals(0L, result);
 
@@ -513,7 +513,7 @@ public class RunCycleImplTest {
     @Test
     public void testSetRepeatCount() {
         int repeatCount = 0;
-        RunCycleImpl instance = new RunCycleImpl(steps);
+        RunCycleImpl<Object> instance = new RunCycleImpl<>(steps);
         instance.setRepeatCount(repeatCount);
         assertEquals(repeatCount, instance.getRepeatCount());
 

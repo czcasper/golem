@@ -66,7 +66,7 @@ public class AddressArrayListTest {
         
         Logger.getLogger(this.getClass().getName()).fine("indexOf");
        
-        AddressArrayList instance = new AddressArrayList();
+        AddressArrayList<Object> instance = new AddressArrayList<>();
         
         instance.add(o);
         instance.add(arr1);
@@ -84,7 +84,7 @@ public class AddressArrayListTest {
     @Test
     public void testContains(){
         Logger.getLogger(this.getClass().getName()).fine("contains");
-        AddressArrayList instance = new AddressArrayList();
+        AddressArrayList<Object> instance = new AddressArrayList<>();
         
         instance.add(o);
         instance.add(arr1);
@@ -104,7 +104,7 @@ public class AddressArrayListTest {
     public void testLastIndexOf() {
         Logger.getLogger(this.getClass().getName()).fine("lastIndexOf");
         //Object o = null;
-        AddressArrayList instance = new AddressArrayList();
+        AddressArrayList<Object> instance = new AddressArrayList<>();
         
         instance.add(o);
         instance.add(arr1);
@@ -121,7 +121,7 @@ public class AddressArrayListTest {
     @Test
     public void testIdenticalItems() {
         Logger.getLogger(this.getClass().getName()).fine("identical objects");
-        AddressArrayList instance = new AddressArrayList();
+        AddressArrayList<Object> instance = new AddressArrayList<>();
      /*   ArrayList arr1 = new ArrayList();
         ArrayList arr2 = new ArrayList();
         for(int i=1;i<=10;i++){

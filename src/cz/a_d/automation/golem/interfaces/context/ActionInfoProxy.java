@@ -42,6 +42,8 @@ public interface ActionInfoProxy {
     public <A> boolean loadAction(Class<?> action, AbstractSpool<A, ActionInfoKey<Class<?>>, ActionInfoProxy> loaded);
 
     public boolean isEmpty();
+    
+    public boolean isValid();
 
     public void clear();
 

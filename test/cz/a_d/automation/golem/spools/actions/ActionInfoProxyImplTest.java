@@ -46,6 +46,7 @@ import org.junit.Test;
  *
  * @author maslu02
  */
+// TODO Refactoring: improve test scale related to test is methods are added correctly in case of multiple object relation ship.
 public class ActionInfoProxyImplTest {
 
     protected Map<ActionMethodProxyType, Comparator<Method>> comparators = ActionInfoProxyImpl.createNewComparators();
@@ -376,7 +377,7 @@ public class ActionInfoProxyImplTest {
         }
 
         /**
-         * Initialize instance by values for testing get operations.
+         * Initialize instance by values for testing getFrom operations.
          */
         Collection<Field> contextField = new ArrayList<>();
         contextField.addAll(Arrays.asList(ActionWithContext.class.getDeclaredFields()));
@@ -750,7 +751,7 @@ public class ActionInfoProxyImplTest {
         }
 
         /**
-         * Test get method and validate ordering of method by annotation
+         * Test getFrom method and validate ordering of method by annotation
          * parameter order. Initialize test methods which should be used befor
          * default values.
          */

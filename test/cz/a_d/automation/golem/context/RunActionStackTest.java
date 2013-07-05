@@ -217,6 +217,7 @@ public class RunActionStackTest {
      * Test of clone method, of class RunActionStackImpl.
      */
     @Test
+    @SuppressWarnings("unchecked")
     public void testClone() throws Exception {
         RunActionStackImpl<Integer> instance = new RunActionStackImpl<>();
 

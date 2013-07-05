@@ -20,7 +20,7 @@ import java.util.logging.Logger;
  * @author maslu02
  */
 // TODO Documentation: Create JavaDoc on class and public method level.
-// TODO Refactoring: Methods with suppressing warning unchecked should be validated and refactored to be more type save (put, get, buildKey)
+// TODO Refactoring: Methods with suppressing warning unchecked should be validated and refactored to be more type save (putFrom, getFrom, buildKey)
 public abstract class AbstractSpoolImpl<A, K extends AbstractSpoolKey<?>, V> extends LinkedHashMap<K, V> implements AbstractSpool<A, K, V>, Cloneable {
 
     protected K searchProxy = null;
@@ -48,10 +48,13 @@ public abstract class AbstractSpoolImpl<A, K extends AbstractSpoolKey<?>, V> ext
     }
 
     @Override
-    public V put(String key, V value) {
+    public V putFrom(String key, V value) {
         V retValue = null;
         if ((key != null) && (!key.isEmpty())) {
-            retValue = this.put(createKey(key), value);
+            K tmpKey = createKey(key);
+            if (tmpKey != null) {
+                retValue = this.put(tmpKey, value);
+            }
         }
         return retValue;
     }
@@ -71,13 +74,16 @@ public abstract class AbstractSpoolImpl<A, K extends AbstractSpoolKey<?>, V> ext
     }
 
     @Override
-    public boolean contains(String key) {
-        searchProxy.fromString(key);
-        return this.containsKey(searchProxy);
+    public boolean containsFrom(String key) {
+        boolean retValue = false;
+        if(searchProxy.fromString(key)){
+            retValue = this.containsKey(searchProxy);
+        }
+        return retValue;
     }
 
     @Override
-    public V get(String key) {
+    public V getFrom(String key) {
         searchProxy.fromString(key);
         return this.get(searchProxy);
     }

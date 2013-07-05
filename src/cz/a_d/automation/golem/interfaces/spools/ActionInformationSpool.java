@@ -23,5 +23,10 @@ public interface ActionInformationSpool<A> extends AbstractSpool<A, ActionInfoKe
 
     public <V> ActionStream<A, V> createNewFromClasses(List<Class<?>> actions);
 
-    public ActionInfoProxy getProxyFromObject(Object key);
+    public ActionInfoProxy getFrom(Object key);
+
+    public boolean containsFrom(Object key);
+
+    @Override
+    public ActionInformationSpool<A> newInstance();
 }
