@@ -569,7 +569,6 @@ public class ActionInformationSpoolImplTest {
         valid.add(ValidActionWithNoRun.class);
 
         int expectedSize = instance.size();
-        ActionInfoProxy prevResult = null;
         Iterator<Class<?>> iterator = valid.iterator();
         Random r = new Random();
 

@@ -178,29 +178,11 @@ public class ActionInformationSpoolImpl<A> extends AbstractSpoolImpl<A, ActionIn
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    // TODO Refactoring: Try to find more type save way how to provide same functionality.
     public boolean containsFrom(Object key) {
         boolean retValue = false;
-        if (key != null) {
-            ActionInfoKey<Class<?>> tmpKey = null;
-            if (key instanceof ActionInfoKey) {
-                tmpKey = (ActionInfoKey<Class<?>>) key;
-            } else if (key instanceof Class) {
-                searchProxy.set((Class<?>) key);
-                tmpKey = searchProxy;
-            } else if (key instanceof String) {
-                if (searchProxy.fromString((String) key)) {
-                    tmpKey = searchProxy;
-                }
-            } else {
-                searchProxy.set(key.getClass());
-                tmpKey = searchProxy;
-            }
-            if (tmpKey != null) {
-                retValue = super.containsKey(tmpKey);
-            }
-
+        ActionInfoKey<Class<?>> tmpKey = createKeyFrom(key);
+        if (tmpKey != null) {
+            retValue = super.containsKey(tmpKey);
         }
         return retValue;
     }
@@ -208,14 +190,12 @@ public class ActionInformationSpoolImpl<A> extends AbstractSpoolImpl<A, ActionIn
     @Override
     public ActionInfoProxy put(ActionInfoKey<Class<?>> key, ActionInfoProxy value) {
         ActionInfoProxy retValue = null;
-        if((key!=null)&&(value!=null)&&(value.isValid())){
+        if ((key != null) && (value != null) && (value.isValid())) {
             retValue = super.put(key, value);
         }
         return retValue;
     }
 
-    
-    
     @Override
     public ActionInfoProxy putFrom(String key, ActionInfoProxy value) {
         ActionInfoProxy retValue = null;
@@ -228,10 +208,9 @@ public class ActionInformationSpoolImpl<A> extends AbstractSpoolImpl<A, ActionIn
     @Override
     public ActionInfoProxy getFrom(String key) {
         ActionInfoProxy retValue = null;
-        if ((key != null) && (!key.isEmpty())) {
-            if ((searchProxy.fromString(key)) && (isValidAction(searchProxy))) {
-                retValue = super.get(searchProxy);
-            }
+        ActionInfoKey<Class<?>> tmpKey = createKeyFrom(key);
+        if ((tmpKey != null) && (isValidAction(tmpKey.get()))) {
+            retValue = super.get(tmpKey);
         }
         return retValue;
     }
@@ -240,14 +219,34 @@ public class ActionInformationSpoolImpl<A> extends AbstractSpoolImpl<A, ActionIn
     public ActionInfoProxy getFrom(Object key) {
         ActionInfoProxy retValue = null;
         if (isValidAction(key)) {
-            Class<?> tmpKey;
-            if (key instanceof Class) {
-                tmpKey = (Class<?>) key;
+            retValue = super.get(createKeyFrom(key));
+        }
+        return retValue;
+    }
+
+    @SuppressWarnings("unchecked")
+    protected ActionInfoKey<Class<?>> createKeyFrom(Object key) {
+        ActionInfoKey<Class<?>> retValue = null;
+        if (key != null) {
+            if (key instanceof String) {
+                String tmp = (String) key;
+                if (searchProxy.fromString(tmp)) {
+                    retValue = searchProxy;
+                }
+            } else if (key instanceof Class) {
+                Class tmp = (Class) key;
+                if (searchProxy.set(tmp)) {
+                    retValue = searchProxy;
+                }
+            } else if (key instanceof ActionInfoKey) {
+                // TODO Refactoring: try to find type save way how to provide same functionality.
+                retValue = (ActionInfoKey<Class<?>>) key;
             } else {
-                tmpKey = key.getClass();
+                Class<?> tmp = key.getClass();
+                if (searchProxy.set(tmp)) {
+                    retValue = searchProxy;
+                }
             }
-            searchProxy.set(tmpKey);
-            retValue = super.get(searchProxy);
         }
         return retValue;
     }
