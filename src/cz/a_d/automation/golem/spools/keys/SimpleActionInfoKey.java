@@ -30,7 +30,7 @@ public class SimpleActionInfoKey extends AbstractSpoolKeyImpl<Class<?>> implemen
         }
         try {
             this.keyValue = Class.forName(key);
-        } catch (ClassNotFoundException ex) {
+        } catch (IllegalArgumentException | ClassNotFoundException ex) {
             Logger.getLogger(SimpleActionInfoKey.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }
@@ -44,6 +44,10 @@ public class SimpleActionInfoKey extends AbstractSpoolKeyImpl<Class<?>> implemen
 
     @Override
     public String toString() {
-        return keyValue.getName();
+        String retValue = "";
+        if (keyValue != null) {
+            retValue = keyValue.getName();
+        }
+        return retValue;
     }
 }

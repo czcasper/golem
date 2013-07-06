@@ -43,7 +43,7 @@ public abstract class AbstractSpoolKeyImpl<T> implements AbstractSpoolKey<T>, Cl
 
     @Override
     public final int hashCode() {
-        return (this.keyValue != null ? this.keyValue.toString().hashCode() : 0);
+        return (this.keyValue != null ? this.toString().hashCode() : 0);
     }
 
     @Override
@@ -56,7 +56,7 @@ public abstract class AbstractSpoolKeyImpl<T> implements AbstractSpoolKey<T>, Cl
         }
         final AbstractSpoolKey<?> other = (AbstractSpoolKey<?>) obj;
         
-        if (this.keyValue != other.get() && (this.keyValue == null || !this.keyValue.toString().equals(other.get().toString()))) {
+        if (this.keyValue != other.get() && (this.keyValue == null || !this.toString().equals(other.toString()))) {
             return false;
         }
         return true;
