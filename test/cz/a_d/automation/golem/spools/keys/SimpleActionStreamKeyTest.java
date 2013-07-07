@@ -49,11 +49,11 @@ public class SimpleActionStreamKeyTest {
     }
 
     @AfterClass
-    public static void afterTestCase(){
+    public static void afterTestCase() {
         testKeys.clear();
-        testKeys=null;
+        testKeys = null;
     }
-    
+
     /**
      * Test of toString method, of class SimpleActionStreamKey.
      */
@@ -242,7 +242,7 @@ public class SimpleActionStreamKeyTest {
          */
         List<AbstractSpoolKey<?>> testDb = new ArrayList<>();
         int expectedSize = testDb.size();
-        for(String s : testKeys){
+        for (String s : testKeys) {
             instance = new SimpleActionStreamKey(s);
             assertFalse(testDb.contains(instance));
             testDb.add(instance);

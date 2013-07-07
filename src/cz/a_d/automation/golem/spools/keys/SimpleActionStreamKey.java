@@ -16,13 +16,13 @@ public class SimpleActionStreamKey extends AbstractSpoolKeyImpl<String> implemen
 
     @Override
     public String toString() {
-        return (keyValue!=null)?keyValue:"";
+        return (keyValue != null) ? keyValue : "";
     }
-    
+
     @Override
     public boolean fromString(String key) {
         boolean retValue = false;
-        if((key!=null)&&(!key.isEmpty())){
+        if ((key != null) && (!key.isEmpty())) {
             keyValue = key;
             retValue = true;
         }

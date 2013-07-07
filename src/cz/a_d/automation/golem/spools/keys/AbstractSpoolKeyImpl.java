@@ -9,22 +9,22 @@ import cz.a_d.automation.golem.interfaces.spools.keys.AbstractSpoolKey;
  * @author maslu02
  */
 public abstract class AbstractSpoolKeyImpl<T> implements AbstractSpoolKey<T>, Cloneable {
-    
+
     protected T keyValue;
 
     public AbstractSpoolKeyImpl(T keyValue) {
         this.keyValue = keyValue;
     }
-    
+
     @Override
     public abstract String toString();
 
     @Override
     public abstract boolean fromString(String key);
-    
+
     @Override
     public boolean set(T key) {
-        if(key==null){
+        if (key == null) {
             return false;
         }
         keyValue = key;
@@ -55,11 +55,10 @@ public abstract class AbstractSpoolKeyImpl<T> implements AbstractSpoolKey<T>, Cl
             return false;
         }
         final AbstractSpoolKey<?> other = (AbstractSpoolKey<?>) obj;
-        
+
         if (this.keyValue != other.get() && (this.keyValue == null || !this.toString().equals(other.toString()))) {
             return false;
         }
         return true;
     }
-
 }

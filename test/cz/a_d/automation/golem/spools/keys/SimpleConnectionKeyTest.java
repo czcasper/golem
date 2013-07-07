@@ -20,7 +20,7 @@ import org.junit.Test;
  *
  * @author maslu02
  */
-public class SimpleParameterKeyTest {
+public class SimpleConnectionKeyTest {
 
     protected static Set<String> testKeys = new HashSet<>();
 
@@ -51,11 +51,11 @@ public class SimpleParameterKeyTest {
         testKeys = null;
     }
 
-    public SimpleParameterKeyTest() {
+    public SimpleConnectionKeyTest() {
     }
 
     /**
-     * Test of fromString method, of class SimpleParameterKey.
+     * Test of fromString method, of class SimpleConnectionKey.
      */
     @Test
     public void testFromString() {
@@ -63,7 +63,7 @@ public class SimpleParameterKeyTest {
          * Initialize and test protection agains null and empty parameter value.
          */
         String key = null;
-        SimpleParameterKey instance = new SimpleParameterKey(key);
+        SimpleConnectionKey instance = new SimpleConnectionKey(key);
         boolean result = instance.fromString(key);
         assertFalse(result);
         key = "";
@@ -85,7 +85,7 @@ public class SimpleParameterKeyTest {
     }
 
     /**
-     * Test of clone method, of class SimpleParameterKey.
+     * Test of clone method, of class SimpleConnectionKey.
      */
     @Test
     @SuppressWarnings("unchecked")
@@ -94,8 +94,8 @@ public class SimpleParameterKeyTest {
          * Test cloning with null key value inside instance.
          */
         String key = null;
-        SimpleParameterKey instance = new SimpleParameterKey(key);
-        SimpleParameterKey result = (SimpleParameterKey) instance.clone();
+        SimpleConnectionKey instance = new SimpleConnectionKey(key);
+        SimpleConnectionKey result = (SimpleConnectionKey) instance.clone();
         assertNotSame(instance, result);
         assertNull(instance.get());
         assertNull(result.get());
@@ -105,7 +105,7 @@ public class SimpleParameterKeyTest {
          */
         key = "Valid Key Value!!";
         instance.fromString(key);
-        result = (SimpleParameterKey) instance.clone();
+        result = (SimpleConnectionKey) instance.clone();
         assertNotSame(instance, result);
         assertEquals(key, result.get());
         assertEquals(key, instance.get());
@@ -121,14 +121,14 @@ public class SimpleParameterKeyTest {
     }
 
     /**
-     * Test of toString method, of class SimpleParameterKey.
+     * Test of toString method, of class SimpleConnectionKey.
      */
     @Test
     public void testToString() {
         /**
          * Initialize and test protection agains null key valu inside instance.
          */
-        SimpleParameterKey instance = new SimpleParameterKey(null);
+        SimpleConnectionKey instance = new SimpleConnectionKey(null);
         String result = instance.toString();
         assertEquals("", result);
 
@@ -156,7 +156,7 @@ public class SimpleParameterKeyTest {
          * Initialize and test protection agains null key value inside instance.
          */
         String key = null;
-        SimpleParameterKey instance = new SimpleParameterKey(key);
+        SimpleConnectionKey instance = new SimpleConnectionKey(key);
         int result = instance.hashCode();
         assertEquals(0, result);
 
@@ -177,7 +177,7 @@ public class SimpleParameterKeyTest {
         Random r = new Random();
         int count = r.nextInt(50) + 50;
         for (int i = 0; i < count; i++) {
-            instance = new SimpleParameterKey(key);
+            instance = new SimpleConnectionKey(key);
             testDb.add(instance);
             assertEquals(1, testDb.size());
         }
@@ -207,7 +207,7 @@ public class SimpleParameterKeyTest {
                 tmpKey = new CustomBigIntStringKey(null);
                 tmpKey.fromString(k);
             } else {
-                tmpKey = new SimpleParameterKey(k);
+                tmpKey = new SimpleConnectionKey(k);
             }
             boolean add = testDb.add(tmpKey);
             assertTrue(add);
@@ -222,11 +222,11 @@ public class SimpleParameterKeyTest {
          * object.
          */
         String key = null;
-        AbstractSpoolKey<?> instance = new SimpleParameterKey(key);
-        SimpleParameterKey other = null;
+        AbstractSpoolKey<?> instance = new SimpleConnectionKey(key);
+        SimpleConnectionKey other = null;
         boolean result = instance.equals(other);
         assertFalse(result);
-        other = new SimpleParameterKey(key);
+        other = new SimpleConnectionKey(key);
         result = instance.equals(other);
         assertTrue(result);
 
@@ -243,7 +243,7 @@ public class SimpleParameterKeyTest {
         List<AbstractSpoolKey<?>> testDb = new ArrayList<>();
         int expectedSize = testDb.size();
         for (String s : testKeys) {
-            instance = new SimpleParameterKey(s);
+            instance = new SimpleConnectionKey(s);
             assertFalse(testDb.contains(instance));
             testDb.add(instance);
             assertEquals(++expectedSize, testDb.size());

@@ -226,7 +226,8 @@ public class SimpleActionInfoKeyTest {
     @Test
     public void testEquals() {
         /**
-         * Initialize and test protection agains null instance of compared object.
+         * Initialize and test protection agains null instance of compared
+         * object.
          */
         Class<?> testCl = null;
         AbstractSpoolKey<?> instance = new SimpleActionInfoKey(testCl);
