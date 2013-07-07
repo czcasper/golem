@@ -22,9 +22,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
-import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  *
@@ -166,7 +166,7 @@ public class SimpleActionInfoKeyTest {
     @Test
     public void testHashCode() {
         /**
-         * Initialize and test protection agains null and empty parameter value.
+         * Initialize and test protection agains null key value inside instance.
          */
         Class<?> testCl = null;
         SimpleActionInfoKey instance = new SimpleActionInfoKey(testCl);
@@ -193,6 +193,7 @@ public class SimpleActionInfoKeyTest {
             testDb.add(instance);
             assertEquals(1, testDb.size());
         }
+
         /**
          * Initialize and test interaction with correctly created Custom
          * implementation of spool key.
@@ -225,43 +226,42 @@ public class SimpleActionInfoKeyTest {
     @Test
     public void testEquals() {
         /**
-         * Initialize and test protection agains instance of key.
+         * Initialize and test protection agains null instance of compared object.
          */
         Class<?> testCl = null;
         AbstractSpoolKey<?> instance = new SimpleActionInfoKey(testCl);
-        SimpleActionInfoKey other=null;
+        SimpleActionInfoKey other = null;
         boolean result = instance.equals(other);
         assertFalse(result);
         other = new SimpleActionInfoKey(testCl);
         result = instance.equals(other);
         assertTrue(result);
-        
+
         /**
          * Initialize and test comparison with empty custom key.
          */
         CustomStringSpoolKey customKey = new CustomStringSpoolKey(null);
         result = instance.equals(customKey);
         assertTrue(result);
-        
+
         /**
          * Initialize and test equal in Array.
          */
         List<AbstractSpoolKey<?>> testDb = new ArrayList<>();
-        int expectedSize=testDb.size();
-        for(Class<?> cl : testData){
+        int expectedSize = testDb.size();
+        for (Class<?> cl : testData) {
             instance = new SimpleActionInfoKey(cl);
             assertFalse(testDb.contains(instance));
             testDb.add(instance);
             assertEquals(++expectedSize, testDb.size());
         }
-        
+
         /**
          * Test with custom key implementation.
          */
-        for(Class<?> cl : testData){
+        for (Class<?> cl : testData) {
             instance = new CustomStringSpoolKey(cl.getName());
             assertTrue(testDb.contains(instance));
         }
-        
     }
 }
