@@ -8,7 +8,7 @@ import cz.a_d.automation.golem.interfaces.spools.keys.ActionStreamKey;
  *
  * @author maslu02
  */
-public class SimpleActionStreamKey extends AbstractSpoolKeyImpl<String> implements ActionStreamKey<String>, Cloneable {
+public class SimpleActionStreamKey extends AbstractSpoolKeyImpl<String> implements ActionStreamKey<String> {
 
     public SimpleActionStreamKey(String keyValue) {
         super(keyValue);
@@ -17,11 +17,6 @@ public class SimpleActionStreamKey extends AbstractSpoolKeyImpl<String> implemen
     @Override
     public String toString() {
         return (keyValue!=null)?keyValue:"";
-    }
-
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
     }
     
     @Override

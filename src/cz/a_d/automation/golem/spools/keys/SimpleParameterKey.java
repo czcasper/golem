@@ -8,7 +8,7 @@ import cz.a_d.automation.golem.interfaces.spools.keys.ParameterKey;
  *
  * @author maslu02
  */
-public class SimpleParameterKey extends AbstractSpoolKeyImpl<String> implements ParameterKey<String>, Cloneable {
+public class SimpleParameterKey extends AbstractSpoolKeyImpl<String> implements ParameterKey<String> {
 
     public SimpleParameterKey(String key) {
         super(key);
@@ -16,15 +16,20 @@ public class SimpleParameterKey extends AbstractSpoolKeyImpl<String> implements 
 
     @Override
     public boolean fromString(String key) {
-        if (key == null) {
-            return false;
+        boolean retValue = false;
+        if ((key != null) && (!key.isEmpty())) {
+            this.keyValue = key;
+            retValue = true;
         }
-        this.keyValue = key;
-        return true;
+        return retValue;
     }
 
     @Override
     public String toString() {
-        return keyValue;
+        String retValue = "";
+        if (keyValue != null) {
+            retValue = keyValue;
+        }
+        return retValue;
     }
 }

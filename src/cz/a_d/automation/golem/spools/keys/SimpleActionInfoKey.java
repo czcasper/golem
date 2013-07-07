@@ -10,7 +10,7 @@ import java.util.logging.Logger;
  *
  * @author maslu02
  */
-public class SimpleActionInfoKey extends AbstractSpoolKeyImpl<Class<?>> implements ActionInfoKey<Class<?>>, Cloneable {
+public class SimpleActionInfoKey extends AbstractSpoolKeyImpl<Class<?>> implements ActionInfoKey<Class<?>> {
 
     public SimpleActionInfoKey(String key) throws ClassNotFoundException {
         super((Class<?>) Class.forName(key));
@@ -35,11 +35,6 @@ public class SimpleActionInfoKey extends AbstractSpoolKeyImpl<Class<?>> implemen
             return false;
         }
         return true;
-    }
-
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
     }
 
     @Override

@@ -12,20 +12,17 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import org.junit.AfterClass;
+import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.BeforeClass;
-import org.junit.Test;
 
 /**
  *
  * @author maslu02
  */
-public class SimpleActionStreamKeyTest {
+public class SimpleParameterKeyTest {
 
     protected static Set<String> testKeys = new HashSet<>();
-
-    public SimpleActionStreamKeyTest() {
-    }
 
     @BeforeClass
     public static void beforeTestCase() {
@@ -49,20 +46,88 @@ public class SimpleActionStreamKeyTest {
     }
 
     @AfterClass
-    public static void afterTestCase(){
+    public static void afterTestCase() {
         testKeys.clear();
-        testKeys=null;
+        testKeys = null;
     }
-    
+
+    public SimpleParameterKeyTest() {
+    }
+
     /**
-     * Test of toString method, of class SimpleActionStreamKey.
+     * Test of fromString method, of class SimpleParameterKey.
+     */
+    @Test
+    public void testFromString() {
+        /**
+         * Initialize and test protection agains null and empty parameter value.
+         */
+        String key = null;
+        SimpleParameterKey instance = new SimpleParameterKey(key);
+        boolean result = instance.fromString(key);
+        assertFalse(result);
+        key = "";
+        result = instance.fromString(key);
+        assertFalse(result);
+
+        /**
+         * Initialize and test instance by random generated strings.
+         */
+        byte[] tmp;
+        Random r = new Random();
+        int count = r.nextInt(50) + 50;
+        for (int i = 0; i < count; i++) {
+            tmp = new byte[r.nextInt(50) + 50];
+            key = new String(tmp);
+            result = instance.fromString(key);
+            assertTrue(result);
+        }
+    }
+    /**
+     * Test of clone method, of class SimpleParameterKey.
+     */
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testClone() throws Exception {
+        /**
+         * Test cloning with null key value inside instance.
+         */
+        String key = null;
+        SimpleParameterKey instance = new SimpleParameterKey(key);
+        SimpleParameterKey result = (SimpleParameterKey) instance.clone();
+        assertNotSame(instance, result);
+        assertNull(instance.get());
+        assertNull(result.get());
+
+        /**
+         * Test cloning with valid key value inside instance.
+         */
+        key = "Valid Key Value!!";
+        instance.fromString(key);
+        result = (SimpleParameterKey) instance.clone();
+        assertNotSame(instance, result);
+        assertEquals(key, result.get());
+        assertEquals(key, instance.get());
+
+        /**
+         * Test change in clone to be sure clons have saparated memory space for
+         * key.
+         */
+        String secodKey = "This is second key.";
+        result.set(secodKey);
+        assertEquals(secodKey, result.get());
+        assertEquals(key, instance.get());
+    }
+
+    /**
+     * Test of toString method, of class SimpleParameterKey.
      */
     @Test
     public void testToString() {
         /**
-         * Initialize and test protection agains null key valu insideinstance.
+         * Initialize and test protection agains null key valu inside instance.
          */
-        SimpleActionStreamKey instance = new SimpleActionStreamKey(null);
+        SimpleParameterKey instance = new SimpleParameterKey(null);
         String result = instance.toString();
         assertEquals("", result);
 
@@ -83,80 +148,14 @@ public class SimpleActionStreamKeyTest {
             assertSame(key, result);
         }
     }
-
-    /**
-     * Test of clone method, of class SimpleActionStreamKey.
-     */
-    @Test
-    @SuppressWarnings("unchecked")
-    public void testClone() throws Exception {
-        /**
-         * Test cloning with null key value inside instance.
-         */
-        String key = null;
-        SimpleActionStreamKey instance = new SimpleActionStreamKey(key);
-        SimpleActionStreamKey result = (SimpleActionStreamKey) instance.clone();
-        assertNotSame(instance, result);
-        assertNull(instance.get());
-        assertNull(result.get());
-
-        /**
-         * Test cloning with valid key value inside instance.
-         */
-        key = "Valid Key Value!!";
-        instance.fromString(key);
-        result = (SimpleActionStreamKey) instance.clone();
-        assertNotSame(instance, result);
-        assertEquals(key, result.get());
-        assertEquals(key, instance.get());
-
-        /**
-         * Test change in clone to be sure clons have saparated memory space for
-         * key.
-         */
-        String secodKey = "This is second key.";
-        result.set(secodKey);
-        assertEquals(secodKey, result.get());
-        assertEquals(key, instance.get());
-    }
-
-    /**
-     * Test of fromString method, of class SimpleActionStreamKey.
-     */
-    @Test
-    public void testFromString() {
-        /**
-         * Initialize and test protection agains null and empty parameter value.
-         */
-        String key = null;
-        SimpleActionStreamKey instance = new SimpleActionStreamKey(key);
-        boolean result = instance.fromString(key);
-        assertFalse(result);
-        key = "";
-        result = instance.fromString(key);
-        assertFalse(result);
-
-        /**
-         * Initialize and test instance by random generated strings.
-         */
-        byte[] tmp;
-        Random r = new Random();
-        int count = r.nextInt(50) + 50;
-        for (int i = 0; i < count; i++) {
-            tmp = new byte[r.nextInt(50) + 50];
-            key = new String(tmp);
-            result = instance.fromString(key);
-            assertTrue(result);
-        }
-    }
-
+    
     @Test
     public void testHashCode() {
         /**
          * Initialize and test protection agains null key value inside instance.
          */
         String key = null;
-        SimpleActionStreamKey instance = new SimpleActionStreamKey(key);
+        SimpleParameterKey instance = new SimpleParameterKey(key);
         int result = instance.hashCode();
         assertEquals(0, result);
 
@@ -177,7 +176,7 @@ public class SimpleActionStreamKeyTest {
         Random r = new Random();
         int count = r.nextInt(50) + 50;
         for (int i = 0; i < count; i++) {
-            instance = new SimpleActionStreamKey(key);
+            instance = new SimpleParameterKey(key);
             testDb.add(instance);
             assertEquals(1, testDb.size());
         }
@@ -207,7 +206,7 @@ public class SimpleActionStreamKeyTest {
                 tmpKey = new CustomBigIntStringKey(null);
                 tmpKey.fromString(k);
             } else {
-                tmpKey = new SimpleActionStreamKey(k);
+                tmpKey = new SimpleParameterKey(k);
             }
             boolean add = testDb.add(tmpKey);
             assertTrue(add);
@@ -222,11 +221,11 @@ public class SimpleActionStreamKeyTest {
          * object.
          */
         String key = null;
-        AbstractSpoolKey<?> instance = new SimpleActionStreamKey(key);
-        SimpleActionStreamKey other = null;
+        AbstractSpoolKey<?> instance = new SimpleParameterKey(key);
+        SimpleParameterKey other = null;
         boolean result = instance.equals(other);
         assertFalse(result);
-        other = new SimpleActionStreamKey(key);
+        other = new SimpleParameterKey(key);
         result = instance.equals(other);
         assertTrue(result);
 
@@ -243,7 +242,7 @@ public class SimpleActionStreamKeyTest {
         List<AbstractSpoolKey<?>> testDb = new ArrayList<>();
         int expectedSize = testDb.size();
         for(String s : testKeys){
-            instance = new SimpleActionStreamKey(s);
+            instance = new SimpleParameterKey(s);
             assertFalse(testDb.contains(instance));
             testDb.add(instance);
             assertEquals(++expectedSize, testDb.size());
@@ -258,4 +257,5 @@ public class SimpleActionStreamKeyTest {
             assertTrue(testDb.contains(instance));
         }
     }
+    
 }
