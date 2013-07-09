@@ -12,5 +12,7 @@ import cz.a_d.automation.golem.interfaces.spools.keys.ActionStreamKey;
  * @author maslu02
  */
 public interface ActionStreamSpool<A, V> extends AbstractSpool<A, ActionStreamKey<?>, ActionStream<A, V>> {
-    
+
+    @Override
+    public ActionStreamSpool<A, V> newInstance();
 }

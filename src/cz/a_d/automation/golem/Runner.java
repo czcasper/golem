@@ -72,7 +72,7 @@ public class Runner {
     public boolean run(ActionStream<Object, Object> actions) {
         boolean retValue = true;
         run.setActionStream(actions);
-        ParameterSpool<Object, Object> runParameterMap = actions.getParameterMap();
+        ParameterSpool<Object, Object> runParameterMap = actions.getParameterSpool();
         for (Object o : run) {
             boolean runAction = runAction(o, runParameterMap);
             if (!run.validateResult(runAction, true)) {

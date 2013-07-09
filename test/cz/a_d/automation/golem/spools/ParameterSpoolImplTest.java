@@ -106,7 +106,7 @@ public class ParameterSpoolImplTest {
         assertTrue(result.isEmpty());
 
         /**
-         * Test creation of seconf new clean instance from existing one.
+         * Test creation of second new clean instance from existing one.
          */
         ParameterSpool<Object, Object> result2 = instance.newInstance();
         assertNotSame(instance, result);

@@ -16,9 +16,9 @@ public interface ActionStream<A, V> extends Cloneable {
 
     public List<A> getActionList();
 
-    public void setParameter(ParameterSpool<A, V> actionParams);
+    public void setParameterSpool(ParameterSpool<A, V> actionParams);
 
-    public ParameterSpool<A, V> getParameterMap();
+    public ParameterSpool<A, V> getParameterSpool();
 
     public ResetableIterator<A> resetableIterator();
 

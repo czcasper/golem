@@ -161,7 +161,7 @@ public abstract class AbstractSpoolImpl<A, K extends AbstractSpoolKey<?>, V> ext
     @Override
     @SuppressWarnings("unchecked")
     public Object clone() {
-        LinkedHashMap<K, V> retValue = (LinkedHashMap<K, V>) super.clone();
+        AbstractSpool<A, K, V> retValue = (AbstractSpool<A, K, V>) super.clone();
         for (Entry<K, V> e : retValue.entrySet()) {
             if (e.getValue() instanceof Cloneable) {
                 V cl = e.getValue();
