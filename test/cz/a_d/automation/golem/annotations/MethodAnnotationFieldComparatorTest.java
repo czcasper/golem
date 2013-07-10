@@ -4,7 +4,6 @@
  */
 package cz.a_d.automation.golem.annotations;
 
-import cz.a_d.automation.golem.annotations.fields.RunParameter;
 import cz.a_d.automation.golem.annotations.methods.Init;
 import cz.a_d.automation.golem.annotations.methods.Run;
 import cz.a_d.automation.golem.annotations.methods.Validate;
@@ -15,11 +14,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import org.junit.After;
-import org.junit.AfterClass;
 import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -36,22 +31,6 @@ public class MethodAnnotationFieldComparatorTest {
     public MethodAnnotationFieldComparatorTest() {
     }
 
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
-
     /**
      * Test of compare method, of class MethodAnnotationFieldComparator.
      */
@@ -59,22 +38,22 @@ public class MethodAnnotationFieldComparatorTest {
     public void testCompare00() throws NoSuchMethodException {
         testException.expect(NullPointerException.class);
         testException.expectMessage("Annotation class cannot be null.");
-        MethodAnnotationFieldComparator<RunParameter> instance = new MethodAnnotationFieldComparator<>(null, null);
+        MethodAnnotationFieldComparator<Init> instance = new MethodAnnotationFieldComparator<>(null, null);
     }
 
     @Test
     public void testCompare01() throws NoSuchMethodException {
         testException.expect(NullPointerException.class);
         testException.expectMessage("Name of annotation field cannot be null.");
-        MethodAnnotationFieldComparator<RunParameter> instance = new MethodAnnotationFieldComparator<>(RunParameter.class, null);
+        MethodAnnotationFieldComparator<Init> instance = new MethodAnnotationFieldComparator<>(Init.class, null);
     }
 
     @Test
     public void testCompare02() throws NoSuchMethodException {
         testException.expect(NoSuchMethodException.class);
         String testName = "jUnitTestField";
-//        testException.expectMessage(NoSuchMethodException.class.getName()+": "+Init.class.getName()+"."+testName+"()");
-        MethodAnnotationFieldComparator<RunParameter> instance = new MethodAnnotationFieldComparator<>(RunParameter.class, testName);
+        testException.expectMessage(Init.class.getName()+"."+testName+"()");
+        MethodAnnotationFieldComparator<Init> instance = new MethodAnnotationFieldComparator<>(Init.class, testName);
     }
 
     @Test

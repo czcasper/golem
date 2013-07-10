@@ -8,10 +8,8 @@ import cz.a_d.automation.golem.interfaces.context.managers.RunDelayIntervalManag
 import cz.a_d.automation.golem.spools.actions.SimpleActionStream;
 import cz.a_d.automation.testClasses.actions.dummy.valid.ActionForTestingContext;
 import org.junit.After;
-import org.junit.AfterClass;
 import static org.junit.Assert.*;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -26,17 +24,9 @@ public class RunDelayIntervalManagerImplTest {
     public RunDelayIntervalManagerImplTest() {
         steps = new AddressArrayList<>();
         for (int i = 0; i < 5; i++) {
-            steps.add(new ActionForTestingContext<>(new Integer(i)));
+            steps.add(new ActionForTestingContext<>(Integer.valueOf(i)));
         }
 
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
     }
 
     @Before

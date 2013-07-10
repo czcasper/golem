@@ -25,9 +25,8 @@ public class FastStackTest {
     @Test
     public void testPeek() {
         FastStack<Integer> instance = new FastStack<>();
-        Integer expResult = null;
         Integer result = instance.peek();
-        assertEquals(expResult, result);
+        assertNull(result);
         
         for(int i=0;i<20;i++){
             instance.push(i);

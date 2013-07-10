@@ -8,6 +8,8 @@ import cz.a_d.automation.golem.interfaces.ActionStream;
 import cz.a_d.automation.golem.interfaces.spools.ParameterSpool;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -72,8 +74,14 @@ public class SimpleActionStream<A, V> implements ActionStream<A, V> {
             for (A action : actions) {
                 if (action instanceof Cloneable) {
                     try {
-                        Method cloneMethod = action.getClass().getDeclaredMethod("clone");
-                        cloneMethod.setAccessible(true);
+                        final Method cloneMethod = action.getClass().getDeclaredMethod("clone");
+                        AccessController.doPrivileged(new PrivilegedAction<Object>() {
+                            @Override
+                            public Object run() {
+                                cloneMethod.setAccessible(true);
+                                return null;
+                            }
+                        });
                         A clone = (A) cloneMethod.invoke(action);
                         retValue.actions.add(clone);
                     } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException ex) {

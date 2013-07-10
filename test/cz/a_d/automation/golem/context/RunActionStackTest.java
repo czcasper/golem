@@ -155,7 +155,7 @@ public class RunActionStackTest {
     public void testPop() {
         RunActionStackImpl instance = new RunActionStackImpl();
         testException.expect(NoSuchElementException.class);
-        Object result = instance.pop();
+        instance.pop();
     }
 
     /**

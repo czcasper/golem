@@ -1,4 +1,3 @@
-
 package cz.a_d.automation.golem.context;
 
 import cz.a_d.automation.golem.common.AddressArrayList;
@@ -317,9 +316,9 @@ public class RunCycleImplTest {
     @Test
     public void testGetEndAction() {
         RunCycleImpl<Object> instance = new RunCycleImpl<>(steps);
-        Object expResult = null;
         Object result = instance.getEndAction();
-        assertEquals(expResult, result);
+        assertNull(result);
+        Object expResult;
         for (int index = 0; index < steps.size(); index++) {
             expResult = steps.get(index);
             boolean test = initialized.setupCycle(expResult, 10, 0);

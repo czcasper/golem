@@ -10,10 +10,12 @@ import java.util.Collection;
 
 /**
  *
- * @param <T> 
+ * @param <T>
  * @author maslu02
  */
 public class AddressArrayList<T> extends ArrayList<T> {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      *
@@ -36,33 +38,32 @@ public class AddressArrayList<T> extends ArrayList<T> {
      */
     public AddressArrayList(Collection<? extends T> c) {
         super(c);
-    }    
-    
+    }
+
     @Override
     public int indexOf(Object o) {
-        int retValue = -1,tmpIndex=0;
-        for(T tmp : this){
-            if(tmp == o){
+        int retValue = -1, tmpIndex = 0;
+        for (T tmp : this) {
+            if (tmp == o) {
                 retValue = tmpIndex;
                 break;
             }
             tmpIndex++;
         }
-        
+
         return retValue;
     }
 
     @Override
     public int lastIndexOf(Object o) {
-        int retValue = -1,tmpIndex=size();
-        for(T tmp : new ReverseIterator<>(this)){
+        int retValue = -1, tmpIndex = size();
+        for (T tmp : new ReverseIterator<>(this)) {
             tmpIndex--;
-            if(tmp == o){
+            if (tmp == o) {
                 retValue = tmpIndex;
                 break;
             }
         }
         return retValue;
     }
-
 }

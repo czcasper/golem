@@ -27,33 +27,33 @@ import org.junit.Test;
 public class RunActionStackManagerTest {
 
     private AddressArrayList<ActionForTestingContext<Integer>> steps;
-    private RunContextImpl<ActionForTestingContext<Integer>,Boolean, Object> initializedRun;
+    private RunContextImpl<ActionForTestingContext<Integer>, Boolean, Object> initializedRun;
 
     public RunActionStackManagerTest() {
         steps = new AddressArrayList<>();
         for (int i = 0; i < 5; i++) {
-            steps.add(new ActionForTestingContext<>(new Integer(i)));
+            steps.add(new ActionForTestingContext<>(Integer.valueOf(i)));
         }
     }
 
     @Before
-    public void setUp() {
+    public void setup() {
         initializedRun = new RunContextImpl<>();
         initializedRun.setActionStream(new SimpleActionStream<>(steps));
         initializedRun.setStackManager(new RunActionStackManagerImpl<>(initializedRun));
     }
 
     @After
-    public void tearDown() {
+    public void clean() {
         initializedRun = null;
     }
 
     @Test
     public void testHasNext() throws Exception {
-        RunActionStackManager<ActionForTestingContext<Integer>,Object> instance = new RunActionStackManagerImpl<>(null);
+        RunActionStackManager<ActionForTestingContext<Integer>, Object> instance = new RunActionStackManagerImpl<>(null);
         assertFalse(instance.hasNext());
 
-        instance =  initializedRun.getStackManager();
+        instance = initializedRun.getStackManager();
         List<Object> actions = new ArrayList<>();
         for (int i = 0; i < 7; i++) {
             actions.add(i);
@@ -101,7 +101,7 @@ public class RunActionStackManagerTest {
 
     @Test
     public void testNext() {
-        RunActionStackManager<ActionForTestingContext<Integer>,Object> instance = new RunActionStackManagerImpl<>(null);
+        RunActionStackManager<ActionForTestingContext<Integer>, Object> instance = new RunActionStackManagerImpl<>(null);
         assertNull(instance.next());
 
         instance = initializedRun.getStackManager();
@@ -136,7 +136,7 @@ public class RunActionStackManagerTest {
 
     @Test
     public void testSetup() {
-        RunActionStackManager<ActionForTestingContext<Integer>,Object> instance = initializedRun.getStackManager();
+        RunActionStackManager<ActionForTestingContext<Integer>, Object> instance = initializedRun.getStackManager();
 
         List<ActionForTestingContext<Integer>> actions = new ArrayList<>();
         for (int i = 0; i < 7; i++) {
@@ -159,7 +159,7 @@ public class RunActionStackManagerTest {
                 first = false;
             } else {
                 if (hasNext) {
-                    if(!stackIt.hasNext()){
+                    if (!stackIt.hasNext()) {
                         stackIt = actions.iterator();
                     }
                     assertSame(stackIt.next(), o);

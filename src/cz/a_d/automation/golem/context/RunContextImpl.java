@@ -75,7 +75,11 @@ public class RunContextImpl<T, C, V> implements RunContextManagers<T, C, V>, Ite
      */
     @Override
     public ResetableIterator<T> resetableIterator() {
-        return currentStream.resetableIterator();
+        ResetableIterator<T> retValue = null;
+        if(currentStream!=null){
+            retValue = currentStream.resetableIterator();
+        }
+        return retValue;
     }
 
     @Override

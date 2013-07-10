@@ -19,7 +19,8 @@ import java.util.logging.Logger;
 // TODO Documetation: create JavaDoc minimally on public method and class level.
 public class ActionStreamSpoolImpl<A, V> extends AbstractSpoolImpl<A, ActionStreamKey<?>, ActionStream<A, V>> implements ActionStreamSpool<A, V> {
 
-    protected static ActionStreamSpool<Object, Object> global = new ActionStreamSpoolImpl<>();
+    private static final long serialVersionUID = 1L;
+    protected final static ActionStreamSpool<Object, Object> global = new ActionStreamSpoolImpl<>();
 
     public ActionStreamSpoolImpl() {
         super();

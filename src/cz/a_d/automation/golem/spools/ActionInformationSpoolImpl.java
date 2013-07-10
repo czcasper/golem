@@ -29,8 +29,9 @@ import java.util.logging.Logger;
 // TODO Documentation: Create JavaDoc on class and public method level.
 public class ActionInformationSpoolImpl<A> extends AbstractSpoolImpl<A, ActionInfoKey<Class<?>>, ActionInfoProxy> implements ActionInformationSpool<A> {
 
+    private static final long serialVersionUID = 1L;
     protected Map<ActionMethodProxyType, Comparator<Method>> methodComparator = ActionInfoProxyImpl.createNewComparators();
-    protected static ActionInformationSpool<Object> global = new ActionInformationSpoolImpl<>();
+    protected final static ActionInformationSpool<Object> global = new ActionInformationSpoolImpl<>();
 
     public ActionInformationSpoolImpl() {
     }

@@ -10,6 +10,8 @@ import cz.a_d.automation.golem.spools.keys.SimpleParameterKey;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -21,7 +23,7 @@ import java.util.logging.Logger;
  */
 // TODO Documentation: Create JavaDoc on class and public method level.
 // TODO Refactoring: Methods with suppressing warning unchecked should be validated and refactored to be more type save (putFrom, getFrom, buildKey)
-public abstract class AbstractSpoolImpl<A, K extends AbstractSpoolKey<?>, V> extends LinkedHashMap<K, V> implements AbstractSpool<A, K, V>, Cloneable {
+public abstract class AbstractSpoolImpl<A, K extends AbstractSpoolKey<?>, V> extends LinkedHashMap<K, V> implements AbstractSpool<A, K, V> {
 
     protected K searchProxy = null;
 
@@ -76,7 +78,7 @@ public abstract class AbstractSpoolImpl<A, K extends AbstractSpoolKey<?>, V> ext
     @Override
     public boolean containsFrom(String key) {
         boolean retValue = false;
-        if(searchProxy.fromString(key)){
+        if (searchProxy.fromString(key)) {
             retValue = this.containsKey(searchProxy);
         }
         return retValue;
@@ -166,8 +168,14 @@ public abstract class AbstractSpoolImpl<A, K extends AbstractSpoolKey<?>, V> ext
             if (e.getValue() instanceof Cloneable) {
                 V cl = e.getValue();
                 try {
-                    Method clone = cl.getClass().getDeclaredMethod("clone");
-                    clone.setAccessible(true);
+                    final Method clone = cl.getClass().getDeclaredMethod("clone");
+                    AccessController.doPrivileged(new PrivilegedAction<Object>() {
+                        @Override
+                        public Object run() {
+                            clone.setAccessible(true);
+                            return null;
+                        }
+                    });
                     retValue.put(e.getKey(), (V) clone.invoke(cl));
                 } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException ex) {
                     Logger.getLogger(AbstractSpoolImpl.class.getName()).log(Level.SEVERE, null, ex);

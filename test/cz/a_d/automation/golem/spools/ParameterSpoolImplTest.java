@@ -43,7 +43,7 @@ public class ParameterSpoolImplTest {
      * For purpose of testing define CustomKey based on AbstractSpoolKeyImpl
      * class and test functionality.
      */
-    class CustomKey extends AbstractSpoolKeyImpl<BigInteger> implements ParameterKey<BigInteger> {
+    static class CustomKey extends AbstractSpoolKeyImpl<BigInteger> implements ParameterKey<BigInteger> {
 
         public CustomKey(BigInteger keyValue) {
             super(keyValue);

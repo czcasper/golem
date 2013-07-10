@@ -491,9 +491,9 @@ public class ActionInfoProxyImplTest {
         assertNotNull(instance.getFieldNames());
         assertEquals(names.size(), instance.getFieldNames().size());
         for (String s : names) {
-            result = instance.getField(name);
+            result = instance.getField(s);
             assertNotNull(result);
-            assertEquals(name, result.getName());
+            assertEquals(s, result.getName());
         }
     }
 

@@ -16,7 +16,8 @@ import java.util.Map;
  */
 public class ConnectionSpoolImpl<A> extends AbstractSpoolImpl<A, ConnectionKey<?>, Connection> implements ConnectionSpool<A> {
 
-    protected static ConnectionSpool<Object> global = new ConnectionSpoolImpl<>();
+    private static final long serialVersionUID = 1L;
+    protected final static ConnectionSpool<Object> global = new ConnectionSpoolImpl<>();
 
     public ConnectionSpoolImpl() {
         super();
@@ -37,8 +38,8 @@ public class ConnectionSpoolImpl<A> extends AbstractSpoolImpl<A, ConnectionKey<?
     public ConnectionSpoolImpl(int initialCapacity, float loadFactor, boolean accessOrder) {
         super(initialCapacity, loadFactor, accessOrder);
     }
-    
-    public static ConnectionSpool<Object> getGlobal(){
+
+    public static ConnectionSpool<Object> getGlobal() {
         return global;
     }
 
@@ -70,11 +71,13 @@ public class ConnectionSpoolImpl<A> extends AbstractSpoolImpl<A, ConnectionKey<?
             if ((type != null) && (type == ActionFieldProxyType.Connections)) {
                 retValue = true;
             } else {
-                throw new IllegalAccessException("Parameter spool doesn''t supports field annotated by type:"+type.toString());
+                String usedType="null";
+                if(type!=null){
+                    usedType =type.toString();
+                }
+                throw new IllegalAccessException("Parameter spool doesn''t supports field annotated by type:" + usedType);
             }
-        }        
+        }
         return retValue;
     }
-    
-    
 }

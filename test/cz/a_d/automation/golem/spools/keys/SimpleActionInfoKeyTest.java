@@ -32,7 +32,7 @@ import org.junit.Test;
  */
 public class SimpleActionInfoKeyTest {
 
-    protected static List<Class<?>> testData = new ArrayList<>();
+    protected final static List<Class<?>> testData = new ArrayList<>();
 
     public SimpleActionInfoKeyTest() {
     }

@@ -22,7 +22,7 @@ import org.junit.Test;
  */
 public class SimpleParameterKeyTest {
 
-    protected static Set<String> testKeys = new HashSet<>();
+    protected final static Set<String> testKeys = new HashSet<>();
 
     @BeforeClass
     public static void beforeTestCase() {
@@ -48,7 +48,6 @@ public class SimpleParameterKeyTest {
     @AfterClass
     public static void afterTestCase() {
         testKeys.clear();
-        testKeys = null;
     }
 
     public SimpleParameterKeyTest() {

@@ -3,6 +3,7 @@
 package cz.a_d.automation.golem.context;
 
 import cz.a_d.automation.golem.interfaces.context.RunCondition;
+import java.util.NoSuchElementException;
 
 /**
  *
@@ -23,12 +24,15 @@ public class RunConditionImpl<T, C> implements RunCondition<T, C>, Cloneable {
 
     @Override
     public T next() {
+        if(activeCounter==0){
+            throw new NoSuchElementException("Condition doesnt have next element");
+        }
         T retValue = null;
         if ((actionTest) && (activeCounter > 0)) {
             activeCounter--;
         }
 
-        if ((activeCounter != 0) && (currentResult.equals(expectedResult))) {
+        if ((activeCounter != 0) && (currentResult != null) && (currentResult.equals(expectedResult))) {
             retValue = action;
         }
         return retValue;

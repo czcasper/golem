@@ -22,7 +22,7 @@ import org.junit.Test;
  */
 public class SimpleActionStreamKeyTest {
 
-    protected static Set<String> testKeys = new HashSet<>();
+    protected final static Set<String> testKeys = new HashSet<>();
 
     public SimpleActionStreamKeyTest() {
     }
@@ -51,7 +51,6 @@ public class SimpleActionStreamKeyTest {
     @AfterClass
     public static void afterTestCase() {
         testKeys.clear();
-        testKeys = null;
     }
 
     /**

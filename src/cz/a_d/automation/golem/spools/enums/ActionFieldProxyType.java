@@ -65,7 +65,7 @@ public enum ActionFieldProxyType {
     }
 
     public String getPointer(Field f) {
-        String retValue = null;
+        String retValue=null;
         if (f != null) {
             switch (this) {
                 case Parameters:
@@ -83,6 +83,8 @@ public enum ActionFieldProxyType {
                         retValue = f.getAnnotation(RunContext.class).pointer();
                     }
                     break;
+                default:
+                    retValue=null;
             }
         }
         return retValue;
@@ -102,6 +104,8 @@ public enum ActionFieldProxyType {
                         retValue = f.getAnnotation(RunParameter.class).name();
                     }
                     break;
+                default:
+                    retValue = null;
             }
         }
         return retValue;

@@ -17,7 +17,8 @@ import java.util.Map;
  */
 public class ParameterSpoolImpl<A, V> extends AbstractSpoolImpl<A, ParameterKey<?>, V> implements ParameterSpool<A, V> {
 
-    protected static ParameterSpool<Object, Object> global = new ParameterSpoolImpl<>();
+    private static final long serialVersionUID = 1L;
+    protected final static ParameterSpool<Object, Object> global = new ParameterSpoolImpl<>();
 
     public ParameterSpoolImpl() {
         super();
@@ -71,10 +72,13 @@ public class ParameterSpoolImpl<A, V> extends AbstractSpoolImpl<A, ParameterKey<
             if ((type != null) && ((type == ActionFieldProxyType.Contexts) || (type == ActionFieldProxyType.Parameters))) {
                 retValue = true;
             } else {
-                throw new IllegalAccessException("Parameter spool doesn''t supports field annotated by type:"+type.toString());
+                String usedType = "null";
+                if(type!=null){
+                    usedType = type.toString();
+                }
+                throw new IllegalAccessException("Parameter spool doesn''t supports field annotated by type:" + usedType);
             }
-        }        
+        }
         return retValue;
     }
-    
 }

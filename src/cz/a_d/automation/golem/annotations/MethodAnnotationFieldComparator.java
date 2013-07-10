@@ -4,6 +4,7 @@
  */
 package cz.a_d.automation.golem.annotations;
 
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -16,10 +17,12 @@ import java.util.logging.Logger;
  * @param <A>
  * @author maslu02
  */
-public class MethodAnnotationFieldComparator<A extends Annotation> implements Comparator<Method> {
+public class MethodAnnotationFieldComparator<A extends Annotation> implements Comparator<Method>, Serializable {
 
-    private Class<A> annotationClass;
-    private Method accesor;
+    private static final long serialVersionUID = 1L;
+    protected Class<A> annotationClass;
+    protected transient Method accesor;
+    protected String fieldName;
 
     /**
      *
@@ -34,13 +37,12 @@ public class MethodAnnotationFieldComparator<A extends Annotation> implements Co
         if (fieldName == null) {
             throw new NullPointerException("Name of annotation field cannot be null.");
         }
-
         accesor = annotation.getMethod(fieldName);
+
         Class<?> fieldType = accesor.getReturnType();
         if ((fieldType.isAssignableFrom(Comparable.class)) || (fieldType.isPrimitive())) {
+            this.fieldName = fieldName;
             annotationClass = annotation;
-        } else {
-            throw new NoSuchMethodException("Field must be comparable or primitive type for compare.");
         }
     }
 
@@ -69,6 +71,13 @@ public class MethodAnnotationFieldComparator<A extends Annotation> implements Co
         return retValue;
     }
 
+    protected final Method getFieldAccessor() throws NoSuchMethodException {
+        if ((accesor == null) && (annotationClass != null)) {
+            accesor = annotationClass.getMethod(fieldName);
+        }
+        return accesor;
+    }
+
     private int compareComparable(Object o1, Object o2) {
         int retValue = 0;
         if ((o1 instanceof Comparable) && (o2 instanceof Comparable)) {
@@ -82,5 +91,15 @@ public class MethodAnnotationFieldComparator<A extends Annotation> implements Co
             retValue = 1;
         }
         return retValue;
+    }
+
+    private void readObject(java.io.ObjectInputStream s)
+            throws java.io.IOException, ClassNotFoundException {
+        s.defaultReadObject();
+        try {
+            accesor = annotationClass.getMethod(fieldName);
+        } catch (NoSuchMethodException | SecurityException ex) {
+            throw new ClassNotFoundException("Cannot found field:" + fieldName + " in annotation class:" + annotationClass.getName(), ex);
+        }
     }
 }

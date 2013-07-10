@@ -10,10 +10,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Logger;
 import org.junit.After;
-import org.junit.AfterClass;
 import static org.junit.Assert.*;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -27,20 +25,6 @@ public class AddressArrayListTest {
     private Object o;
     
     public AddressArrayListTest() {
-    }
-    
-    @BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
-    
-    @Before
-    public void setUp() {
-       /* Define content for test objects */ 
-       // ArrayList arr1 = new ArrayList();
         arr1 = new ArrayList<>();
         arr2 = new ArrayList<>();
         for(int i=0;i<=10;i++){
@@ -52,6 +36,12 @@ public class AddressArrayListTest {
         dict = new HashMap<>();
         dict.put("one", 1);
         dict.put("two", 2);        
+    }
+        
+    @Before
+    public void setUp() {
+       /* Define content for test objects */ 
+       // ArrayList arr1 = new ArrayList();
     }
     
     @After

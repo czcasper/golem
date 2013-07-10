@@ -31,7 +31,7 @@ public class RunCycleManagerImplTest {
     public RunCycleManagerImplTest() {
         steps = new AddressArrayList<>();
         for (int i = 0; i < 10; i++) {
-            steps.add(new ActionForTestingContext<>(new Integer(i)));
+            steps.add(new ActionForTestingContext<>(Integer.valueOf(i)));
         }
     }
 

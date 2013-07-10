@@ -14,6 +14,7 @@ import java.util.LinkedList;
  * @author maslu02
  */
 public class FastStack<E> extends LinkedList<E> {
+    private static final long serialVersionUID = 1L;
 
     public FastStack() {
         super();

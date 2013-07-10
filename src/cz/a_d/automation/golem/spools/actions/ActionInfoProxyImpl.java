@@ -69,8 +69,9 @@ public class ActionInfoProxyImpl implements ActionInfoProxy {
             Map<String, Field> fieldNames = proxy.getFieldNames();
             if ((fields != null) && (!fields.isEmpty())) {
                 fieldNameMap.putAll(fieldNames);
-                for (ActionFieldProxyType type : fields.keySet()) {
-                    List<Field> srcFields = fields.get(type);
+                for (Map.Entry<ActionFieldProxyType,List<Field>> entry : fields.entrySet()) {
+                    List<Field> srcFields = entry.getValue();
+                    ActionFieldProxyType type = entry.getKey();
                     if ((srcFields != null) && (!srcFields.isEmpty())) {
                         List<Field> dstFields = null;
                         if (fieldsData.containsKey(type)) {
@@ -88,8 +89,9 @@ public class ActionInfoProxyImpl implements ActionInfoProxy {
 
             Map<ActionMethodProxyType, SortedSet<Method>> methods = proxy.getMethods();
             if ((methods != null) && (!methods.isEmpty())) {
-                for (ActionMethodProxyType type : methods.keySet()) {
-                    SortedSet<Method> srcMethods = methods.get(type);
+                for (Map.Entry<ActionMethodProxyType,SortedSet<Method>> entry : methods.entrySet()) {
+                    SortedSet<Method> srcMethods = entry.getValue();
+                    ActionMethodProxyType type = entry.getKey();
                     if ((srcMethods != null) && (!srcMethods.isEmpty())) {
                         SortedSet<Method> dstMethods = null;
                         if (methodsData.containsKey(type)) {

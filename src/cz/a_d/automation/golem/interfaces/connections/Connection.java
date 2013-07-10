@@ -4,13 +4,19 @@
  */
 package cz.a_d.automation.golem.interfaces.connections;
 
+import java.nio.channels.ByteChannel;
+
 /**
  *
  * @author maslu02
  */
 public interface Connection {
 
-    public boolean open();
+    public boolean reOpen();
+
     public boolean close();
+
     public boolean isOpen();
+
+    public ByteChannel getChannel();
 }
