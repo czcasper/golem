@@ -4,13 +4,13 @@
  */
 package cz.a_d.automation.golem.interfaces.connections;
 
+import cz.a_d.automation.golem.interfaces.connections.channels.CommandChannel;
+
 /**
  *
  * @author maslu02
  */
-public interface ConsoleConnection {
+public interface TerminalConnection extends Connection {
 
-    public int submitCommand(CharSequence command);
-    public CharSequence takeAnswer();
-    
+    public CommandChannel getCommandChannel();
 }

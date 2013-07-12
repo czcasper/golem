@@ -4,7 +4,9 @@
  */
 package cz.a_d.automation.golem.interfaces.connections;
 
-import java.nio.channels.ByteChannel;
+import cz.a_d.automation.golem.interfaces.connections.channels.ConnectionChannel;
+import java.io.IOException;
+import java.net.URLConnection;
 
 /**
  *
@@ -12,11 +14,15 @@ import java.nio.channels.ByteChannel;
  */
 public interface Connection {
 
-    public boolean reOpen();
-
-    public boolean close();
-
     public boolean isOpen();
 
-    public ByteChannel getChannel();
+    public void open() throws IOException;
+
+    public void close() throws IOException;
+
+    public void reset(URLConnection connection) throws IOException;
+    
+    public URLConnection getCurrent();
+
+    public ConnectionChannel getChannel();
 }

@@ -15,6 +15,7 @@ import cz.a_d.automation.golem.context.actionInterfaces.managers.RunCondManagerC
 import cz.a_d.automation.golem.context.actionInterfaces.managers.RunCycleManagerContext;
 import cz.a_d.automation.golem.context.actionInterfaces.managers.RunDelayIntervalManagerContext;
 import cz.a_d.automation.golem.context.actionInterfaces.spools.ParameterSpoolContext;
+import cz.a_d.automation.golem.context.connections.GolemConnectionFactory;
 import cz.a_d.automation.golem.interfaces.ActionStream;
 import cz.a_d.automation.golem.interfaces.connections.Connection;
 import cz.a_d.automation.golem.interfaces.context.ActionInfoProxy;
@@ -29,7 +30,6 @@ import cz.a_d.automation.golem.spools.ActionInformationSpoolImpl;
 import cz.a_d.automation.golem.spools.ParameterSpoolImpl;
 import cz.a_d.automation.golem.spools.enums.ActionFieldProxyType;
 import cz.a_d.automation.golem.spools.enums.ActionMethodProxyType;
-import cz.a_d.automation.golem.toRefactor.RunnerConnectionFactoryImpl;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -92,7 +92,7 @@ public class Runner {
         boolean retValue = false;
         if (actionData.isValidAction(leaf)) {
             /**
-             * This is expected 
+             * This is expected
              */
             ActionInfoProxy proxy = actionData.getFrom(leaf);
             injectParameters(leaf, proxy, runParameterMap);
@@ -227,7 +227,7 @@ public class Runner {
                     } else if (type.isAssignableFrom(ParameterSpoolContext.class)) {
                         f.set(action, parmMap);
                     } else if (type.isAssignableFrom(RunConnectionFactory.class)) {
-                        f.set(action, RunnerConnectionFactoryImpl.createNewFactory());
+                        f.set(action, GolemConnectionFactory.getGlobalFactory());
                     } else if (type.isAssignableFrom(RunConectionSpool.class)) {
                         f.set(action, connSpool);
                     } else if (type.isAssignableFrom(RunCycleManagerContext.class)) {
@@ -250,7 +250,6 @@ public class Runner {
             }
         }
     }
-
 //    private boolean isAssignableToPrimitive(Class<?> type, Object value) {
 //        boolean retValue = false;
 //        if ((type.isPrimitive()) && (value != null)) {

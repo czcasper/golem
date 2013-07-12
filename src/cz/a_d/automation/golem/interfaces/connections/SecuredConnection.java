@@ -8,9 +8,9 @@ package cz.a_d.automation.golem.interfaces.connections;
  *
  * @author maslu02
  */
-public interface SecuredConnection extends Connection {
-    
-    public boolean login(String userName,String password);
+public interface SecuredConnection {
+
+    public boolean login(String userName, String password);
+
     public boolean logout();
-    
 }
