@@ -6,10 +6,13 @@ import cz.a_d.automation.golem.interfaces.connections.Connection;
 import cz.a_d.automation.golem.interfaces.connections.channels.ConnectionChannel;
 import java.io.IOException;
 import java.net.URLConnection;
+import java.net.UnknownServiceException;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -27,8 +30,21 @@ public class ConnectionChannelImpl implements ConnectionChannel {
             throw new NullPointerException("Connection channe cannot be initializedby null connection");
         }
         this.parent = parent;
-        input = Channels.newChannel(connection.getInputStream());
-        output = Channels.newChannel(connection.getOutputStream());
+        try {
+            input = Channels.newChannel(connection.getInputStream());
+        } catch (UnknownServiceException ex) {
+            input = null;
+            Logger.getLogger(ConnectionChannelImpl.class.getName()).log(Level.FINE, "Connection:{0} doesn''t implement input stream. Message from connection:{1}", new Object[]{connection.toString(),ex.getMessage()});
+        }
+        try {
+            output = Channels.newChannel(connection.getOutputStream());
+        } catch (UnknownServiceException ex) {
+            output = null;
+            Logger.getLogger(ConnectionChannelImpl.class.getName()).log(Level.FINE, "Connection:{0} doesn''t implement output stream. Message from connection:{1}", new Object[]{connection.toString(),ex.getMessage()});
+        }
+        if ((input == null) && (output == null)) {
+            throw new IOException("Invalid URL connection:" + connection.toString() + " doesn't provides any type of comunication stream.");
+        }
     }
 
     @Override

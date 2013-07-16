@@ -86,8 +86,11 @@ public abstract class AbstractSpoolImpl<A, K extends AbstractSpoolKey<?>, V> ext
 
     @Override
     public V getFrom(String key) {
-        searchProxy.fromString(key);
-        return this.get(searchProxy);
+        V retValue = null;
+        if(searchProxy.fromString(key)){
+            retValue = this.get(searchProxy);
+        }
+        return retValue;
     }
 
     @Override
