@@ -30,18 +30,7 @@ public class ConnectionChannelImpl implements ConnectionChannel {
             throw new NullPointerException("Connection channe cannot be initializedby null connection");
         }
         this.parent = parent;
-        try {
-            input = Channels.newChannel(connection.getInputStream());
-        } catch (UnknownServiceException ex) {
-            input = null;
-            Logger.getLogger(ConnectionChannelImpl.class.getName()).log(Level.FINE, "Connection:{0} doesn''t implement input stream. Message from connection:{1}", new Object[]{connection.toString(),ex.getMessage()});
-        }
-        try {
-            output = Channels.newChannel(connection.getOutputStream());
-        } catch (UnknownServiceException ex) {
-            output = null;
-            Logger.getLogger(ConnectionChannelImpl.class.getName()).log(Level.FINE, "Connection:{0} doesn''t implement output stream. Message from connection:{1}", new Object[]{connection.toString(),ex.getMessage()});
-        }
+        initChannelStreams(connection);
         if ((input == null) && (output == null)) {
             throw new IOException("Invalid URL connection:" + connection.toString() + " doesn't provides any type of comunication stream.");
         }
@@ -99,12 +88,27 @@ public class ConnectionChannelImpl implements ConnectionChannel {
     @Override
     public void refresh(URLConnection connection) throws IOException {
         if (recursive) {
-            parent.reset(connection);
             recursive = false;
+            parent.reset(connection);
             return;
         }
-        input = Channels.newChannel(connection.getInputStream());
-        output = Channels.newChannel(connection.getOutputStream());
+        initChannelStreams(connection);
         recursive = true;
+    }
+
+    protected final void initChannelStreams(URLConnection connection) throws IOException {
+        try {
+            input = Channels.newChannel(connection.getInputStream());
+        } catch (UnknownServiceException ex) {
+            input = null;
+            Logger.getLogger(ConnectionChannelImpl.class.getName()).log(Level.FINE, "Connection:{0} doesn''t implement input stream. Message from connection:{1}", new Object[]{connection.toString(), ex.getMessage()});
+        }
+        try {
+            output = Channels.newChannel(connection.getOutputStream());
+        } catch (UnknownServiceException ex) {
+            output = null;
+            Logger.getLogger(ConnectionChannelImpl.class.getName()).log(Level.FINE, "Connection:{0} doesn''t implement output stream. Message from connection:{1}", new Object[]{connection.toString(), ex.getMessage()});
+        }
+
     }
 }

@@ -27,7 +27,10 @@ public class ConnectionImpl implements Connection {
 
     @Override
     public void reset(URLConnection connection) throws IOException {
-        if (this.connection != connection) {
+        if (((connection != null) && ((this.connection != connection)) || (!isOpen()))) {
+            if (isOpen()) {
+                close();
+            }
             this.connection = connection;
             connectionChannel.refresh(connection);
         }

@@ -9,8 +9,8 @@ import java.io.File;
 import java.net.Proxy;
 import java.net.URI;
 import java.net.URL;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
  *
