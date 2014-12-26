@@ -31,7 +31,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 // TODO Documentation: Create JavaDoc on class and public Method level (minimally) protected method should be included also.
 public class ActionInfoProxyImpl implements ActionInfoProxy {

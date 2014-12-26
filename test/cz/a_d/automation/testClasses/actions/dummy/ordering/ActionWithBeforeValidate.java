@@ -6,7 +6,7 @@ import cz.a_d.automation.golem.annotations.methods.Validate;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 // TODO Documentation: Create JavaDoc on class level and point to test where class is used.
 public class ActionWithBeforeValidate {

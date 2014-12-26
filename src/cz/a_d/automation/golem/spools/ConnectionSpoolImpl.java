@@ -12,7 +12,7 @@ import java.util.Map;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 public class ConnectionSpoolImpl<A> extends AbstractSpoolImpl<A, ConnectionKey<?>, Connection> implements ConnectionSpool<A> {
 

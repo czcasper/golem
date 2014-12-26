@@ -7,7 +7,7 @@ import java.util.NoSuchElementException;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 public class RunConditionImpl<T, C> implements RunCondition<T, C>, Cloneable {
 

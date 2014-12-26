@@ -11,7 +11,7 @@ import java.util.Iterator;
  * All classes which implements this interface or childs of this interface must also implement
  * interface Clonable. Otherwise CloneNotSupportedException exception will be throwed.
  * 
- * @author maslu02
+ * @author casper
  */
 public interface CloneableIterator<T> extends Iterator<T> {
     public Object clone() throws CloneNotSupportedException;

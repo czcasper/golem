@@ -12,7 +12,7 @@ import java.lang.reflect.Field;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 public enum ActionFieldProxyType {
 

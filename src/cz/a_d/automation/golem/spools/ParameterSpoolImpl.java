@@ -13,7 +13,7 @@ import java.util.Map;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 public class ParameterSpoolImpl<A, V> extends AbstractSpoolImpl<A, ParameterKey<?>, V> implements ParameterSpool<A, V> {
 

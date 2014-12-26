@@ -8,7 +8,7 @@ import cz.a_d.automation.golem.interfaces.spools.keys.ParameterKey;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 public interface ParameterSpool<A, V> extends AbstractSpool<A, ParameterKey<?>, V> {
 

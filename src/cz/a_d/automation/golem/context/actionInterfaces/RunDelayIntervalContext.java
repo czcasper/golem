@@ -5,7 +5,7 @@ package cz.a_d.automation.golem.context.actionInterfaces;
 /**
  *
  * @param <T> 
- * @author maslu02
+ * @author casper
  */
 public interface RunDelayIntervalContext<T> {
 

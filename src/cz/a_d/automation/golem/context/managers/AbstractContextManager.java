@@ -16,7 +16,7 @@ import java.util.Map;
  * than one context manager on single action. Provide 
  * 
  * 
- * @author maslu02
+ * @author casper
  * 
  * @param <T> - type of Action 
  * @param <C> - type of object used for validation of run results

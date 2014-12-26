@@ -11,7 +11,7 @@ import org.junit.Test;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 // TODO Refactoring: Validate functionality of this test and improve it to be more complex.
 public class RunDelayIntervalImplTest {

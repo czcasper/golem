@@ -28,7 +28,7 @@ import org.junit.rules.ExpectedException;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 // TODO Documentation: Create javadoc on class level and methods. For methods javadoc use comments inside methods to describe all test step inside method.
 public class ParameterSpoolImplTest {

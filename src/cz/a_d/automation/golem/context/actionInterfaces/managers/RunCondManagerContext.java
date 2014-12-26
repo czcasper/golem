@@ -8,7 +8,7 @@ import cz.a_d.automation.golem.interfaces.context.managers.RunCondManager;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 public interface RunCondManagerContext extends RunCondManager<Object, Boolean, Object> {
     

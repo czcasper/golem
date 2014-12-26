@@ -21,7 +21,7 @@ import org.junit.rules.ExpectedException;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 public class MethodAnnotationFieldComparatorTest {
 

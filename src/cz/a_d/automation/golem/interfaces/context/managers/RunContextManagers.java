@@ -8,7 +8,7 @@ import cz.a_d.automation.golem.interfaces.RunContext;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 public interface RunContextManagers<T, C, V> extends RunContext<T, V> {
 

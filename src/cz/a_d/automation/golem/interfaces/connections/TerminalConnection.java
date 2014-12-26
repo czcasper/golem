@@ -8,7 +8,7 @@ import cz.a_d.automation.golem.interfaces.connections.channels.CommandChannel;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 public interface TerminalConnection extends Connection {
 

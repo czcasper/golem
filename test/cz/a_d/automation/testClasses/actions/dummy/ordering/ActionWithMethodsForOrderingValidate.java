@@ -6,7 +6,7 @@ import cz.a_d.automation.golem.annotations.methods.Validate;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 // TODO Documentation: Create JavaDoc minimally on class level.
 public class ActionWithMethodsForOrderingValidate {

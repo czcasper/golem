@@ -11,7 +11,7 @@ import java.lang.annotation.Annotation;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 public enum ActionMethodProxyType {
 

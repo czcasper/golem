@@ -8,7 +8,7 @@ import cz.a_d.automation.golem.common.iterators.ResetableIterator;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 public interface RunContext<T, V> extends Iterable<T> {
 

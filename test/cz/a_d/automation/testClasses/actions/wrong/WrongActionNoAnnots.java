@@ -4,7 +4,7 @@ package cz.a_d.automation.testClasses.actions.wrong;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 public class WrongActionNoAnnots {
     protected int i;

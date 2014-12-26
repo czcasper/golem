@@ -10,7 +10,7 @@ import java.util.Map;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 public interface AbstractSpool<A, K extends AbstractSpoolKey, V> extends Map<K, V> {
 

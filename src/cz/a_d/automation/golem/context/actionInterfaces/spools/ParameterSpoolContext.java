@@ -8,7 +8,7 @@ import cz.a_d.automation.golem.interfaces.spools.ParameterSpool;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 public interface ParameterSpoolContext extends ParameterSpool<Object, Object> {
     

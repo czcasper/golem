@@ -15,7 +15,7 @@ import java.util.logging.Logger;
 /**
  *
  * @param <A>
- * @author maslu02
+ * @author casper
  */
 public class MethodAnnotationFieldComparator<A extends Annotation> implements Comparator<Method>, Serializable {
 

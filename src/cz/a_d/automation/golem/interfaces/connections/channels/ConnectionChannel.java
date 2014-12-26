@@ -10,7 +10,7 @@ import java.nio.channels.ByteChannel;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 public interface ConnectionChannel extends ByteChannel {
 
@@ -19,4 +19,6 @@ public interface ConnectionChannel extends ByteChannel {
     public boolean isWriteable();
 
     public void refresh(URLConnection connection) throws IOException;
+    
+    public URLConnection getCurrentConnection();
 }

@@ -8,7 +8,7 @@ import java.util.Map;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 public interface RunConectionSpool extends Map<Object, RunConnection> {
 

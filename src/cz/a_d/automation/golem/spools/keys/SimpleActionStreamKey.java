@@ -6,7 +6,7 @@ import cz.a_d.automation.golem.interfaces.spools.keys.ActionStreamKey;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 public class SimpleActionStreamKey extends AbstractSpoolKeyImpl<String> implements ActionStreamKey<String> {
 

@@ -17,7 +17,7 @@ import java.util.SortedSet;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 public interface ActionInfoProxy {
 

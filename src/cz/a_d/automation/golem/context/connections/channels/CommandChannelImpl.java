@@ -2,7 +2,6 @@
  */
 package cz.a_d.automation.golem.context.connections.channels;
 
-import cz.a_d.automation.golem.interfaces.connections.Connection;
 import cz.a_d.automation.golem.interfaces.connections.channels.CommandChannel;
 import java.io.IOException;
 import java.net.URLConnection;
@@ -12,14 +11,14 @@ import java.nio.charset.Charset;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 public class CommandChannelImpl extends ConnectionChannelImpl implements CommandChannel {
 
     protected Charset channelEncoding;
 
-    public CommandChannelImpl(Connection parent, URLConnection connection) throws IOException {
-        super(parent, connection);
+    public CommandChannelImpl(URLConnection connection) throws IOException {
+        super(connection);
         String strCharset = connection.getContentEncoding();
         if ((strCharset != null) && (!strCharset.isEmpty())) {
             channelEncoding = Charset.forName(strCharset);

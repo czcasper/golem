@@ -7,40 +7,25 @@ package cz.a_d.automation.golem.context.connections;
 import cz.a_d.automation.golem.interfaces.connections.Connection;
 import cz.a_d.automation.golem.interfaces.connections.channels.ConnectionChannel;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 import org.junit.AfterClass;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 public class ConnectionImplTest {
 
     protected static File testFile;
-    protected List<String> testText;
 
     public ConnectionImplTest() throws IOException {
-        testFile = File.createTempFile("golemConnectionFactory", "open_uri");
-        Random r = new Random();
-        int count = r.nextInt(150) + 150;
-        testText = new ArrayList<>(count);
-        FileWriter fw = new FileWriter(testFile);
-        for (int i = 0; i < count; i++) {
-            byte[] tmp = new byte[r.nextInt(60) + 100];
-            r.nextBytes(tmp);
-            String line = new String(tmp);
-            testText.add(line);
-            fw.append(line);
-        }
+        testFile = File.createTempFile("connectionTest", "");
     }
 
     @AfterClass
@@ -50,6 +35,7 @@ public class ConnectionImplTest {
 
     /**
      * Test of reset method, of class ConnectionImpl.
+     * @throws java.lang.Exception
      */
     @Test
     public void testReset_GetCurrent() throws Exception {
@@ -91,6 +77,7 @@ public class ConnectionImplTest {
 
     /**
      * Test of open method, of class ConnectionImpl.
+     * @throws java.lang.Exception
      */
     @Test
     public void testOpen_Close() throws Exception {
@@ -109,9 +96,10 @@ public class ConnectionImplTest {
 
     /**
      * Test of getChannel method, of class ConnectionImpl.
+     * @throws java.io.IOException
      */
     @Test
-    public void testGetChannel() throws MalformedURLException, IOException {
+    public void testGetChannel() throws IOException {
         /**
          * Initialize and test interaction of method with reset.
          */

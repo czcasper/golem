@@ -7,7 +7,7 @@ import cz.a_d.automation.golem.annotations.methods.Run;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 @RunAction
 public class SimpleValidAction {

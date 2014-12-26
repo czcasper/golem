@@ -9,7 +9,7 @@ import cz.a_d.automation.golem.interfaces.spools.keys.ConnectionKey;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 public interface ConnectionSpool<A> extends AbstractSpool<A, ConnectionKey<?>, Connection> {
     

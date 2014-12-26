@@ -10,7 +10,7 @@ import java.nio.charset.Charset;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 public interface CommandChannel extends ConnectionChannel {
 

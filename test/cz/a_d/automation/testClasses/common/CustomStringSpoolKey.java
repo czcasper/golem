@@ -6,7 +6,7 @@ import cz.a_d.automation.golem.spools.keys.AbstractSpoolKeyImpl;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 // TODO Documentation: Create JavaDoc with references to test where this class is used.
 public class CustomStringSpoolKey extends AbstractSpoolKeyImpl<String> {

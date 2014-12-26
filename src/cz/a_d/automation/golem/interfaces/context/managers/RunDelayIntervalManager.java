@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 public interface RunDelayIntervalManager<T,V> extends ContextManager<T, RunDelayInterval<T>, V> {
     /**

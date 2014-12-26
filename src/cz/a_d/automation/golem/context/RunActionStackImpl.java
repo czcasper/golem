@@ -11,7 +11,7 @@ import java.util.LinkedList;
 /**
  *
  * @param <T> 
- * @author maslu02
+ * @author casper
  */
 // TODO Documentation: Finish JavaDoc on class and pulblic methods level.
 public class RunActionStackImpl<T> implements RunActionStack<T>, Iterator<T>, Cloneable {

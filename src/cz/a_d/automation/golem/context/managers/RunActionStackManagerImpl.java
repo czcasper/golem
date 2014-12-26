@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 /**
  *
  * @param <T>
- * @author maslu02
+ * @author casper
  */
 public class RunActionStackManagerImpl<T, C, V> extends AbstractContextManager<T, C, RunActionStack<T>, V> implements RunActionStackManager<T, V> {
 

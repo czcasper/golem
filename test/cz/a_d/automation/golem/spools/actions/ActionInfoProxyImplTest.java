@@ -44,7 +44,7 @@ import org.junit.Test;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 // TODO Refactoring: improve test scale related to test is methods are added correctly in case of multiple object relation ship.
 public class ActionInfoProxyImplTest {

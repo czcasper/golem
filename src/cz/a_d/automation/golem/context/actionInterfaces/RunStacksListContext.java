@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 public interface RunStacksListContext extends List< RunActionStack<Object>> {
     

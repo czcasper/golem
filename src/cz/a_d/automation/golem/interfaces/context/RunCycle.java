@@ -4,7 +4,7 @@ package cz.a_d.automation.golem.interfaces.context;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 public interface RunCycle<T> extends CloneableIterator<T> {
 

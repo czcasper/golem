@@ -7,7 +7,7 @@ import java.math.BigInteger;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 public class CustomBigIntStringKey extends AbstractSpoolKeyImpl<BigInteger> {
 

@@ -11,7 +11,7 @@ import java.util.Collection;
 /**
  *
  * @param <T>
- * @author maslu02
+ * @author casper
  */
 public class AddressArrayList<T> extends ArrayList<T> {
 

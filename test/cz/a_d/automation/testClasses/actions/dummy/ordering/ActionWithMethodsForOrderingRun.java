@@ -6,7 +6,7 @@ import cz.a_d.automation.golem.annotations.methods.Run;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 // TODO Documentation: Create JavaDoc minimaly on class level.
 public class ActionWithMethodsForOrderingRun {

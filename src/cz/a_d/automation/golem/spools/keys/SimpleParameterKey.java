@@ -6,7 +6,7 @@ import cz.a_d.automation.golem.interfaces.spools.keys.ParameterKey;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 public class SimpleParameterKey extends AbstractSpoolKeyImpl<String> implements ParameterKey<String> {
 

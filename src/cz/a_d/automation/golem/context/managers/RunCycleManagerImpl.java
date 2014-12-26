@@ -17,7 +17,9 @@ import java.util.logging.Logger;
 /**
  *
  * @param <T>
- * @author maslu02
+ * @author casper
+ * @param <C>
+ * @param <V>
  */
 public class RunCycleManagerImpl<T, C, V> extends AbstractContextManager<T, C, RunCycle<T>, V> implements RunCycleManager<T, V> {
 

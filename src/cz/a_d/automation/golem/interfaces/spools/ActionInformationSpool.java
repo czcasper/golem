@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 public interface ActionInformationSpool<A> extends AbstractSpool<A, ActionInfoKey<Class<?>>, ActionInfoProxy> {
 

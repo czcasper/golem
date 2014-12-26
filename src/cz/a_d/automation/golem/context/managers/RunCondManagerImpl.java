@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 public class RunCondManagerImpl<T, C extends Object, V> extends AbstractContextManager<T, C, RunCondition<T, C>, V> implements RunCondManager<T, C, V> {
 

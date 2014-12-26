@@ -7,7 +7,7 @@ import cz.a_d.automation.golem.interfaces.context.managers.RunDelayIntervalManag
 /**
  *
  * @param <T> 
- * @author maslu02
+ * @author casper
  */
 public interface RunDelayIntervalManagerContext extends RunDelayIntervalManager<Object, Object> {
 

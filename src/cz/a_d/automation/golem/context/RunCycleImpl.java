@@ -16,7 +16,7 @@ import java.util.logging.Logger;
  * actions, this allows driving cycles directelly from actions inside cycle.
  *
  * @param <T>
- * @author maslu02
+ * @author casper
  */
 public class RunCycleImpl<T> implements RunCycle<T>, Cloneable {
 

@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)

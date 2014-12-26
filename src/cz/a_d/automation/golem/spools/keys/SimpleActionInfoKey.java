@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 public class SimpleActionInfoKey extends AbstractSpoolKeyImpl<Class<?>> implements ActionInfoKey<Class<?>> {
 

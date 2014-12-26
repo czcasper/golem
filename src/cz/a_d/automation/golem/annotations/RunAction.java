@@ -11,7 +11,7 @@ import java.lang.annotation.RetentionPolicy;
  * A marker annotation indicating class like processable in Golem.
  * Used by Golem's class {@code Runner} to execute logic defined inside class.
  * 
- * @author maslu02
+ * @author casper
  */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RunAction {

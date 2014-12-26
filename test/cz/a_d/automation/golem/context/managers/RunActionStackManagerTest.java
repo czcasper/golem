@@ -20,7 +20,7 @@ import org.junit.Test;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 // TODO Documentation: Create JavaDoc on class and method level
 // TODO Refactoring: Improve test to fully cover functionality expeceted from this class.

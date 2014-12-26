@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 public interface RunCondManager<T, C extends Object, V> extends ContextManager<T, RunCondition<T, C>, V> {
 

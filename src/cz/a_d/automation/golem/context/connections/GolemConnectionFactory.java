@@ -3,6 +3,7 @@
 package cz.a_d.automation.golem.context.connections;
 
 import cz.a_d.automation.golem.interfaces.connections.Connection;
+import cz.a_d.automation.golem.protocol.GolemURLStreamHandlerFactory;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.Proxy;
@@ -12,13 +13,17 @@ import java.net.URLConnection;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 public class GolemConnectionFactory {
-    
+
     protected final static GolemConnectionFactory global = new GolemConnectionFactory();
-    
-    public static GolemConnectionFactory getGlobalFactory(){
+
+    static {
+        GolemURLStreamHandlerFactory.getDefaultInstance();
+    }
+
+    public static GolemConnectionFactory getGlobalFactory() {
         return global;
     }
 
@@ -57,6 +62,7 @@ public class GolemConnectionFactory {
         if (url != null) {
             URLConnection urlCon = url.openConnection();
             retValue = new ConnectionImpl(urlCon);
+            retValue.open();
         }
         return retValue;
     }

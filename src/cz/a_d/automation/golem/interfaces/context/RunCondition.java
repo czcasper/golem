@@ -6,7 +6,7 @@ package cz.a_d.automation.golem.interfaces.context;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 public interface RunCondition<T,C> extends CloneableIterator<T> {
     public boolean setupCond(T action, C expect, long counter);

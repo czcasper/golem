@@ -7,7 +7,7 @@ import java.util.Iterator;
 /**
  *
  * @param <T> 
- * @author maslu02
+ * @author casper
  */
 public class ResetableIterator<T> implements Iterator<T> {
     

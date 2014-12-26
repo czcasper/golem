@@ -10,7 +10,7 @@ import java.net.URLConnection;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 public interface Connection {
 

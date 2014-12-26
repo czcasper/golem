@@ -24,7 +24,7 @@ import java.util.Iterator;
  * with What?(actions) and Which parameters are used? are stored in ActionStream.
  * 
  * 
- * @author maslu02
+ * @author casper
  * @param <T> - type for action objects
  * @param <C> - type used for validating result of actions
  * @param <V> - type used in parameter spool like value

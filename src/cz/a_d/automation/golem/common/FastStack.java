@@ -11,7 +11,7 @@ import java.util.LinkedList;
  * LinkedList. This extension has just more obvious name and implement methods 
  * specific for stack by reusing LinkedList methods.
  * 
- * @author maslu02
+ * @author casper
  */
 public class FastStack<E> extends LinkedList<E> {
     private static final long serialVersionUID = 1L;

@@ -8,7 +8,7 @@ import cz.a_d.automation.golem.interfaces.context.RunCycle;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 public interface RunCycleManager<T,V> extends ContextManager<T, RunCycle<T>, V> {
 

@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 public interface RunConditionsListContext extends List<RunCondition<Object, Boolean>> {
     

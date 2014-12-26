@@ -6,7 +6,7 @@ import cz.a_d.automation.golem.annotations.methods.Init;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 public class ActionWithMethodsForOrderingInit {
         @Init(order = 5)

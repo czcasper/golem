@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 /**
  * This class is storage for
  *
- * @author maslu02
+ * @author casper
  */
 // TODO Documentation: Create JavaDoc on class and public method level.
 public class ActionInformationSpoolImpl<A> extends AbstractSpoolImpl<A, ActionInfoKey<Class<?>>, ActionInfoProxy> implements ActionInformationSpool<A> {

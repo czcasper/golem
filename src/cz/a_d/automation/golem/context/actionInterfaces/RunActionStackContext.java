@@ -9,7 +9,7 @@ import cz.a_d.automation.golem.interfaces.context.RunActionStack;
 /**
  *
  * @param <T> 
- * @author maslu02
+ * @author casper
  */
 public interface RunActionStackContext extends RunActionStack<Object> {    
 }

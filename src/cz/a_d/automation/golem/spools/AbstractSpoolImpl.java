@@ -19,7 +19,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 // TODO Documentation: Create JavaDoc on class and public method level.
 // TODO Refactoring: Methods with suppressing warning unchecked should be validated and refactored to be more type save (putFrom, getFrom, buildKey)

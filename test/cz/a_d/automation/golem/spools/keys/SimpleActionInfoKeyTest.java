@@ -28,7 +28,7 @@ import org.junit.Test;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 public class SimpleActionInfoKeyTest {
 

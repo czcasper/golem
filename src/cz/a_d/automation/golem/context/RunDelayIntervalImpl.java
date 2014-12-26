@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 /**
  *
  * @param <T> 
- * @author maslu02
+ * @author casper
  */
 public class RunDelayIntervalImpl<T> implements RunDelayInterval<T>, Cloneable {
 

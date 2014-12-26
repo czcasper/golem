@@ -20,7 +20,7 @@ import org.junit.Test;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 // TODO Documentation: Create JavaDoc on class, method and field level
 public class RunCycleManagerImplTest {

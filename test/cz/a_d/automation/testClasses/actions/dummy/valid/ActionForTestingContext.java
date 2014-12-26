@@ -8,7 +8,7 @@ import java.util.Objects;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 // TOD Documentation: Create JavaDoc on class and method level.
 @RunAction

@@ -6,7 +6,7 @@ import cz.a_d.automation.golem.interfaces.spools.keys.AbstractSpoolKey;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 public abstract class AbstractSpoolKeyImpl<T> implements AbstractSpoolKey<T>, Cloneable {
 

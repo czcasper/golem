@@ -8,7 +8,7 @@ import java.util.Iterator;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 public interface ContextManager<T, M extends Iterator<T>, V> extends Iterator<T> {
 

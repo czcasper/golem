@@ -10,28 +10,25 @@ import java.net.URLConnection;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 public class ConnectionImpl implements Connection {
 
-    protected URLConnection connection;
     protected ConnectionChannel connectionChannel;
 
     public ConnectionImpl(URLConnection connection) throws IOException {
         if (connection == null) {
             throw new NullPointerException("Connection cannot be initialized by by null URL connection");
         }
-        this.connection = connection;
-        connectionChannel = new ConnectionChannelImpl(this, connection);
+        connectionChannel = new ConnectionChannelImpl(connection);
     }
 
     @Override
     public void reset(URLConnection connection) throws IOException {
-        if (((connection != null) && ((this.connection != connection)) || (!isOpen()))) {
+        if (((connection != null) && ((connectionChannel.getCurrentConnection() != connection)) || (!isOpen()))) {
             if (isOpen()) {
                 close();
             }
-            this.connection = connection;
             connectionChannel.refresh(connection);
         }
     }
@@ -43,8 +40,9 @@ public class ConnectionImpl implements Connection {
 
     @Override
     public void open() throws IOException {
-        connection.connect();
-        connectionChannel.refresh(connection);
+        URLConnection currentConnection = connectionChannel.getCurrentConnection();
+        currentConnection.connect();
+        connectionChannel.refresh(currentConnection);
     }
 
     @Override
@@ -59,6 +57,6 @@ public class ConnectionImpl implements Connection {
 
     @Override
     public URLConnection getCurrent() {
-        return connection;
+        return connectionChannel.getCurrentConnection();
     }
 }

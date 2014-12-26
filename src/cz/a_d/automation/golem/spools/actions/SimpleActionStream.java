@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 // TODO Documentation: Create Javadoc on class and public method level.
 public class SimpleActionStream<A, V> implements ActionStream<A, V> {

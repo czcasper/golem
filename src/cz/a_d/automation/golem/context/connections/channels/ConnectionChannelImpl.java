@@ -5,42 +5,42 @@ package cz.a_d.automation.golem.context.connections.channels;
 import cz.a_d.automation.golem.interfaces.connections.Connection;
 import cz.a_d.automation.golem.interfaces.connections.channels.ConnectionChannel;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URLConnection;
-import java.net.UnknownServiceException;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 public class ConnectionChannelImpl implements ConnectionChannel {
 
-    protected Connection parent;
-    protected ReadableByteChannel input;
-    protected WritableByteChannel output;
-    protected boolean recursive = true;
+    protected URLConnection connection;
+    protected ReadableByteChannel input = null;
+    protected WritableByteChannel output = null;
 
-    public ConnectionChannelImpl(Connection parent, URLConnection connection) throws IOException {
-        if ((parent == null) || (connection == null)) {
+    public ConnectionChannelImpl(URLConnection connection) throws IOException {
+        if (connection == null) {
             throw new NullPointerException("Connection channe cannot be initializedby null connection");
         }
-        this.parent = parent;
-        initChannelStreams(connection);
-        if ((input == null) && (output == null)) {
+        if (!((connection.getDoInput()) || (connection.getDoOutput()))) {
             throw new IOException("Invalid URL connection:" + connection.toString() + " doesn't provides any type of comunication stream.");
         }
+        this.connection = connection;
+        initChannelStreams();
     }
 
     @Override
     public int read(ByteBuffer dst) throws IOException {
-        int retValue = -1;
+        int retValue = 0;
         if ((dst != null) && (input != null)) {
             retValue = input.read(dst);
+        } else if (input == null) {
+            retValue = -1;
         }
         return retValue;
     }
@@ -58,57 +58,67 @@ public class ConnectionChannelImpl implements ConnectionChannel {
 
     @Override
     public void close() throws IOException {
-        if (input != null) {
-            input.close();
-        }
-        if (output != null) {
+        /**
+         * Order of closing is mandatory, in case when channels are pointing to same resource output needs to be for allow auto flush
+         * feature closed in first line.
+         */
+        if (output != null && output.isOpen()) {
             output.close();
+        }
+        if (input != null && input.isOpen()) {
+            input.close();
         }
     }
 
     @Override
     public int write(ByteBuffer src) throws IOException {
-        int retValue = -1;
+        int retValue = 0;
         if ((src != null) && (output != null)) {
             retValue = output.write(src);
+            connection.getOutputStream().flush();
+        } else if (output == null) {
+            retValue = -1;
         }
         return retValue;
     }
 
     @Override
     public boolean isReadable() {
-        return (input != null);
+        return connection.getDoInput();
     }
 
     @Override
     public boolean isWriteable() {
-        return (output != null);
+        return connection.getDoOutput();
     }
 
     @Override
     public void refresh(URLConnection connection) throws IOException {
-        if (recursive) {
-            recursive = false;
-            parent.reset(connection);
-            return;
+        if (connection != null) {
+            this.connection = connection;
+            input = null;
+            output = null;
+            initChannelStreams();
         }
-        initChannelStreams(connection);
-        recursive = true;
     }
 
-    protected final void initChannelStreams(URLConnection connection) throws IOException {
-        try {
-            input = Channels.newChannel(connection.getInputStream());
-        } catch (UnknownServiceException ex) {
-            input = null;
-            Logger.getLogger(ConnectionChannelImpl.class.getName()).log(Level.FINE, "Connection:{0} doesn''t implement input stream. Message from connection:{1}", new Object[]{connection.toString(), ex.getMessage()});
-        }
-        try {
-            output = Channels.newChannel(connection.getOutputStream());
-        } catch (UnknownServiceException ex) {
-            output = null;
-            Logger.getLogger(ConnectionChannelImpl.class.getName()).log(Level.FINE, "Connection:{0} doesn''t implement output stream. Message from connection:{1}", new Object[]{connection.toString(), ex.getMessage()});
-        }
+    @Override
+    public URLConnection getCurrentConnection() {
+        return connection;
+    }
 
+    protected final void initChannelStreams() throws IOException {
+        if (input == null && connection.getDoInput()) {
+            InputStream inputStream = connection.getInputStream();
+            if (inputStream != null) {
+                input = Channels.newChannel(inputStream);
+            }
+        }
+        if (output == null && connection.getDoOutput()) {
+            OutputStream outputStream = connection.getOutputStream();
+            if (outputStream != null) {
+                output = Channels.newChannel(outputStream);
+            }
+        }
     }
 }

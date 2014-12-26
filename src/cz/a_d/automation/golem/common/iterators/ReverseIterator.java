@@ -12,7 +12,7 @@ import java.util.NoSuchElementException;
 /**
  *
  * @param <T> 
- * @author maslu02
+ * @author casper
  */
 public class ReverseIterator<T> implements Iterator<T>, Iterable<T> {
     

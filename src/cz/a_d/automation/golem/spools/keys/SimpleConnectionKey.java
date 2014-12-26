@@ -6,7 +6,7 @@ import cz.a_d.automation.golem.interfaces.spools.keys.ConnectionKey;
 
 /**
  *
- * @author maslu02
+ * @author casper
  */
 public class SimpleConnectionKey extends AbstractSpoolKeyImpl<String> implements ConnectionKey<String> {
 
