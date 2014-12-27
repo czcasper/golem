@@ -1,6 +1,4 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
  */
 package cz.a_d.automation.golem.annotations;
 
@@ -13,22 +11,40 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * Implements comparing of methods based on value defined in method annotation. This allows to sort methods into order defined by developer
+ * of action and keep this order consistent during action execution.
  *
- * @param <A>
  * @author casper
+ * @param <A> annotation class type used for comparing method objects. This annotation must be defined on method level and will be searched
+ *            in method object during compare process.
  */
 public class MethodAnnotationFieldComparator<A extends Annotation> implements Comparator<Method>, Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    /**
+     * Annotation class is used to comparing of methods.
+     */
     protected Class<A> annotationClass;
+
+    /**
+     * Class method which provide access to value defined in annotation field. Must be transient to allow serialization of comparator.
+     */
     protected transient Method accesor;
+
+    /**
+     * Name of annotation field used for comparing methods.
+     */
     protected String fieldName;
 
     /**
+     * Construct comparator with specified annotation type and annotation field name for comparison.
      *
-     * @param annotation
-     * @param fieldName
-     * @throws NoSuchMethodException
+     * @param annotation class of annotation searched on method level and used for comparison.
+     * @param fieldName  name of annotation parameter, value of this field is used for comparison and needs to be primitive type or object
+     *                   implementing comparable interface.
+     *
+     * @throws NoSuchMethodException in case when annotation doesn't have field with requested name.
      */
     public MethodAnnotationFieldComparator(Class<A> annotation, String fieldName) throws NoSuchMethodException {
         if (annotation == null) {
@@ -46,6 +62,15 @@ public class MethodAnnotationFieldComparator<A extends Annotation> implements Co
         }
     }
 
+    /**
+     * Comparing two methods with or without requested annotations. In case when both methods doesn't have annotation present then they are
+     * considered as same. In case when just one object has defined requested annotation then method without annotation is bigger than
+     * method with defined annotation.
+     *
+     * @param o1 the first method to be compared.
+     * @param o2 the second method to be compared.
+     * @return a negative integer, zero, or a positive integer as the first argument is less than, equal to, or greater than the second.
+     */
     @Override
     public int compare(Method o1, Method o2) {
         int retValue = 0;
@@ -71,14 +96,14 @@ public class MethodAnnotationFieldComparator<A extends Annotation> implements Co
         return retValue;
     }
 
-    protected final Method getFieldAccessor() throws NoSuchMethodException {
-        if ((accesor == null) && (annotationClass != null)) {
-            accesor = annotationClass.getMethod(fieldName);
-        }
-        return accesor;
-    }
-
-    private int compareComparable(Object o1, Object o2) {
+    /**
+     * Compares two annotation field values. Fields object must be able to successfully cast to Comparable interface.
+     *
+     * @param o1 the first field to be compared.
+     * @param o2 the second field to be compared.
+     * @return a negative integer, zero, or a positive integer as the first argument is less than, equal to, or greater than the second.
+     */
+    protected int compareComparable(Object o1, Object o2) {
         int retValue = 0;
         if ((o1 instanceof Comparable) && (o2 instanceof Comparable)) {
             // TODO find correct way how to define this without warning about types            
@@ -93,6 +118,14 @@ public class MethodAnnotationFieldComparator<A extends Annotation> implements Co
         return retValue;
     }
 
+    /**
+     * Method called during loading object from serialized state into memory. This method is used for initialization of transient fields in
+     * this case access method.
+     *
+     * @param s
+     * @throws java.io.IOException
+     * @throws ClassNotFoundException
+     */
     private void readObject(java.io.ObjectInputStream s)
             throws java.io.IOException, ClassNotFoundException {
         s.defaultReadObject();

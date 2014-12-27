@@ -21,6 +21,7 @@ public @interface RunAction {
      * by same objects.
      * 
      * By default simple class name is used.
+     * @return group name.
      */
     String group() default "";
 }
