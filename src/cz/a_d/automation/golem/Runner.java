@@ -39,36 +39,50 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.ejb.EJB;
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
 
 /**
+ * Runner is main entry point for all features supported by Golem. It is realize execution of actions stream. Automatically loading managers
+ * for particular features of execution requested by actions in action stream. Parametrized data context is managed by injecting parameters
+ * from context into actions and updated by retrieving parameters from action marked to be return value from action into context.
  *
  * @author casper
  */
-@Stateless
-@LocalBean
 public class Runner {
 
-    @EJB
+    /**
+     * Cache with information related to action classes. This is global instance used by all runner threads. Information about actions are
+     * collected by using reflection and this approach leads to more effective reusing of same action in execution flow.
+     */
     protected ActionInformationSpool<Object> actionData;
+
+    /**
+     * Pool of connections used by actions from action stream. This is used for storing connections in separate memory space, than context
+     * parameters. This allow more simple clean up after action stream.
+     */
     protected AbstractSpool<Object, ConnectionKey, Connection> connSpool;
+
+    /**
+     * Implementation of all features provided by Golem to control execution flow and other aspects of actions execution. This allows more
+     * effective extensions of Golem by new features manages without changing logic for running single action in Runner.
+     */
     protected RunContextImpl<Object, Boolean, Object> run;
 
     /**
-     * This is method for save runner creation in JDK environment.
-     *
-     * @return new instance of runner initialized by default action container
+     * Runner constructor initialize data used by actions from global action information spool also create new instance of run context
+     * implementation. This all is need to successfully execute stream of action by Golem.
      */
-    public static Runner createNew() {
-        @SuppressWarnings("UseInjectionInsteadOfInstantion")
-        Runner retValue = new Runner();
-        retValue.actionData = ActionInformationSpoolImpl.getGlobal();
-        retValue.run = new RunContextImpl<>();
-        return retValue;
+    public Runner() {
+        actionData = ActionInformationSpoolImpl.getGlobal();
+        run = new RunContextImpl<>();
     }
 
+    /**
+     * Execute actions from stream with including result validation, flow control, sharing data between actions and all other features
+     * provided by Golem.
+     *
+     * @param actions Must be stream which contains at least one action.
+     * @return true in case when whole stream execution has been done successfully, otherwise false.
+     */
     public boolean run(ActionStream<Object, Object> actions) {
         boolean retValue = true;
         run.setActionStream(actions);
@@ -84,25 +98,35 @@ public class Runner {
         return retValue;
     }
 
+    /**
+     * Getter to allow access to currently used run context implementation.
+     *
+     * @return Instance of context manager used by this runner. Never return null.
+     */
     public RunContextManagers<Object, Boolean, Object> getRunContext() {
         return run;
     }
 
-    protected boolean runAction(Object leaf, ParameterSpool<Object, Object> runParameterMap) {
+    /**
+     * Validates if object is valid action and executes methods from action including logic for injecting to and retrieving data from
+     * actions.
+     *
+     * @param action          object which will be used to realize business logic of single from stream.
+     * @param runParameterMap map of parameters used for sharing data between actions.
+     *
+     * @return true in case when action has been successfully execute otherwise false.
+     */
+    protected boolean runAction(Object action, ParameterSpool<Object, Object> runParameterMap) {
         boolean retValue = false;
-        if (actionData.isValidAction(leaf)) {
-            /**
-             * This is expected
-             */
-            ActionInfoProxy proxy = actionData.getFrom(leaf);
-            injectParameters(leaf, proxy, runParameterMap);
+        if (actionData.isValidAction(action)) {
+            ActionInfoProxy proxy = actionData.getFrom(action);
+            injectParameters(action, proxy, runParameterMap);
 
-            injectContexts(leaf, proxy, runParameterMap);
+            injectContexts(action, proxy, runParameterMap);
+            injectConnections(action, proxy, runParameterMap);
 
-            injectConnections(leaf, proxy, runParameterMap);
-
-            if (executeAction(leaf)) {
-                retrieveRetValues(leaf, proxy, runParameterMap);
+            if (executeAction(action)) {
+                retrieveRetValues(action, proxy, runParameterMap);
                 retValue = true;
             }
         }
@@ -110,6 +134,13 @@ public class Runner {
         return retValue;
     }
 
+    /**
+     * Execute methods from action with following convention for method execution defined by Golem action annotations.
+     *
+     * @param action object of action which should be used for execution.
+     *
+     * @return true in case when all method of action are executed successfully, otherwise false.
+     */
     protected boolean executeAction(Object action) {
         boolean retValue = true;
         ActionInfoProxy tmp = actionData.getFrom(action);
@@ -122,6 +153,18 @@ public class Runner {
         return retValue;
     }
 
+    /**
+     * Executes single action method group with methods order defined by annotations for action methods and sorted by factory which generate
+     * Golem action class proxy object. Validates if method is marked critical and in case when result of method is fail it will stop
+     * executing of other methods in group.
+     *
+     * @param type          action type for accessing additional method information used for validation of result of every single method
+     *                      execution.
+     * @param actionMethods collection of method which are in currently executed group of methods from action.
+     * @param action        object of action which will be used for calling method by using Java reflection feature.
+     *
+     * @return true in case when all methods from current group are executed successfully, otherwise false.
+     */
     protected boolean executeActionMethodsGroup(ActionMethodProxyType type, Collection<Method> actionMethods, Object action) {
         boolean retValue = true;
         if ((actionMethods != null) && (!actionMethods.isEmpty())) {
@@ -150,6 +193,13 @@ public class Runner {
         return retValue;
     }
 
+    /**
+     * Load all action field values which needs to be returned from action into current parameter spool.
+     *
+     * @param action  object of action which will be used to return action fields value.
+     * @param proxy   class information which will be used to identify fields for returning from action object.
+     * @param parmMap spool of parameters where values of parameters will be stored or updated.
+     */
     protected void retrieveRetValues(Object action, ActionInfoProxy proxy, ParameterSpool<Object, Object> parmMap) {
         List<Field> retValues = proxy.getField(ActionFieldProxyType.ReturnValues);
         if (retValues != null && !retValues.isEmpty()) {
@@ -167,6 +217,14 @@ public class Runner {
         }
     }
 
+    /**
+     * Setting up all connections required by action from connection spool. Connection id for spool are collected from value of current
+     * object parameters.
+     *
+     * @param action  object where will be injected connections.
+     * @param proxy   class information which will be used to identify connection fields in action.
+     * @param parmMap spool of parameters used for getting real id of Golem connection depends current data configuration.
+     */
     protected void injectConnections(Object action, ActionInfoProxy proxy, ParameterSpool<Object, Object> parmMap) {
         List<Field> connections = proxy.getField(ActionFieldProxyType.Connections);
         if ((connections != null) && (!connections.isEmpty())) {
@@ -192,6 +250,13 @@ public class Runner {
         }
     }
 
+    /**
+     * Inserting parameters from parameter spool into action object fields.
+     *
+     * @param action  target object for inserting parameter values into fields.
+     * @param proxy   class information which will be used to identify parameter fields in action.
+     * @param parmMap spool of parameters used like source of values for injection.
+     */
     protected void injectParameters(Object action, ActionInfoProxy proxy, ParameterSpool<Object, Object> parmMap) {
         Collection<Field> fields = proxy.getField(ActionFieldProxyType.Parameters);
         if ((fields != null) && (!fields.isEmpty()) && (parmMap != null) && (!parmMap.isEmpty())) {
@@ -209,6 +274,14 @@ public class Runner {
 
     }
 
+    /**
+     * Inserting context managers and object related to control of execution and other features provided by Golem. Control objects are
+     * identified by special annotation provided by Golem implementation.
+     *
+     * @param action  target object for inserting control objects into fields.
+     * @param proxy   class information which will be used to identify control objects fields in action.
+     * @param parmMap current action parameters spool for injection in case when action needs to access this data.
+     */
     protected void injectContexts(Object action, ActionInfoProxy proxy, Map<ParameterKey<?>, Object> parmMap) {
         List<Field> contexts = proxy.getField(ActionFieldProxyType.Contexts);
         if ((contexts != null) && (!contexts.isEmpty())) {
@@ -250,27 +323,5 @@ public class Runner {
             }
         }
     }
-//    private boolean isAssignableToPrimitive(Class<?> type, Object value) {
-//        boolean retValue = false;
-//        if ((type.isPrimitive()) && (value != null)) {
-//            if ((type.isAssignableFrom(Long.TYPE)) && (value.getClass().isAssignableFrom(Long.class))) {
-//                retValue = true;
-//            } else if ((type.isAssignableFrom(Integer.TYPE)) && (value.getClass().isAssignableFrom(Integer.class))) {
-//                retValue = true;
-//            } else if ((type.isAssignableFrom(Short.TYPE)) && (value.getClass().isAssignableFrom(Short.class))) {
-//                retValue = true;
-//            } else if ((type.isAssignableFrom(Byte.TYPE)) && (value.getClass().isAssignableFrom(Byte.class))) {
-//                retValue = true;
-//            } else if ((type.isAssignableFrom(Double.TYPE)) && (value.getClass().isAssignableFrom(Double.class))) {
-//                retValue = true;
-//            } else if ((type.isAssignableFrom(Float.TYPE)) && (value.getClass().isAssignableFrom(Float.class))) {
-//                retValue = true;
-//            } else if ((type.isAssignableFrom(Character.TYPE)) && (value.getClass().isAssignableFrom(Character.class))) {
-//                retValue = true;
-//            } else if ((type.isAssignableFrom(Boolean.TYPE)) && (value.getClass().isAssignableFrom(Boolean.class))) {
-//                retValue = true;
-//            }
-//        }
-//        return retValue;
-//    }
+
 }
