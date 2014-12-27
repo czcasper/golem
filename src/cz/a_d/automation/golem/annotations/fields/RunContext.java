@@ -1,6 +1,4 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
  */
 package cz.a_d.automation.golem.annotations.fields;
 
@@ -10,6 +8,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * Annotation marker defined on scope of field and used by Golem to provide access to run-time context features. Annotation is used with
+ * class type of action field to determine which context is requested to be injected into action.
  *
  * @author casper
  */
@@ -18,8 +18,7 @@ import java.lang.annotation.Target;
 public @interface RunContext {
 
     /**
-     * Pointer to value which identify value in spool. Value in parameter map
-     * must be type of string or object which implements
+     * Pointer to value which identify value in spool. Value in parameter map must be type of string or object which implements
      *
      * @class ConnectionKey interface.
      *
