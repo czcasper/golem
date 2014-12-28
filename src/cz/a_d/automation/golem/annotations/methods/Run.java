@@ -1,6 +1,4 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
  */
 package cz.a_d.automation.golem.annotations.methods;
 
@@ -10,22 +8,27 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * A marker annotation indicating a method in Action that actually runs the Action.
- * Used by {@code Runner} during run tree traversal. The method is called after the {@code @Init} marked method.
- * 
- * @author pasol01
+ * Annotation marker defined on scope of method to identify method which will be executed in second group. This group is representing main
+ * action business logic. Annotation can be used multiple times and method order will be determined by value of order field.
+ *
+ * @author casper
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Run {
     /**
+     * Marking method like critical for action. This will lead to validation of result after method and if it will fail than rest of methods
+     * defined by action is skipped.
      *
-     * @return
+     * @return value of marker true in case when method is mandatory otherwise false.
      */
     boolean isCritical() default true;
+
     /**
+     * Method execution order index. Default value is 0. This property is used to sort methods of action before execution. It also giving to
+     * action programer option chance to control order of methods execution.
      *
-     * @return
+     * @return integer value of order defined by action programer on method by annotation.
      */
     int order() default 0;
 }
