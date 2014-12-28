@@ -22,32 +22,22 @@ import org.junit.rules.ExpectedException;
  * @author casper
  */
 public class ReverseIteratorTest {
-    
+
     private List<Object> steps;
     @Rule
     public ExpectedException testException = ExpectedException.none();
-    
+
     public ReverseIteratorTest() {
         steps = new ArrayList<>();
-        for(int i=0;i<10;i++){
+        for (int i = 0; i < 10; i++) {
             steps.add(i);
         }
     }
-    
-    @BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
-    
-    @Before
-    public void setUp() {
-    }
-    
-    @After
-    public void tearDown() {
+
+    @Test
+    public void testConstructor() {
+        testException.expect(NullPointerException.class);
+        ReverseIterator<Object> instance = new ReverseIterator<>(null);
     }
 
     /**
@@ -55,17 +45,12 @@ public class ReverseIteratorTest {
      */
     @Test
     public void testHasNext() {
-        ReverseIterator<Object> instance = new ReverseIterator<>(null);
-
+        ReverseIterator<Object> instance = new ReverseIterator<>(steps);
         boolean result = instance.hasNext();
-        assertFalse(result);
-        
-        instance = new ReverseIterator<>(steps);
-        result = instance.hasNext();
         assertTrue(result);
-        
-        int index = steps.size()-1;
-        for(Object o : instance){
+
+        int index = steps.size() - 1;
+        for (Object o : instance) {
             assertSame(steps.get(index--), o);
         }
         result = instance.hasNext();
@@ -77,10 +62,15 @@ public class ReverseIteratorTest {
      */
     @Test
     public void testNext() {
-        ReverseIterator<Object> instance = new ReverseIterator<>(null);
-        testException.expect(NoSuchElementException.class);
-        testException.expectMessage("Reverse iterator wasn't initialize by list.");        
-        instance.next();
+        ReverseIterator<Object> instance = new ReverseIterator<>(steps);
+        boolean result = instance.hasNext();
+        assertTrue(result);
+        
+        int index = steps.size() - 1;
+        while (instance.hasNext()) {
+            Object next = instance.next();
+            assertSame(steps.get(index--), next);
+        }        
     }
 
     /**
@@ -88,33 +78,21 @@ public class ReverseIteratorTest {
      */
     @Test
     public void testRemove() {
-        ReverseIterator<Object> instance = new ReverseIterator<>(null);
-        testException.expect(IllegalStateException.class);
-        testException.expectMessage("Reverse iterator wasn't initialize by list.");        
-        instance.remove();
-    }
-
-    /**
-     * Test of remove method, of class ReverseIterator.
-     */
-    @Test
-    public void testRemove2() {
         List<Object> testData = new ArrayList<>();
-        
-        
-        for(int i=0;i<1000;i++){
+
+        for (int i = 0; i < 1000; i++) {
             testData.add(i);
         }
-        
+
         ReverseIterator<Object> instance = new ReverseIterator<>(testData);
-        
+
         double rand;
-        int index = testData.size()-1;
-        while(instance.hasNext()){
-           assertSame(testData.get(index--), instance.next());            
-           instance.remove();
+        int index = testData.size() - 1;
+        while (instance.hasNext()) {
+            assertSame(testData.get(index--), instance.next());
+            instance.remove();
         }
-        assertEquals(-1,index);
+        assertEquals(-1, index);
     }
 
     /**
@@ -122,15 +100,10 @@ public class ReverseIteratorTest {
      */
     @Test
     public void testIterator() {
-        ReverseIterator<Object> instance = new ReverseIterator<>(null);
-        Iterator result = instance.iterator();
-        assertNotNull(result);
-        assertFalse(result.hasNext());
-        
-        instance = new ReverseIterator<>(steps);
-        int index = steps.size()-1;
-        for(Object o : instance){
-            assertSame(steps.get(index--),o);
+        ReverseIterator<Object> instance = new ReverseIterator<>(steps);
+        int index = steps.size() - 1;
+        for (Object o : instance) {
+            assertSame(steps.get(index--), o);
         }
         assertEquals(-1, index);
     }

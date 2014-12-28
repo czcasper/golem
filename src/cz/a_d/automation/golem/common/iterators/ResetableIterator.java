@@ -5,45 +5,51 @@ package cz.a_d.automation.golem.common.iterators;
 import java.util.Iterator;
 
 /**
+ * Iterator implementation which allows to change collection which is used for iteration. This implementation is necessary to allow
+ * controlling flow of action in Golem. This iterator is used to iterate actions in stream and allows manager change stream or change next
+ * item in list which will be returned.
  *
- * @param <T> 
  * @author casper
+ * @param <T> the type of elements returned by this iterator.
  */
 public class ResetableIterator<T> implements Iterator<T> {
-    
+
     /**
-     *
+     * Internal iterator used to provide data and functionality for implementation of methods requested by Iterator interface.
      */
     protected Iterator<T> it;
 
     /**
+     * Create new instance of Resettable iterator from existing initialized iterator.
      *
-     * @param it
+     * @param it iterator which will be used to iterate data in this created instance.
+     * @throws NullPointerException if the specified iterator is null.
      */
     public ResetableIterator(Iterator<T> it) {
-        if(it == null){
-            throw new IllegalStateException("Internal iterator is null");
+        if (it == null) {
+            throw new NullPointerException("Internal iterator is null");
         }
         this.it = it;
-    }    
+    }
 
     /**
-     * This method allows change iterator used by this class.
-     * 
-     * @param it new internal iterator for class must be diferent from null
-     * 
+     * Method allow change internal iterator instance. Instance is used for providing data in methods requested by iterator. This allows to
+     * change data during iteration without losing validity of iterator.
+     *
+     * @param it new internal iterator for instance, must be diferent from null
+     * @throws NullPointerException if the specified iterator is null.
      */
     public void setIt(Iterator<T> it) {
-        if(it == null){
+        if (it == null) {
             throw new IllegalStateException("Internal iterator iterator can't be initialized by null value");
         }
         this.it = it;
     }
 
     /**
-     * Method for accessing internal class iterator.
-     * 
-     * @return internal iterator.
+     * Getter to allow access currently used internal iterator instance.
+     *
+     * @return instance of internal iterator. Never return null value.
      */
     public Iterator<T> getIt() {
         return it;
