@@ -6,27 +6,28 @@ package cz.a_d.automation.golem.context;
 import cz.a_d.automation.golem.common.FastStack;
 import cz.a_d.automation.golem.interfaces.context.RunActionStack;
 import java.util.Iterator;
-import java.util.LinkedList;
 
 /**
+ * Stack of actions which can be used to run action in reverse order then action has been inserted into stack. Class is implementing basic
+ * logic of stack including initialization from Stack manager. Stack can be registered by using Stack manager for action in stream.
  *
- * @param <T> 
  * @author casper
+ * @param <T> the type of actions stored in this action stack.
  */
-// TODO Documentation: Finish JavaDoc on class and pulblic methods level.
 public class RunActionStackImpl<T> implements RunActionStack<T>, Iterator<T>, Cloneable {
 
     /**
-     *
+     * Stored pointer to action from action stream which is trigger for executing actions in stack.
      */
     protected T action;
-    /**
-     *
-     */
-    protected LinkedList<T> actions;
 
     /**
-     *
+     * Internal data structure used for storing actions in stack.
+     */
+    protected FastStack<T> actions;
+
+    /**
+     * Construct new instance of Run action stack. Initialize internal data storage for actions.
      */
     public RunActionStackImpl() {
         actions = new FastStack<>();
@@ -56,38 +57,21 @@ public class RunActionStackImpl<T> implements RunActionStack<T>, Iterator<T>, Cl
         }
     }
 
-    /**
-     *
-     * @return
-     */
     @Override
     public boolean isEmpty() {
         return actions.isEmpty();
     }
 
-    /**
-     *
-     * @return
-     */
     @Override
     public T peek() {
         return actions.peek();
     }
 
-    /**
-     *
-     * @return
-     */
     @Override
     public T pop() {
         return actions.pop();
     }
 
-    /**
-     *
-     * @param item
-     * @return
-     */
     @Override
     public boolean push(T item) {
         boolean retValue = false;
@@ -98,15 +82,6 @@ public class RunActionStackImpl<T> implements RunActionStack<T>, Iterator<T>, Cl
         return retValue;
     }
 
-    /**
-     * This method safely initialize stack by name idendificator and collections
-     * of actions.
-     *
-     * @param action 
-     * @param actions Non empty collection with actions
-     *
-     * @return true if stack is correctly initialized, otherwise false.
-     */
     @Override
     public boolean setupStack(T action, T[] actions) {
         boolean retValue = false;
@@ -120,21 +95,16 @@ public class RunActionStackImpl<T> implements RunActionStack<T>, Iterator<T>, Cl
         return retValue;
     }
 
-    /**
-     * Get action where stack is defined to start.
-     *
-     * @return stack start action object
-     */
     @Override
     public T getAction() {
         return action;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Object clone() throws CloneNotSupportedException {
+        @SuppressWarnings("unchecked")
         RunActionStackImpl<T> retValue = (RunActionStackImpl<T>) super.clone();
-        retValue.actions = new LinkedList<>(actions);
+        retValue.actions = new FastStack<>(actions);
         return retValue;
     }
 }

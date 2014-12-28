@@ -6,15 +6,36 @@ import cz.a_d.automation.golem.interfaces.context.RunCondition;
 import java.util.NoSuchElementException;
 
 /**
+ * Condition for validation result of action methods. Allow mapping of condition validations for triggered by specific action and limited by
+ * count of methods which will be validated for result collected from return value of tested method.
  *
  * @author casper
+ * @param <T> the type of action used for triggering result validation.
+ * @param <C> the type of method return value used for result validation.
  */
 public class RunConditionImpl<T, C> implements RunCondition<T, C>, Cloneable {
 
+    /**
+     * Flag which allows to bypass decreasing of counter which tells how long will be result validation active.
+     */
     protected boolean actionTest = true;
+    /**
+     * Storage for currently validated value returned by tested method. Needs to be defined before calling next method.
+     */
     protected C currentResult;
+    /**
+     * Storage for expected value returned by tested method. Needs to be defined before calling next method.
+     */
     protected C expectedResult;
+    /**
+     * Counter used to determine if validation is active. There are three different modes of counter. Zero is not active validation,
+     * positive integer is used and decremented by every validation until is zero. Any negative integer means validation is active until end
+     * of action stream.
+     */
     protected long activeCounter;
+    /**
+     * Stored pointer to action from action stream which is trigger for starting result validation.
+     */
     protected T action;
 
     @Override
@@ -24,7 +45,7 @@ public class RunConditionImpl<T, C> implements RunCondition<T, C>, Cloneable {
 
     @Override
     public T next() {
-        if(activeCounter==0){
+        if (activeCounter == 0) {
             throw new NoSuchElementException("Condition doesnt have next element");
         }
         T retValue = null;
