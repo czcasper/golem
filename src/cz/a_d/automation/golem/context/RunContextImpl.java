@@ -1,6 +1,4 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
  */
 package cz.a_d.automation.golem.context;
 
@@ -19,29 +17,55 @@ import cz.a_d.automation.golem.interfaces.context.managers.RunDelayIntervalManag
 import java.util.Iterator;
 
 /**
- * This class is supporting all runner special context features. For managing 
- * features are used special manages implemented in Golem. All information connected
- * with What?(actions) and Which parameters are used? are stored in ActionStream.
- * 
- * 
+ * Implements interaction between particular Golem features. Single feature is implemented by manager of feature. Every feature is separated
+ * from each other and loaded on demand of actions. Class is also keeping information about Action stream which is currently executed to
+ * provide option for managers to change in flow of action stream.
+ *
  * @author casper
- * @param <T> - type for action objects
- * @param <C> - type used for validating result of actions
- * @param <V> - type used in parameter spool like value
+ * @param <T> the type of actions managed by this context
+ * @param <C> the type of value used for result validation.
+ * @param <V> the type of value used in parameter spool.
  */
 public class RunContextImpl<T, C, V> implements RunContextManagers<T, C, V>, Iterator<T> {
 
+    /**
+     * Pointer to currently processed action stream. Stream is shared between managers and used to provide converted flow of actions based
+     * on features provided by manager.
+     */
     protected ActionStream<T, V> currentStream;
-    private ResetableIterator<T> it;
-    protected T currentAction;
+
+    /**
+     * Iterator used to provide next action from stream modified by Golem features. Feature managers are using this iterator to change
+     * context and add or remove actions from stream.
+     */
+    protected ResetableIterator<T> it;
+
+    /**
+     * Instance of manager for cycles feature in Golem streams used in this context. This manager allows repeating actions in cycles.
+     */
     protected RunCycleManager<T, V> cycle;
+
+    /**
+     * Instance of manager for waiting feature in Golem streams used in this context. This manager allows wait defined time frame after
+     * action method.
+     */
     protected RunDelayIntervalManager<T, V> timer;
+
+    /**
+     * Instance of manager for action stack feature in Golem streams used in this context. This manager allows add action in stack and
+     * execute after specified action.
+     */
     protected RunActionStackManager<T, V> stack;
+
+    /**
+     * Instance of manager for testing result from action method feature in Golem streams used in this context. This manager allows to
+     * validate results returned by action methods and stop execution of action stream.
+     */
     protected RunCondManager<T, C, V> conds;
 
     @Override
     public void setActionStream(ActionStream<T, V> stream) {
-        if(stream==null){
+        if (stream == null) {
             throw new NullPointerException("RunContext cannot be intilized by null ActionStream");
         }
         this.currentStream = stream;
@@ -53,30 +77,10 @@ public class RunContextImpl<T, C, V> implements RunContextManagers<T, C, V>, Ite
         return currentStream;
     }
 
-    /**
-     *
-     * @return
-     */
-    public Object getCurrentAction() {
-        return currentAction;
-    }
-
-    /**
-     *
-     * @param currentAction
-     */
-    public void setCurrentAction(T currentAction) {
-        this.currentAction = currentAction;
-    }
-
-    /**
-     *
-     * @return
-     */
     @Override
     public ResetableIterator<T> resetableIterator() {
         ResetableIterator<T> retValue = null;
-        if(currentStream!=null){
+        if (currentStream != null) {
             retValue = currentStream.resetableIterator();
         }
         return retValue;
@@ -134,7 +138,6 @@ public class RunContextImpl<T, C, V> implements RunContextManagers<T, C, V>, Ite
         if (timer != null) {
             timer.next();
         }
-        currentAction = retValue;
         return retValue;
     }
 
@@ -146,10 +149,6 @@ public class RunContextImpl<T, C, V> implements RunContextManagers<T, C, V>, Ite
         it.remove();
     }
 
-    /**
-     *
-     * @return
-     */
     @Override
     public RunDelayIntervalManager<T, V> getDelayManager() {
         return timer;
@@ -157,7 +156,7 @@ public class RunContextImpl<T, C, V> implements RunContextManagers<T, C, V>, Ite
 
     @Override
     public RunDelayIntervalManager<T, V> getInitializedDelayManager() {
-        if(timer==null){
+        if (timer == null) {
             timer = new RunDelayIntervalManagerImpl<>(this);
         }
         return timer;
@@ -168,19 +167,11 @@ public class RunContextImpl<T, C, V> implements RunContextManagers<T, C, V>, Ite
         timer = manager;
     }
 
-    /**
-     *
-     * @return
-     */
     @Override
     public RunCycleManager<T, V> getCycleManager() {
         return cycle;
     }
 
-    /**
-     *
-     * @param manager
-     */
     @Override
     public void setCycleManager(RunCycleManager<T, V> manager) {
         cycle = manager;
@@ -188,33 +179,25 @@ public class RunContextImpl<T, C, V> implements RunContextManagers<T, C, V>, Ite
 
     @Override
     public RunCycleManager<T, V> getInitializedCycleManager() {
-        if(cycle==null){
+        if (cycle == null) {
             cycle = new RunCycleManagerImpl<>(this);
         }
         return cycle;
     }
 
-    /**
-     *
-     * @param manager
-     */
     @Override
     public void setStackManager(RunActionStackManager<T, V> manager) {
         stack = manager;
     }
 
-    /**
-     *
-     * @return
-     */
     @Override
     public RunActionStackManager<T, V> getStackManager() {
         return stack;
-    }    
+    }
 
     @Override
     public RunActionStackManager<T, V> getInitializedStackManager() {
-        if(stack == null){
+        if (stack == null) {
             stack = new RunActionStackManagerImpl<>(this);
         }
         return stack;
@@ -232,7 +215,7 @@ public class RunContextImpl<T, C, V> implements RunContextManagers<T, C, V>, Ite
 
     @Override
     public RunCondManager<T, C, V> getInitializedConditionManager() {
-        if(conds == null){
+        if (conds == null) {
             conds = new RunCondManagerImpl<>(this);
         }
         return conds;
@@ -241,17 +224,17 @@ public class RunContextImpl<T, C, V> implements RunContextManagers<T, C, V>, Ite
     @Override
     public boolean validateResult(C result, boolean isAction) {
         boolean retValue = true;
-        if(conds!=null){
+        if (conds != null) {
             RunCondition<T, C> current = conds.getCurrent();
-            if(current!=null){
+            if (current != null) {
                 current.setActionTest(isAction);
                 current.setCurrentResult(result);
-                if(current.next()==null){
+                if (current.next() == null) {
                     retValue = false;
                 }
             }
         }
         return retValue;
     }
-    
+
 }

@@ -3,32 +3,37 @@
  */
 package cz.a_d.automation.golem.context;
 
-
 import cz.a_d.automation.golem.interfaces.context.RunDelayInterval;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * Golem implementation of interface RunDelayInterval. Delay is triggered by specified action from action stream. Waiting can be defined for
+ * fixed number of actions of for unlimited number of them.
  *
- * @param <T> 
  * @author casper
+ * @param <T> the type of actions managed by delay manager.
  */
 public class RunDelayIntervalImpl<T> implements RunDelayInterval<T>, Cloneable {
 
     /**
-     *
+     * Amount of time which is used to waiting before next step in action is processed. Time is in milliseconds.
      */
     protected long time = 0;
+
     /**
-     *
+     * Count of action for which is wait feature active. In case when is negative integer is delay feature active to unlimited time, in case
+     * of positive integer number is delay active just for specified amount of methods. Zero value means wait feature is not active.
      */
     protected long actionCount = 0;
+
     /**
-     *
+     * Index of currently processed action. First triggered action has index zero.
      */
     protected long iterator = 0;
+
     /**
-     *
+     * Instance of action from action stream which is triggering delay feature.
      */
     protected T action;
 
@@ -63,22 +68,6 @@ public class RunDelayIntervalImpl<T> implements RunDelayInterval<T>, Cloneable {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    /**
-     * Method for save timer initialization.
-     *
-     * @param action = this parameter is optional and can be null. However can
-     * be usefull in case when you want to identify timer in active timers
-     * array.
-     * @param actionCount = this parmeter is used for timer live cycle
-     * configuration. Must be different from zero to setup timer correctelly. In
-     * case when is negative timer will live in unlimited number of iteration.
-     * In case when is positive timer will live number of time stored in value.
-     * @param time = this parameter must be greather than zero. Time unit is
-     * miliseconds and this time is used for sleeping current thread.
-     *
-     * @return true in case when timer is initialized correctelly, otherwise
-     * false.
-     */
     @Override
     public boolean setupTimer(T action, long actionCount, long time) {
         boolean retValue = false;
@@ -96,63 +85,26 @@ public class RunDelayIntervalImpl<T> implements RunDelayInterval<T>, Cloneable {
         return action;
     }
 
-    /**
-     * Get current iteration number.
-     *
-     * @return curent iteration number
-     */
     @Override
     public long getActionCount() {
         return iterator;
     }
 
-    /**
-     * Set the value of number of actions. This number is used for like
-     * iteration end marker. Negative value timer will run like infinite loop
-     * Zero value will ends run of this timer Positive value will run this by
-     * number of times specified in value
-     *
-     * @param actionCount new value of actionCount
-     */
     @Override
     public void setActionCount(long actionCount) {
         this.actionCount = actionCount;
     }
 
-    /**
-     * Reset internal timer iterator to zero.
-     *
-     */
-//    @Override
-//    public void reset() {
-//        iterator = 0;
-//    }
-
-    /**
-     * Stop timer execution
-     */
     @Override
     public void stop() {
         iterator = actionCount;
     }
 
-    /**
-     * Get the value of time interval used for delay.
-     *
-     * @return the value of time interval
-     */
     @Override
     public long getTime() {
         return time;
     }
 
-    /**
-     * Set the value of time interval used for delay.
-     *
-     * @param time new value of time must be positive number.
-     *
-     * @return true if input time was valid, otherwise false
-     */
     @Override
     public boolean setTime(long time) {
         boolean retValue = false;

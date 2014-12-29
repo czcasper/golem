@@ -11,54 +11,76 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Class cover data storage for information releated to Runner cycle
- * implementation. RunCycle interface is used for exposing method into runner
- * actions, this allows driving cycles directelly from actions inside cycle.
+ * Golem implementation of interface RunCycle. It is providing working implementation of cycles on the top of action stream. Cycles can be
+ * managed by action inside cycle. Implementation is exposed by Runner context objects which can be injected into actions.
  *
- * @param <T>
  * @author casper
+ * @param <T> the type of actions managed by cycle manager.
  */
 public class RunCycleImpl<T> implements RunCycle<T>, Cloneable {
 
     /**
-     * Variables releated range of cycle in array
+     * Variables releated range of cycle in array.
      */
-    private long repeatCount;
-    private int actionIndex;
+    protected long repeatCount;
+
+    /**
+     * Index of currently processed action in cycle. Index is counted from first action with value 0 and reset to zero in every iteration.
+     */
+    protected int actionIndex;
+
     /**
      * Break logic flag
      */
-    private boolean breakFlag;
-    /**
-     * Start and end action for cycle
-     */
-    protected T startAction;
-    /**
-     *
-     */
-    protected T endAction;
-    /**
-     * Current iteration cycle
-     */
-    private long cycleIterationNum;
-    /**
-     * Variable used for initialize logic of cycle root and end action
-     */
-    private List<T> steps;
-    private ResetableIterator<T> internalIt;
+    protected boolean breakFlag;
 
     /**
+     * Instance of action which is first action of cycle from action stream.
+     */
+    protected T startAction;
+
+    /**
+     * Instance of action which is last action of cycle from action stream.
+     */
+    protected T endAction;
+
+    /**
+     * Index of current cycle iteration.
+     */
+    protected long cycleIterationNum;
+
+    /**
+     * List of actions from action stream which is used for iteration and implementing logic of cycle on top of action stream.
+     */
+    protected List<T> steps;
+
+    /**
+     * Iterator used to iterate actions from list of actions.
+     */
+    protected ResetableIterator<T> internalIt;
+
+    /**
+     * Construct Cycle implementation from list of actions. List is wrapped in case when it is needed to provide safe search for specific
+     * instance in list based on address of object.
      *
-     * @param steps
+     * @param steps List of actions to be processed by current instance of cycle. Must be different from null and contains at least one
+     *              action.
+     * @throws NullPointerException  if the specified list is null
+     * @throws IllegalStateException if the specified list is empty
      */
     public RunCycleImpl(List<T> steps) {
         this(steps, new ResetableIterator<>(steps.iterator()));
     }
 
     /**
+     * Constructing cycle implementation from list of actions and iterator connected with this list. List is wrapped in case when it is
+     * needed to provide safe search for specific instance in list based on address of object.
      *
-     * @param steps
+     * @param steps      List of actions to be processed by current instance of cycle. Must be different from null and contains at least one
+     *                   action.
      * @param internalIt
+     * @throws NullPointerException  if the specified list is null
+     * @throws IllegalStateException if the specified list is empty
      */
     public RunCycleImpl(List<T> steps, ResetableIterator<T> internalIt) {
         if ((steps == null) || (internalIt == null)) {
@@ -77,12 +99,12 @@ public class RunCycleImpl<T> implements RunCycle<T>, Cloneable {
     }
 
     /**
-     * Setup cycle for curently used list and iterator.
+     * Activating cycle on top of list defined in constructor.
      *
-     * @param rootAction
-     * @param repeatCount number of cycle iteration, -1 loop withouth end
-     * @param actionCount number of action in this cycle. Must be greater or
-     * equal to zero.
+     * @param rootAction  instance of action which will trigger start of cycle. Must be different from null and inside list defined during
+     *                    construction.
+     * @param repeatCount amount of cycle iterations, negative value create infinite loop.
+     * @param actionCount number of action in cycle. Must be greater or equal to zero. Used to finding last action in cycle.
      * @return
      */
     public boolean setupCycle(T rootAction, long repeatCount, int actionCount) {
@@ -104,11 +126,6 @@ public class RunCycleImpl<T> implements RunCycle<T>, Cloneable {
         return retValue;
     }
 
-    /**
-     * Method resets all cycle internal counters and flags. This allows start
-     * cycle from scrach, or reuse cycle object for next run. Internal iterator
-     * is not touched in this method.
-     */
     @Override
     public void reset() {
         actionIndex = 0;
@@ -155,25 +172,11 @@ public class RunCycleImpl<T> implements RunCycle<T>, Cloneable {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    /**
-     * Get current cycle start action
-     *
-     * @return action used for start next iteration in cycle
-     */
     @Override
     public T getStartAction() {
         return startAction;
     }
 
-    /**
-     * Move cycle start action by relative coordinate.
-     *
-     * @param index non zero value used for counting new possition of start
-     * action relativly from current start action index. If start action doesn't
-     * exist in current array then index is used absoluttely.
-     *
-     * @return true if update was succesfull otherwise false.
-     */
     @Override
     public boolean shiftStartAction(int index) {
         boolean retValue = false;
@@ -200,25 +203,11 @@ public class RunCycleImpl<T> implements RunCycle<T>, Cloneable {
         return retValue;
     }
 
-    /**
-     * Get the endAction object for this cycle
-     *
-     * @return the object which represent last action in cycle
-     */
     @Override
     public T getEndAction() {
         return endAction;
     }
 
-    /**
-     * Move end cycle action by relative coordinate.
-     *
-     * @param index non zero value used for counting new possition of end action
-     * relativly from current end action index. If start action doesn't exist in
-     * current array then index is used absoluttely.
-     *
-     * @return true if update was succesfull otherwise false.
-     */
     @Override
     public boolean shiftEndAction(int index) {
         boolean retValue = false;
@@ -238,9 +227,6 @@ public class RunCycleImpl<T> implements RunCycle<T>, Cloneable {
         return retValue;
     }
 
-    /**
-     * Set continue status of cycle to true.
-     */
     @Override
     public void setContinue() {
         Logger.getLogger(RunCycleImpl.class.getName()).log(Level.FINE, "Cycle has issued \"continue\" on cycle index::{0} in iteration:{1}", new Object[]{actionIndex, cycleIterationNum});
@@ -256,20 +242,11 @@ public class RunCycleImpl<T> implements RunCycle<T>, Cloneable {
         }
     }
 
-    /**
-     * Get break status of cycle.
-     *
-     * @return the value of breakFlag
-     */
     @Override
     public boolean isBreak() {
         return breakFlag;
     }
 
-    /**
-     * Set break status of cycle.
-     *
-     */
     @Override
     public void setBreak() {
         Logger.getLogger(RunCycleImpl.class.getName()).log(Level.FINE, "Cycle has issued \"break\" on cycle index::{0} in iteration:{1}", new Object[]{actionIndex, cycleIterationNum});
@@ -282,77 +259,36 @@ public class RunCycleImpl<T> implements RunCycle<T>, Cloneable {
         breakFlag = true;
     }
 
-    /**
-     * Get current cycle iteration number.
-     *
-     * @return index of current iteration in this cycle
-     */
     @Override
     public long getCycleIterationNum() {
         return cycleIterationNum;
     }
 
-    /**
-     * Get current cycle action index.
-     *
-     * @return index of action in cycle relative from cycle root action
-     */
     @Override
     public int getActionIndex() {
         return actionIndex;
     }
 
-    /**
-     * Get current number of iteration which should be executed by this cycle.
-     *
-     * @return positive number if cycle has defined number of iteration, zero in
-     * case when cycle will not run and negative for cycle without defined
-     * number iterations
-     */
     @Override
     public long getRepeatCount() {
         return repeatCount;
     }
 
-    /**
-     * Change current number of iteration in cycle, it will have affect in next
-     * iteration.
-     *
-     * @param repeatCount number of iteration. If is zero it will stop cycle. In
-     * case when is positive changed number of iteration used by this cycle for
-     * comparing with current iteration index. Numbers less than zero made this
-     * loop infinite.
-     */
     @Override
     public void setRepeatCount(long repeatCount) {
         this.repeatCount = repeatCount;
     }
 
-    /**
-     * Test if current action is first action in cycle
-     *
-     * @return true in case when current cycle action is first action in cycle
-     */
     @Override
     public boolean isFirstAction() {
         return (actionIndex == 0);
     }
 
-    /**
-     * This method test if cycle has startAction equal to endAction.
-     *
-     * @return true in case when cycle has just one action, otherwise false
-     */
     @Override
     public boolean isZeroLength() {
         return startAction == endAction;
     }
 
-    /**
-     * Save method for updating curent interator container by action.
-     *
-     * @param action runner action object
-     */
     @Override
     public void updateIt(T action) {
         if (steps.contains(action)) {
@@ -369,12 +305,6 @@ public class RunCycleImpl<T> implements RunCycle<T>, Cloneable {
         }
     }
 
-    /**
-     * This method move cycle in next loop in case when action is equal to
-     * endAction.
-     *
-     * @param action curently processed action
-     */
     @Override
     public void endCycleHandler(T action) {
         if ((action != null) && (action == endAction)) {
