@@ -11,7 +11,7 @@ import java.net.URL;
 
 /**
  * Interface represent factory for managing connection with resources based on resource URI. Factory provides method to create connection
- * from URI controlled by Golem .
+ * from URI controlled by Golem.
  *
  * @author casper
  */

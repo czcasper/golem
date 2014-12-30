@@ -13,17 +13,30 @@ import java.net.URL;
 import java.net.URLConnection;
 
 /**
+ * Implementation of factory for managing connection with resources based on resource URI. Factory provides method to create connection from
+ * URI controlled by Golem.
  *
  * @author casper
  */
 public class GolemConnectionFactory implements ConnectionFactory {
 
+    /**
+     * Global instance of factory used for managing all connections currently used by actions from all processed action streams.
+     */
     protected final static GolemConnectionFactory global = new GolemConnectionFactory();
 
     static {
+        /**
+         * Load GolemURLStreamHandlerFactory instance default URL stream handler factory provided by java implementation.
+         */
         GolemURLStreamHandlerFactory.getDefaultInstance();
     }
 
+    /**
+     * Getter to access global instance of factory.
+     *
+     * @return global instance of factory for sharing between all processed action streams.
+     */
     public static GolemConnectionFactory getGlobalFactory() {
         return global;
     }
