@@ -1,12 +1,12 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
  */
 package cz.a_d.automation.golem.context.actionInterfaces.spools;
 
 import cz.a_d.automation.golem.interfaces.spools.ParameterSpool;
 
 /**
+ * Interface is wrapping usage generic types in Golem. This is from reason of more type save injection of context into actions. In this case
+ * is wrapping list of ParameterSpool interface.
  *
  * @author casper
  */
