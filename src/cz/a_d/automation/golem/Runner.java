@@ -5,8 +5,8 @@ package cz.a_d.automation.golem;
 import cz.a_d.automation.golem.context.RunContextImpl;
 import cz.a_d.automation.golem.context.actionInterfaces.RunConditionContext;
 import cz.a_d.automation.golem.context.actionInterfaces.RunConditionsListContext;
-import cz.a_d.automation.golem.context.actionInterfaces.RunConectionSpool;
-import cz.a_d.automation.golem.context.actionInterfaces.RunConnectionFactory;
+import cz.a_d.automation.golem.context.actionInterfaces.spools.RunConectionSpool;
+import cz.a_d.automation.golem.interfaces.ConnectionFactory;
 import cz.a_d.automation.golem.context.actionInterfaces.RunCycleContent;
 import cz.a_d.automation.golem.context.actionInterfaces.RunDelaysListContext;
 import cz.a_d.automation.golem.context.actionInterfaces.RunStacksListContext;
@@ -296,10 +296,9 @@ public class Runner {
                     } else if (type.isAssignableFrom(RunConditionsListContext.class)) {
                         RunCondManager<Object, Boolean, Object> man = run.getInitializedConditionManager();
                         f.set(action, man.getActive());
-
                     } else if (type.isAssignableFrom(ParameterSpoolContext.class)) {
                         f.set(action, parmMap);
-                    } else if (type.isAssignableFrom(RunConnectionFactory.class)) {
+                    } else if (type.isAssignableFrom(ConnectionFactory.class)) {
                         f.set(action, GolemConnectionFactory.getGlobalFactory());
                     } else if (type.isAssignableFrom(RunConectionSpool.class)) {
                         f.set(action, connSpool);

@@ -1,16 +1,15 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
  */
 package cz.a_d.automation.golem.context.actionInterfaces;
 
-import cz.a_d.automation.golem.interfaces.context.RunDelayInterval;
 import java.util.List;
 
 /**
+ * Interface is wrapping usage generic types in Golem. This is from reason of more type save injection of context into actions. In this case
+ * is wrapping list of RunDelayIntervalContext interface.
  *
  * @author casper
  */
-public interface RunDelaysListContext extends List<RunDelayInterval<Object>> {
-    
+public interface RunDelaysListContext extends List<RunDelayIntervalContext> {
+
 }

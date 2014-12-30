@@ -2,6 +2,7 @@
  */
 package cz.a_d.automation.golem.context.connections;
 
+import cz.a_d.automation.golem.interfaces.ConnectionFactory;
 import cz.a_d.automation.golem.interfaces.connections.Connection;
 import cz.a_d.automation.golem.protocol.GolemURLStreamHandlerFactory;
 import java.io.IOException;
@@ -15,7 +16,7 @@ import java.net.URLConnection;
  *
  * @author casper
  */
-public class GolemConnectionFactory {
+public class GolemConnectionFactory implements ConnectionFactory {
 
     protected final static GolemConnectionFactory global = new GolemConnectionFactory();
 
@@ -27,7 +28,8 @@ public class GolemConnectionFactory {
         return global;
     }
 
-    public static Connection open(URI uri, Proxy proxy) throws MalformedURLException, IOException {
+    @Override
+    public Connection open(URI uri, Proxy proxy) throws MalformedURLException, IOException {
         Connection retValue = null;
         if (uri != null) {
             retValue = open(uri.toURL(), proxy);
@@ -35,7 +37,8 @@ public class GolemConnectionFactory {
         return retValue;
     }
 
-    public static Connection open(URL url, Proxy proxy) throws IOException {
+    @Override
+    public Connection open(URL url, Proxy proxy) throws IOException {
         Connection retValue = null;
         if (url != null) {
             URLConnection openConnection;
@@ -49,7 +52,8 @@ public class GolemConnectionFactory {
         return retValue;
     }
 
-    public static Connection open(URI uri) throws MalformedURLException, IOException {
+    @Override
+    public Connection open(URI uri) throws MalformedURLException, IOException {
         Connection retValue = null;
         if (uri != null) {
             retValue = open(uri.toURL());
@@ -57,7 +61,8 @@ public class GolemConnectionFactory {
         return retValue;
     }
 
-    public static Connection open(URL url) throws IOException {
+    @Override
+    public Connection open(URL url) throws IOException {
         Connection retValue = null;
         if (url != null) {
             URLConnection urlCon = url.openConnection();

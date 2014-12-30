@@ -2,58 +2,14 @@
  */
 package cz.a_d.automation.golem.context.actionInterfaces;
 
+import cz.a_d.automation.golem.interfaces.context.RunDelayInterval;
+
 /**
+ * Interface is wrapping usage generic types in Golem. This is from reason of more type save injection of context into actions. In this case
+ * is wrapping of RunDelayInterval interface.
  *
- * @param <T> 
  * @author casper
  */
-public interface RunDelayIntervalContext<T> {
+public interface RunDelayIntervalContext extends RunDelayInterval<Object> {
 
-    /**
-     * Get the timer start action
-     *
-     * @return the value of name
-     */
-    public T getAction();
-        
-    /**
-     * Get current iteration number.
-     *
-     * @return curent iteration number
-     */
-    long getActionCount();
-
-    /**
-     * Get the value of time interval used for delay.
-     *
-     * @return the value of time interval
-     */
-    long getTime();
-
-    /**
-     * Reset internal timer iterator to zero.
-     *
-     */
-    void reset();
-
-    /**
-     * Set the value of number of actions.
-     * This number is used for like iteration end marker.
-     * Negative value timer will run like infinite loop
-     * Zero value will ends run of this timer
-     * Positive value will run this by number of times specified in value
-     *
-     * @param actionCount new value of actionCount
-     */
-    void setActionCount(long actionCount);
-
-    /**
-     * Set the value of time interval used for delay.
-     *
-     * @param time new value of time must be positive number.
-     *
-     * @return true if input time was valid, otherwise false
-     */
-    boolean setTime(long time);
-    
 }

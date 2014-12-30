@@ -1,14 +1,14 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
  */
 package cz.a_d.automation.golem.context.actionInterfaces;
 
 import cz.a_d.automation.golem.interfaces.context.RunCondition;
 
 /**
+ * Interface is wrapping usage generic types in Golem. This is from reason of more type save injection of context into actions. In this case
+ * is wrapping of RunCondition interface.
  *
- * @author basad01
+ * @author casper
  */
-public interface RunConditionContext  extends RunCondition<Object,Boolean> {
+public interface RunConditionContext extends RunCondition<Object, Boolean> {
 }

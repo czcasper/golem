@@ -1,15 +1,14 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
  */
 package cz.a_d.automation.golem.context.actionInterfaces;
 
 import cz.a_d.automation.golem.interfaces.context.RunActionStack;
 
 /**
+ * Interface is wrapping usage generic types in Golem. This is from reason of more type save injection of context into actions. In this case
+ * is wrapping of RunActionStack interface.
  *
- * @param <T> 
  * @author casper
  */
-public interface RunActionStackContext extends RunActionStack<Object> {    
+public interface RunActionStackContext extends RunActionStack<Object> {
 }
