@@ -1,6 +1,4 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
  */
 package cz.a_d.automation.golem.context.managers;
 
@@ -15,15 +13,19 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * Implementation of interface specific to manager of delay feature.
  *
- * @param <T>
  * @author casper
+ * @param <T> the type of action managed by content manager.
+ * @param <V> the type of value used in parameter spool.
+ * @param <C> the type of object used for validation of run results
  */
 public class RunDelayIntervalManagerImpl<T, C, V> extends AbstractContextManager<T, C, RunDelayInterval<T>, V> implements RunDelayIntervalManager<T, V> {
 
     /**
+     * Creating instance of manager of delay interval.
      *
-     * @param context
+     * @param context run context for which is this manager implementation registered. Must be different from null.
      */
     public RunDelayIntervalManagerImpl(RunContextImpl<T, C, V> context) {
         super(context);
@@ -45,55 +47,27 @@ public class RunDelayIntervalManagerImpl<T, C, V> extends AbstractContextManager
         return retValue;
     }
 
-    /**
-     * Safelly initialize all timer members by calling one method.
-     *
-     * @param action = action where timer will start working
-     * @param time = value greather than 0. This value used for sleeping current
-     * thread is in miliseconds.
-     * @param actionCount = this parmeter is used for timer live cycle
-     * configuration. Must be different from zero to setup timer correctelly. In
-     * case when is negative timer will live in unlimited number of iteration.
-     * In case when is positive timer will live number of time stored in value.
-     *
-     * @return true in case when timer is initialized correctelly, otherwise
-     * false.
-     */
     @Override
     public boolean setup(T action, long actionCount, long time) {
         Object[] tmp = new Number[]{actionCount, time};
         return setup(action, tmp);
     }
 
-    /**
-     *
-     */
     @Override
     protected void beforeNextInList() {
         current = null;
     }
 
-    /**
-     *
-     */
     @Override
     protected void afterNextInList() {
         currentList.remove(--index);
     }
 
-    /**
-     *
-     * @return
-     */
     @Override
     protected boolean currentFinilizer() {
         return false;
     }
 
-    /**
-     *
-     * @param action
-     */
     @Override
     protected void loadManger(T action) {
         if (currentList == null) {
@@ -117,12 +91,6 @@ public class RunDelayIntervalManagerImpl<T, C, V> extends AbstractContextManager
         }
     }
 
-    /**
-     *
-     * @param action
-     * @param params
-     * @return
-     */
     @Override
     protected RunDelayInterval<T> setupManager(T action, Object... params) {
         RunDelayInterval<T> retValue = null;
@@ -136,10 +104,6 @@ public class RunDelayIntervalManagerImpl<T, C, V> extends AbstractContextManager
         return retValue;
     }
 
-    /**
-     *
-     * @return
-     */
     @Override
     public RunDelayInterval<T> getCurrent() {
         return super.getCurrent();

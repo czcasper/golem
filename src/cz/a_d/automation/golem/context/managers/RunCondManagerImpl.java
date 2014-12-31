@@ -12,11 +12,20 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * Implementation of interface specific to manager of run action result validation.
  *
  * @author casper
+ * @param <T> the type of action managed by content manager.
+ * @param <V> the type of value used in parameter spool.
+ * @param <C> the type of object used for validation of run results
  */
 public class RunCondManagerImpl<T, C extends Object, V> extends AbstractContextManager<T, C, RunCondition<T, C>, V> implements RunCondManager<T, C, V> {
 
+    /**
+     * Creating instance of manager of run action result validation.
+     *
+     * @param context run context for which is this manager implementation registered. Must be different from null.
+     */
     public RunCondManagerImpl(RunContextImpl<T, C, V> context) {
         super(context);
     }

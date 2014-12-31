@@ -11,16 +11,19 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * Implementation of interface specific to run action stack manager.
  *
- * @param <T>
  * @author casper
+ * @param <T> the type of action managed by content manager.
+ * @param <V> the type of value used in parameter spool.
+ * @param <C> the type of object used for validation of run results
  */
 public class RunActionStackManagerImpl<T, C, V> extends AbstractContextManager<T, C, RunActionStack<T>, V> implements RunActionStackManager<T, V> {
 
     /**
-     * Cosntructor fot this type of manager.
+     *  Creating instance of manager of run action stack.
      *
-     * @param context this context must refered to RunnerContext implementation
+     * @param context run context for which is this manager implementation registered. Must be different from null.
      */
     public RunActionStackManagerImpl(RunContextImpl<T, C, V> context) {
         super(context);
@@ -31,16 +34,10 @@ public class RunActionStackManagerImpl<T, C, V> extends AbstractContextManager<T
         return currentList;
     }
 
-    /**
-     *
-     */
     @Override
     protected void beforeNextInList() {
     }
 
-    /**
-     *
-     */
     @SuppressWarnings("unchecked")
     @Override
     protected void afterNextInList() {
@@ -51,19 +48,11 @@ public class RunActionStackManagerImpl<T, C, V> extends AbstractContextManager<T
         }
     }
 
-    /**
-     *
-     * @return
-     */
     @Override
     protected boolean currentFinilizer() {
         return false;
     }
 
-    /**
-     *
-     * @param action
-     */
     @SuppressWarnings("unchecked")
     @Override
     protected void loadManger(T action) {
@@ -79,19 +68,6 @@ public class RunActionStackManagerImpl<T, C, V> extends AbstractContextManager<T
         }
     }
 
-    /*
-     * This method safely initialize stack in runner manager under the action 
-     * object by name idendificator and collection of actions.
-     * 
-     * @param action key action used for starting poping actions from stack
-     *
-     */
-    /**
-     *
-     * @param action
-     * @param params
-     * @return
-     */
     @SuppressWarnings("unchecked")
     @Override
     protected RunActionStack<T> setupManager(T action, Object... params) {

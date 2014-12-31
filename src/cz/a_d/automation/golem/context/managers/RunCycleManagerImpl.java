@@ -1,6 +1,4 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
  */
 package cz.a_d.automation.golem.context.managers;
 
@@ -15,31 +13,40 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * Implementation of interface specific to manager of run cycles.
  *
- * @param <T>
  * @author casper
- * @param <C>
- * @param <V>
+ * @param <T> the type of action managed by content manager.
+ * @param <V> the type of value used in parameter spool.
+ * @param <C> the type of object used for validation of run results
  */
 public class RunCycleManagerImpl<T, C, V> extends AbstractContextManager<T, C, RunCycle<T>, V> implements RunCycleManager<T, V> {
 
-    protected FastStack<RunCycle<T>> curentStack;
     /**
-     *
+     * Stack of currently active instance of cycles. Stack is used to implement inner cycles.
+     */
+    protected FastStack<RunCycle<T>> curentStack;
+
+    /**
+     * Stack with index of active cycle in list of instance of cycles stored in stack. Stack is used to implement inner cycles registered on
+     * same action.
      */
     protected FastStack<Integer> arrayIndexStack;
+
     /**
-     *
+     * Stack of list of instance of cycles which are processed. Stack is used to implement inner cycles registered on same action.
      */
     protected FastStack<List<RunCycle<T>>> currentCycleStack;
+
     /**
-     *
+     * Flag used to deal with cycles on top of one action. In this case there needs to be special logic in manager to work properly.
      */
     protected boolean zeroLenFlag;
 
     /**
+     * Creating instance of manager of run cycle.
      *
-     * @param context
+     * @param context run context for which is this manager implementation registered. Must be different from null.
      */
     public RunCycleManagerImpl(RunContextImpl<T, C, V> context) {
         super(context);
@@ -48,31 +55,19 @@ public class RunCycleManagerImpl<T, C, V> extends AbstractContextManager<T, C, R
         arrayIndexStack = new FastStack<>();
     }
 
-    /**
-     *
-     * @param action
-     * @param repeatCount
-     * @param actionCount
-     * @return
-     */
     @Override
     public boolean setup(T action, long repeatCount, int actionCount) {
         Object[] tmp = new Long[]{repeatCount, (long) actionCount};
         return setup(action, tmp);
     }
 
-    /**
-     *
-     */
+    // TODO find if comments shloud be removed or uncomented.
     @Override
     protected void beforeNextInList() {
 //        current.reset();
         zeroLenFlag = current.isZeroLength();
     }
 
-    /**
-     *
-     */
     @Override
     @SuppressWarnings("unchecked")
     protected void afterNextInList() {
@@ -92,10 +87,6 @@ public class RunCycleManagerImpl<T, C, V> extends AbstractContextManager<T, C, R
         }
     }
 
-    /**
-     *
-     * @return
-     */
     @Override
     protected boolean currentFinilizer() {
         boolean retValue = false;
@@ -115,20 +106,11 @@ public class RunCycleManagerImpl<T, C, V> extends AbstractContextManager<T, C, R
         return retValue;
     }
 
-    /**
-     *
-     * @return
-     */
     @Override
     public RunCycle<T> getCurrent() {
         return super.getCurrent();
     }
 
-    /**
-     * Method for finding cycles in processed actions.
-     *
-     * @param action currently proccesed action instance.
-     */
     @SuppressWarnings("unchecked")
     @Override
     protected void loadManger(T action) {
@@ -152,12 +134,6 @@ public class RunCycleManagerImpl<T, C, V> extends AbstractContextManager<T, C, R
         }
     }
 
-    /**
-     *
-     * @param action
-     * @param params
-     * @return
-     */
     @Override
     protected RunCycleImpl<T> setupManager(T action, Object... params) {
         RunCycleImpl<T> retValue = null;

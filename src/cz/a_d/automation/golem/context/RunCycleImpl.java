@@ -105,7 +105,7 @@ public class RunCycleImpl<T> implements RunCycle<T>, Cloneable {
      *                    construction.
      * @param repeatCount amount of cycle iterations, negative value create infinite loop.
      * @param actionCount number of action in cycle. Must be greater or equal to zero. Used to finding last action in cycle.
-     * @return
+     * @return true in case when cycle is properly initialized, otherwise false.
      */
     public boolean setupCycle(T rootAction, long repeatCount, int actionCount) {
         boolean retValue = false;
