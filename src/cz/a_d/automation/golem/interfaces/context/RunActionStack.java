@@ -1,6 +1,4 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
  */
 package cz.a_d.automation.golem.interfaces.context;
 
@@ -40,20 +38,23 @@ public interface RunActionStack<T> extends CloneableIterator<T> {
     public boolean push(T item);
 
     /**
+     * Method return and remove first object in stack.
      *
-     * @return
+     * @return first object in stack before method call.
      */
     public T pop();
 
     /**
+     * Method allows access to object on top of stack, object stay in stack.
      *
-     * @return
+     * @return Object on the top of stack
      */
     public T peek();
 
     /**
+     * Testing if action stack is empty.
      *
-     * @return
+     * @return true in case when there is no item in stack, otherwise false.
      */
     public boolean isEmpty();
 }

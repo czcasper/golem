@@ -1,18 +1,25 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
  */
 package cz.a_d.automation.golem.interfaces.context;
 
 import java.util.Iterator;
 
 /**
- * This is base interface for all classes which are dealing directly with actions in stream.
- * All classes which implements this interface or childs of this interface must also implement
- * interface Clonable. Otherwise CloneNotSupportedException exception will be throwed.
- * 
+ * Interface describe base requirements to Golem action stream feature. Feature must implement this interface to allow cloning of feature
+ * and reusing registered configuration during stream processing.
+ *
  * @author casper
+ * @param <T> the type of action managed by feature implementation.
  */
 public interface CloneableIterator<T> extends Iterator<T> {
+
+    /**
+     * Creates and returns a copy of this object.
+     *
+     * @return a clone of this instance.
+     * @throws CloneNotSupportedException if the object's class does not support the {@code Cloneable} interface. Subclasses that override
+     *                                    the {@code clone} method can also throw this exception to indicate that an instance cannot be
+     *                                    cloned.
+     */
     public Object clone() throws CloneNotSupportedException;
 }
