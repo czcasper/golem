@@ -12,12 +12,22 @@ import java.net.URLDecoder;
 import java.net.URLStreamHandler;
 
 /**
+ * Implementation of handler for for file protocol with extension to define write access to file. Extension is implemented on top of default
+ * handler provided by Java.
  *
  * @author casper
  */
 public class Handler extends URLStreamHandler {
 
+    /**
+     * Instance of default file handler provided by java. Used in case when URL doesn't have specified access rights in query parameter or
+     * if URL is pointing to folder.
+     */
     protected sun.net.www.protocol.file.Handler defaultHandler = new sun.net.www.protocol.file.Handler();
+
+    /**
+     * Character set used by URL string.
+     */
     protected String urlEncoding = "UTF-8";
 
     @Override
@@ -44,6 +54,5 @@ public class Handler extends URLStreamHandler {
     public URLConnection openConnection(URL u, Proxy p) throws IOException {
         return this.openConnection(u);
     }
-    
-    
+
 }

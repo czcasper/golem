@@ -26,6 +26,9 @@ public class FileURLConnection extends URLConnection {
      */
     protected File file;
 
+    /**
+     * FileChannel instance created by connect method and covering I/O operations on top of connected file.
+     */
     protected FileStreamChannel channel;
     /**
      * Set of access rights modificators.
@@ -80,7 +83,7 @@ public class FileURLConnection extends URLConnection {
     @Override
     public OutputStream getOutputStream() throws IOException {
         OutputStream retValue = null;
-        if ((doOutput) && (connected)) {
+        if ((doOutput) && (connected) && (channel!=null)) {
             retValue = channel.getOutputStream();
         }
         return retValue;
@@ -95,7 +98,7 @@ public class FileURLConnection extends URLConnection {
     @Override
     public InputStream getInputStream() throws IOException {
         InputStream retValue = null;
-        if ((doInput) && (connected)) {
+        if ((doInput) && (connected) && (channel!=null)) {
             retValue = channel.getInputStream();
         }
         return retValue;

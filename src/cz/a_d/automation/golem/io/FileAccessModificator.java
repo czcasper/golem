@@ -7,6 +7,7 @@ package cz.a_d.automation.golem.io;
 import cz.a_d.automation.golem.protocol.file.FileURLConnection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -45,12 +46,12 @@ public enum FileAccessModificator {
      * extract from URL query string access words defined in format:
      * access={...,....,..} with validating of used characters inside squares.
      */
-    protected final static Pattern access = Pattern.compile(".*[\\&,\\;]*access=\\{([a-zA-Z,\\,]*)\\}[\\&,\\;]*.*");
+    private final static Pattern access = Pattern.compile(".*[\\&,\\;]*access=\\{([a-zA-Z,\\,]*)\\}[\\&,\\;]*.*");
 
     /**
      * Internal enum storage for value represented by specific enum instance.
      */
-    protected char value;
+    private final char value;
 
     /**
      * Internal enum constructor required by defined conversion between enum and
@@ -115,7 +116,7 @@ public enum FileAccessModificator {
                     List<FileAccessModificator> tmpList = new ArrayList<>(splitedRights.length);
                     for (String singleRight : splitedRights) {
                         try {
-                            FileAccessModificator fromString = valueOf(singleRight.toUpperCase());
+                            FileAccessModificator fromString = valueOf(singleRight.toUpperCase(Locale.getDefault()));
                             tmpList.add(fromString);
                         } catch (IllegalArgumentException ex) {
                             Logger.getLogger(FileAccessModificator.class.getName()).log(Level.WARNING, "Invalid access rights identificator:{0} .Has been used.", singleRight);

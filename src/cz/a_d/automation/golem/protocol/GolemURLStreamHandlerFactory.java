@@ -22,7 +22,7 @@ public class GolemURLStreamHandlerFactory implements URLStreamHandlerFactory {
     /**
      * Default path used by original sun library and extended by package where golem store own custom implementation of protocol.
      */
-    protected static final String[] PROTOCOL_PACKAGE_PREFIX = {"cz.a_d.automation.golem.protocol", "sun.net.www.protocol"};
+    private static final String[] PROTOCOL_PACKAGE_PREFIX = {"cz.a_d.automation.golem.protocol", "sun.net.www.protocol"};
 
     /**
      * Default instance of factory used by golem for overwriting system one. This instance allows easy access to additional features of
@@ -163,6 +163,12 @@ public class GolemURLStreamHandlerFactory implements URLStreamHandlerFactory {
         return retValue;
     }
 
+    /**
+     * Finding protocol handler class in specific prefixes managed by this factory.
+     *
+     * @param protocol protocol name. It is used like part of class name in searching for protocol handler.
+     * @return true in case when protocol handler has been found and loaded into factory.
+     */
     protected boolean findProtocolHandler(String protocol) {
         boolean retValue = false;
         if (!handlers.containsKey(protocol)) {

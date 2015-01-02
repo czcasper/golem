@@ -280,10 +280,6 @@ public class FileStreamChannel {
          * Valid position in channel after last write operation.
          */
         protected long position;
-        /**
-         * End of stream marker.
-         */
-        protected boolean eos;
 
         /**
          * Constructor for channel wrapper for output stream. It supports system property GOLEM.FILE_STREAM_CHANNEL.WRITE_BUFFER_SIZE for
@@ -350,10 +346,7 @@ public class FileStreamChannel {
 
             while (bb.hasRemaining()) {
                 if (channel.write(bb) == -1) {
-                    eos = true;
                     break;
-                } else {
-                    eos = false;
                 }
             }
             this.position = channel.position();
