@@ -63,7 +63,7 @@ public abstract class AbstractSpoolImpl<A, K extends AbstractSpoolKey<?>, V> ext
 
     @Override
     @SuppressWarnings("unchecked")
-    public <P> V put(A action, Field f, ParameterSpool<A, P> parameters) throws IllegalArgumentException, IllegalAccessException {
+    public <P> V put(A action, Field f, ParameterSpool<A, P> parameters) throws IllegalAccessException {
         V retValue = null;
         if (validateFieldType(f)) {
             K tmpKey = buildKey(action, f, parameters, true);
@@ -95,7 +95,7 @@ public abstract class AbstractSpoolImpl<A, K extends AbstractSpoolKey<?>, V> ext
 
     @Override
     @SuppressWarnings("unchecked")
-    public <P> V get(A action, Field f, ParameterSpool<A, P> parameters) throws IllegalArgumentException, IllegalAccessException {
+    public <P> V get(A action, Field f, ParameterSpool<A, P> parameters) throws IllegalAccessException {
         V retValue = null;
         if (validateFieldType(f)) {
             K tmpKey = buildKey(action, f, parameters, false);
