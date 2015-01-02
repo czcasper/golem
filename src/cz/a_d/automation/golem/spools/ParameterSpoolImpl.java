@@ -1,6 +1,4 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
  */
 package cz.a_d.automation.golem.spools;
 
@@ -12,34 +10,75 @@ import java.lang.reflect.Field;
 import java.util.Map;
 
 /**
+ * Implementation of spool of action parameters used by runner to share parameters between actions.
  *
  * @author casper
+ * @param <A> the type of action managed by spool.
+ * @param <V> the type of value in spool.
  */
 public class ParameterSpoolImpl<A, V> extends AbstractSpoolImpl<A, ParameterKey<?>, V> implements ParameterSpool<A, V> {
 
     private static final long serialVersionUID = 1L;
+    /**
+     * Global instance of spool used to share parameters across all runner thread.
+     */
     protected final static ParameterSpool<Object, Object> global = new ParameterSpoolImpl<>();
 
+    /**
+     * Constructs an empty <tt>Parameter spool</tt> with capacity 16, load factor 0.75 and sorting values by based on amount of access to
+     * value.
+     */
     public ParameterSpoolImpl() {
         super();
     }
 
+    /**
+     * Constructs an empty <tt>Parameter spool</tt> with the specified initial capacity and load factor and sorting values by based on
+     * amount of access to value.
+     *
+     * @param initialCapacity initial capacity of spool, must be greater than zero.
+     * @param loadFactor      the load factor.
+     */
     public ParameterSpoolImpl(int initialCapacity, float loadFactor) {
         super(initialCapacity, loadFactor);
     }
 
+    /**
+     * Constructs an empty <tt>Parameter spool</tt> with the specified initial capacity and sorting values by based on amount of access to
+     * value.
+     *
+     * @param initialCapacity initial capacity of spool, must be greater than zero.
+     */
     public ParameterSpoolImpl(int initialCapacity) {
         super(initialCapacity);
     }
 
+    /**
+     * Constructs a new <tt>Parameter spool</tt> with the same mappings as the specified <tt>Map</tt>. The <tt>Spool</tt> is created with
+     * default load factor (0.75) and an initial capacity sufficient to hold the mappings in the specified <tt>Map</tt>.
+     *
+     * @param m the map whose mappings are to be placed in this spool.
+     */
     public ParameterSpoolImpl(Map<? extends ParameterKey<?>, ? extends V> m) {
         super(m);
     }
 
+    /**
+     * Constructs an empty <tt>Parameter spool</tt> instance with the specified initial capacity, load factor and ordering mode.
+     *
+     * @param initialCapacity initial capacity of spool, must be greater than zero.
+     * @param loadFactor      the load factor.
+     * @param accessOrder     the ordering mode - <tt>true</tt> for access-order, <tt>false</tt> for insertion-order
+     */
     public ParameterSpoolImpl(int initialCapacity, float loadFactor, boolean accessOrder) {
         super(initialCapacity, loadFactor, accessOrder);
     }
 
+    /**
+     * Getter for global instance of Parameter spool.
+     *
+     * @return global instance of parameter spool.
+     */
     public static ParameterSpool<Object, Object> getGlobal() {
         return global;
     }
@@ -73,7 +112,7 @@ public class ParameterSpoolImpl<A, V> extends AbstractSpoolImpl<A, ParameterKey<
                 retValue = true;
             } else {
                 String usedType = "null";
-                if(type!=null){
+                if (type != null) {
                     usedType = type.toString();
                 }
                 throw new IllegalAccessException("Parameter spool doesn''t supports field annotated by type:" + usedType);

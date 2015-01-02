@@ -22,37 +22,79 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * This class is storage for
+ * Implementation of spool of cached action proxy information collected from annotations defined in action class.
  *
  * @author casper
- * @param <A>
+ * @param <A> the type of action managed by spool.
  */
-// TODO Documentation: Create JavaDoc on class and public method level.
 public class ActionInformationSpoolImpl<A> extends AbstractSpoolImpl<A, ActionInfoKey<Class<?>>, ActionInfoProxy> implements ActionInformationSpool<A> {
 
     private static final long serialVersionUID = 1L;
+    /**
+     * Instance of comparator used to sort methods in proxy objects.
+     */
     protected Map<ActionMethodProxyType, Comparator<Method>> methodComparator = ActionInfoProxyImpl.createNewComparators();
+
+    /**
+     * Global instance of spool used to share information mapped from actions across all runner thread.
+     */
     protected final static ActionInformationSpool<Object> global = new ActionInformationSpoolImpl<>();
 
+    /**
+     * Constructs an empty <tt>Action information spool</tt> with capacity 16, load factor 0.75 and sorting values by based on amount of
+     * access to value.
+     */
     public ActionInformationSpoolImpl() {
+        super();
     }
 
+    /**
+     * Constructs an empty <tt>Action information spool</tt> with the specified initial capacity and load factor and sorting values by based
+     * on amount of access to value.
+     *
+     * @param initialCapacity initial capacity of spool, must be greater than zero.
+     * @param loadFactor      the load factor.
+     */
     public ActionInformationSpoolImpl(int initialCapacity, float loadFactor) {
         super(initialCapacity, loadFactor);
     }
 
+    /**
+     * Constructs an empty <tt>Action information spool</tt> with the specified initial capacity and sorting values by based on amount of
+     * access to value.
+     *
+     * @param initialCapacity initial capacity of spool, must be greater than zero.
+     */
     public ActionInformationSpoolImpl(int initialCapacity) {
         super(initialCapacity);
     }
 
+    /**
+     * Constructs a new <tt>Action information spool</tt> with the same mappings as the specified <tt>Map</tt>. The <tt>Spool</tt> is
+     * created with default load factor (0.75) and an initial capacity sufficient to hold the mappings in the specified <tt>Map</tt>.
+     *
+     * @param m the map whose mappings are to be placed in this spool.
+     */
     public ActionInformationSpoolImpl(Map<? extends ActionInfoKey<Class<?>>, ? extends ActionInfoProxy> m) {
         super(m);
     }
 
+    /**
+     * Constructs an empty <tt>Action information spool</tt> instance with the specified initial capacity, load factor and ordering mode.
+     *
+     * @param initialCapacity initial capacity of spool, must be greater than zero.
+     * @param loadFactor      the load factor.
+     * @param accessOrder     the ordering mode - <tt>true</tt> for access-order, <tt>false</tt> for insertion-order
+     */
     public ActionInformationSpoolImpl(int initialCapacity, float loadFactor, boolean accessOrder) {
         super(initialCapacity, loadFactor, accessOrder);
     }
 
+    /**
+     * Getter for global instance of Action information spool.
+     *
+     * @return global instance of action information spool.
+     */
     public static ActionInformationSpool<Object> getGlobal() {
         return global;
     }
@@ -126,7 +168,6 @@ public class ActionInformationSpoolImpl<A> extends AbstractSpoolImpl<A, ActionIn
 
     @Override
     @SuppressWarnings("unchecked")
-    // TODO Refactoring: validate if the is chance to provide same functionality with more type save implementation.
     public <V> ActionStream<A, V> createNewFromObject(List<A> actions) {
         ActionStream<A, V> retValue = null;
         if ((actions != null) && (!actions.isEmpty())) {
@@ -156,7 +197,6 @@ public class ActionInformationSpoolImpl<A> extends AbstractSpoolImpl<A, ActionIn
 
     @Override
     @SuppressWarnings("unchecked")
-    // TODO Refactoring: try to find type save way how to provide same functionality.
     public <V> ActionStream<A, V> createNewFromClasses(List<Class<?>> actions) {
         ActionStream<A, V> retValue = null;
         if ((actions != null) && (!actions.isEmpty())) {
@@ -226,6 +266,13 @@ public class ActionInformationSpoolImpl<A> extends AbstractSpoolImpl<A, ActionIn
         return retValue;
     }
 
+    /**
+     * Construct new action information spool key from given object instance.
+     *
+     * @param key instance of object which will be used to create new key instance. Can be valid action instance, class instance, string or
+     *            instance of Action information key.
+     * @return instance of key if input parameter is valid, otherwise null.
+     */
     @SuppressWarnings("unchecked")
     protected ActionInfoKey<Class<?>> createKeyFrom(Object key) {
         ActionInfoKey<Class<?>> retValue = null;
@@ -241,7 +288,6 @@ public class ActionInformationSpoolImpl<A> extends AbstractSpoolImpl<A, ActionIn
                     retValue = searchProxy;
                 }
             } else if (key instanceof ActionInfoKey) {
-                // TODO Refactoring: try to find type save way how to provide same functionality.
                 retValue = (ActionInfoKey<Class<?>>) key;
             } else {
                 Class<?> tmp = key.getClass();

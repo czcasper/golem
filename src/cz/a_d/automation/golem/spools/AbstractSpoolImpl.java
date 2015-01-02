@@ -18,32 +18,66 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * Implementation of methods commonly required from Golem spools. Class providing implementation of all method required by interface and
+ * require to implement protected method specific to objects stored in spool.
  *
  * @author casper
+ * @param <A> the type of action managed by spool.
+ * @param <K> the type of key value in spool.
+ * @param <V> the type of value in spool.
  */
-// TODO Documentation: Create JavaDoc on class and public method level.
-// TODO Refactoring: Methods with suppressing warning unchecked should be validated and refactored to be more type save (putFrom, getFrom, buildKey)
 public abstract class AbstractSpoolImpl<A, K extends AbstractSpoolKey<?>, V> extends LinkedHashMap<K, V> implements AbstractSpool<A, K, V> {
 
+    /**
+     * Instance of key object used for searching to prevent creation of new key instance during every search operation.
+     */
     protected K searchProxy = null;
 
+    /**
+     * Constructs an empty <tt>Spool</tt> with capacity 16, load factor 0.75 and sorting values by based on amount of access to value.
+     */
     public AbstractSpoolImpl() {
         this(16, 0.75f, true);
     }
 
+    /**
+     * Constructs an empty <tt>Spool</tt> with the specified initial capacity and load factor and sorting values by based on amount of
+     * access to value.
+     *
+     * @param initialCapacity initial capacity of spool, must be greater than zero.
+     * @param loadFactor      the load factor.
+     */
     public AbstractSpoolImpl(int initialCapacity, float loadFactor) {
         this(initialCapacity, loadFactor, true);
     }
 
+    /**
+     * Constructs an empty <tt>Spool</tt> with the specified initial capacity and sorting values by based on amount of access to value.
+     *
+     * @param initialCapacity initial capacity of spool, must be greater than zero.
+     */
     public AbstractSpoolImpl(int initialCapacity) {
         this(initialCapacity, 0.75f, true);
     }
 
+    /**
+     * Constructs a new <tt>Spool</tt> with the same mappings as the specified <tt>Map</tt>. The <tt>Spool</tt> is created with default load
+     * factor (0.75) and an initial capacity sufficient to hold the mappings in the specified <tt>Map</tt>.
+     *
+     * @param m the map whose mappings are to be placed in this spool.
+     */
     public AbstractSpoolImpl(Map<? extends K, ? extends V> m) {
         super(m);
         initProxy();
     }
 
+    /**
+     * Constructs an empty <tt>Spool</tt> instance with the specified initial capacity, load factor and ordering mode.
+     *
+     * @param initialCapacity initial capacity of spool, must be greater than zero.
+     * @param loadFactor      the load factor.
+     * @param accessOrder     the ordering mode - <tt>true</tt> for access-order, <tt>false</tt> for insertion-order
+     */
     public AbstractSpoolImpl(int initialCapacity, float loadFactor, boolean accessOrder) {
         super(initialCapacity, loadFactor, accessOrder);
         initProxy();
@@ -87,7 +121,7 @@ public abstract class AbstractSpoolImpl<A, K extends AbstractSpoolKey<?>, V> ext
     @Override
     public V getFrom(String key) {
         V retValue = null;
-        if(searchProxy.fromString(key)){
+        if (searchProxy.fromString(key)) {
             retValue = this.get(searchProxy);
         }
         return retValue;
@@ -107,6 +141,17 @@ public abstract class AbstractSpoolImpl<A, K extends AbstractSpoolKey<?>, V> ext
         return retValue;
     }
 
+    /**
+     * Construct spool key from given parameters.
+     *
+     * @param <P>           the type of value used in parameter spool.
+     * @param action        instance of action used to generate key value. Must be different from null.
+     * @param f             field from action class which will be stored under generated key.
+     * @param parameters    spool of parameters used for providing feature of pointer value implemented by Golem parameters.
+     * @param createNewFlag flag for creating new instance if value of flag is true, otherwise proxy object is filled by data collected from
+     *                      action.
+     * @return instance of key if all required parameters are valid, otherwise false.
+     */
     @SuppressWarnings("unchecked")
     protected <P> K buildKey(A action, Field f, ParameterSpool<A, P> parameters, boolean createNewFlag) {
         K retValue = null;
@@ -159,6 +204,9 @@ public abstract class AbstractSpoolImpl<A, K extends AbstractSpoolKey<?>, V> ext
         return retValue;
     }
 
+    /**
+     * Method is just hiding calling of abstract method from constructor.
+     */
     protected final void initProxy() {
         searchProxy = initProxyKey();
     }
@@ -188,11 +236,39 @@ public abstract class AbstractSpoolImpl<A, K extends AbstractSpoolKey<?>, V> ext
         return retValue;
     }
 
+    /**
+     * Creating instance of new key object used by spool from string representation.
+     *
+     * @param key string value of key object used by spool for indexing.
+     *
+     * @return instance of key in case when given parameter is valid representation of key implementation, otherwise null.
+     */
     protected abstract K createKey(String key);
 
+    /**
+     * Testing if given parameter instance is instance of key used by spool for indexing.
+     *
+     * @param <P>   the type of tested object.
+     * @param value instance of object which will be validated for type.
+     * @return true in case when given parameter is instance of class used by spool for key object, otherwise false.
+     */
     protected abstract <P> boolean instancOfKey(P value);
 
+    /**
+     * Creating new instance of Spool key object, this instance is used like proxy key for searching operations.
+     *
+     * @return new empty instance of key object implementation.
+     */
     protected abstract K initProxyKey();
 
+    /**
+     * Testing if field has annotations which determine type of field supported by current spool implementation. This method is used in
+     * support for direct interaction between actions and spool.
+     *
+     * @param f instance of field object used for collecting information about type of field defined by annotation.
+     * @return true in case when field is valid object managed by spool, otherwise false.
+     *
+     * @throws IllegalAccessException in case when something goes wrong with validation.
+     */
     protected abstract boolean validateFieldType(Field f) throws IllegalAccessException;
 }

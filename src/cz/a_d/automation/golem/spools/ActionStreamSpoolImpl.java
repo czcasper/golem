@@ -13,35 +13,75 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * Implementation of spool of action streams loaded and prepared to be interpreted by Golem runner.
  *
  * @author casper
+ * @param <A> the type of action managed by spool.
+ * @param <V> the type of value in spool.
  */
-// TODO Documetation: create JavaDoc minimally on public method and class level.
 public class ActionStreamSpoolImpl<A, V> extends AbstractSpoolImpl<A, ActionStreamKey<?>, ActionStream<A, V>> implements ActionStreamSpool<A, V> {
 
     private static final long serialVersionUID = 1L;
+    /**
+     * Global instance of spool used to share loaded action streams across all runner thread.
+     */
     protected final static ActionStreamSpool<Object, Object> global = new ActionStreamSpoolImpl<>();
 
+    /**
+     * Constructs an empty <tt>Action stream spool</tt> with capacity 16, load factor 0.75 and sorting values by based on amount of access
+     * to value.
+     */
     public ActionStreamSpoolImpl() {
         super();
     }
 
+    /**
+     * Constructs an empty <tt>Action stream spool</tt> with the specified initial capacity and load factor and sorting values by based on
+     * amount of access to value.
+     *
+     * @param initialCapacity initial capacity of spool, must be greater than zero.
+     * @param loadFactor      the load factor.
+     */
     public ActionStreamSpoolImpl(int initialCapacity, float loadFactor) {
         super(initialCapacity, loadFactor);
     }
 
+    /**
+     * Constructs an empty <tt>Action stream spool</tt> with the specified initial capacity and sorting values by based on amount of access
+     * to value.
+     *
+     * @param initialCapacity initial capacity of spool, must be greater than zero.
+     */
     public ActionStreamSpoolImpl(int initialCapacity) {
         super(initialCapacity);
     }
 
+    /**
+     * Constructs a new <tt>Action stream spool</tt> with the same mappings as the specified <tt>Map</tt>. The <tt>Spool</tt> is created
+     * with default load factor (0.75) and an initial capacity sufficient to hold the mappings in the specified <tt>Map</tt>.
+     *
+     * @param m the map whose mappings are to be placed in this spool.
+     */
     public ActionStreamSpoolImpl(Map<? extends ActionStreamKey<?>, ? extends ActionStream<A, V>> m) {
         super(m);
     }
 
+    /**
+     * Constructs an empty <tt>Action stream spool</tt> instance with the specified initial capacity, load factor and ordering mode.
+     *
+     * @param initialCapacity initial capacity of spool, must be greater than zero.
+     * @param loadFactor      the load factor.
+     * @param accessOrder     the ordering mode - <tt>true</tt> for access-order, <tt>false</tt> for insertion-order
+     */
     public ActionStreamSpoolImpl(int initialCapacity, float loadFactor, boolean accessOrder) {
         super(initialCapacity, loadFactor, accessOrder);
     }
 
+    /**
+     * Getter for global instance of Action stream spool.
+     *
+     * @return global instance of action stream spool.
+     */
     public static ActionStreamSpool<Object, Object> getGlobal() {
         return global;
     }
@@ -108,6 +148,13 @@ public class ActionStreamSpoolImpl<A, V> extends AbstractSpoolImpl<A, ActionStre
         return narrowInstance(retValue);
     }
 
+    /**
+     * Cloning instance of action stream stored in spool, to provide new fresh instance in state which has been put into stream to every
+     * caller.
+     *
+     * @param stream instance of stream stored in map.
+     * @return cloned instance of stream accepted in parameter or null if something go wrong.
+     */
     @SuppressWarnings("unchecked")
     protected ActionStream<A, V> narrowInstance(ActionStream<A, V> stream) {
         ActionStream<A, V> retValue = null;
