@@ -1,6 +1,4 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
  */
 package cz.a_d.automation.golem.spools.enums;
 
@@ -15,9 +13,30 @@ import java.lang.reflect.Field;
  * @author casper
  */
 public enum ActionFieldProxyType {
+    /**
+     * Represents parameter type of action fields. This type of fields are injected before action methods are executed.
+     */
+    Parameters,
+    /**
+     * Represents connection type of action fields. This type of fields are injected before action methods are executed.
+     */
+    Connections,
+    /**
+     * Represents parameters returned after processing from value of action fields. This type of fields are retrieved after action methods
+     * are executed.
+     */
+    ReturnValues,
+    /**
+     * Represents Golem runtime context object type of action fields. This type of fields are injected before action methods are executed.
+     */
+    Contexts;
 
-    Parameters, Connections, ReturnValues, Contexts;
-
+    /**
+     * Getter to identify type of field from Field class.
+     *
+     * @param field instance of Field which will be used to search for annotations connected with Golem field types.
+     * @return instance of type in case when field is valid action field, otherwise false.
+     */
     public static ActionFieldProxyType getType(Field field) {
         ActionFieldProxyType retValue = null;
         if (field != null) {
@@ -31,6 +50,12 @@ public enum ActionFieldProxyType {
         return retValue;
     }
 
+    /**
+     * Getter to identify type of field from Annotation class.
+     *
+     * @param annotation instance of annotation which will be compared with supported annotation types.
+     * @return instance of proxy type in case when annotation is supported, otherwise null.
+     */
     public static ActionFieldProxyType getType(Class<? extends Annotation> annotation) {
         ActionFieldProxyType retValue = null;
         if (annotation != null) {
@@ -45,6 +70,11 @@ public enum ActionFieldProxyType {
         return retValue;
     }
 
+    /**
+     * Getter to return annotation from current enumeration value.
+     *
+     * @return annotation class connected with this specific value.
+     */
     public Class<? extends Annotation> getAnnotation() {
         Class<? extends Annotation> retValue = null;
         switch (this) {
@@ -64,8 +94,14 @@ public enum ActionFieldProxyType {
         return retValue;
     }
 
+    /**
+     * Getting value stored in field property pointer.
+     *
+     * @param f instance of field used to retrieve value of pointer parameter.
+     * @return value defined in annotation pointer property if field is valid action field, otherwise null.
+     */
     public String getPointer(Field f) {
-        String retValue=null;
+        String retValue = null;
         if (f != null) {
             switch (this) {
                 case Parameters:
@@ -84,12 +120,18 @@ public enum ActionFieldProxyType {
                     }
                     break;
                 default:
-                    retValue=null;
+                    retValue = null;
             }
         }
         return retValue;
     }
 
+    /**
+     * Getting value stored in field property name.
+     *
+     * @param f instance of field used to retrieve value of name parameter.
+     * @return value defined in annotation name property if field is valid action field, otherwise null.
+     */
     public String getName(Field f) {
         String retValue = null;
         if (f != null) {

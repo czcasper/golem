@@ -5,13 +5,23 @@ package cz.a_d.automation.golem.spools.keys;
 import cz.a_d.automation.golem.interfaces.spools.keys.AbstractSpoolKey;
 
 /**
+ * Implementation of abstract key used by Golem spools to index values.
  *
  * @author casper
+ * @param <T> the type of action managed by spool.
  */
 public abstract class AbstractSpoolKeyImpl<T> implements AbstractSpoolKey<T>, Cloneable {
 
+    /**
+     * Storage for object represents key value.
+     */
     protected T keyValue;
 
+    /**
+     * Construct new instance of key from given object.
+     *
+     * @param keyValue instance of object used to provide information about key.
+     */
     public AbstractSpoolKeyImpl(T keyValue) {
         this.keyValue = keyValue;
     }
@@ -56,9 +66,6 @@ public abstract class AbstractSpoolKeyImpl<T> implements AbstractSpoolKey<T>, Cl
         }
         final AbstractSpoolKey<?> other = (AbstractSpoolKey<?>) obj;
 
-        if (this.keyValue != other.get() && (this.keyValue == null || !this.toString().equals(other.toString()))) {
-            return false;
-        }
-        return true;
+        return !(this.keyValue != other.get() && (this.keyValue == null || !this.toString().equals(other.toString())));
     }
 }

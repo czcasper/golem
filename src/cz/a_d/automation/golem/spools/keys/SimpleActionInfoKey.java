@@ -7,15 +7,27 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * Implementation of key used by Action information spool to index values.
  *
  * @author casper
  */
 public class SimpleActionInfoKey extends AbstractSpoolKeyImpl<Class<?>> implements ActionInfoKey<Class<?>> {
 
+    /**
+     * Construct new instance of key from class name provided in form of string parameter.
+     *
+     * @param key name of class which will represent key value for spool. Must be valid class name and class must be loaded in class path.
+     * @throws ClassNotFoundException in case when class name is not valid or class is not accessible for class loader.
+     */
     public SimpleActionInfoKey(String key) throws ClassNotFoundException {
         super((Class<?>) Class.forName(key));
     }
 
+    /**
+     * Construct new instance of key from given class object.
+     *
+     * @param key instance of class which will be used to provide information for key.
+     */
     public SimpleActionInfoKey(Class<?> key) {
         super(key);
     }

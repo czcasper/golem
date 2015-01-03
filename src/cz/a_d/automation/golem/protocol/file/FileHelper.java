@@ -10,7 +10,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Class is static helper for managing feature RW file access by Golem URL connections.
@@ -75,7 +74,7 @@ public class FileHelper {
                     } else {
                         actions.append(",");
                     }
-                    actions.append(fileAccessModificator.name().toLowerCase(Locale.getDefault()));
+                    actions.append(fileAccessModificator.name().toLowerCase());
                 }
                 actions.append("}");
             }

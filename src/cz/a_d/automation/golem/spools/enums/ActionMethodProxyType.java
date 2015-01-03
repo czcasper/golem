@@ -1,6 +1,4 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
  */
 package cz.a_d.automation.golem.spools.enums;
 
@@ -14,9 +12,25 @@ import java.lang.annotation.Annotation;
  * @author casper
  */
 public enum ActionMethodProxyType {
+    /**
+     * Represents initialization group of action methods. This type of methods are called before action method are executed.
+     */
+    Initialize,
+    /**
+     * Represents main group of action methods. This type of methods are implementing main business logic of action.
+     */
+    Run,
+    /**
+     * Represents validation group of action methods. This type of methods are called after action method are executed.
+     */
+    Validate;
 
-    Initialize, Run, Validate;
-    
+    /**
+     * Getter to identify type of method from annotation class.
+     *
+     * @param annotation instance of annotation which will be compared with supported annotation types.
+     * @return instance of proxy type in case when annotation is supported, otherwise null.
+     */
     public static ActionMethodProxyType getType(Class<? extends Annotation> annotation) {
         ActionMethodProxyType retValue = null;
         if (annotation != null) {
@@ -31,6 +45,12 @@ public enum ActionMethodProxyType {
         return retValue;
     }
 
+    /**
+     * Getting value stored in field property isCritical.
+     *
+     * @param annotation instance of annotation used to retrieve value of isCritical parameter.
+     * @return value defined in annotation isCritical property if method is valid action method, otherwise null.
+     */
     public boolean isCritical(Annotation annotation) {
         boolean retValue = false;
         if (annotation != null) {
@@ -61,6 +81,11 @@ public enum ActionMethodProxyType {
         return retValue;
     }
 
+    /**
+     * Getter to return annotation from current enumeration value.
+     *
+     * @return annotation class connected with this specific value.
+     */
     public Class<? extends Annotation> getAnnotation() {
         Class<? extends Annotation> retValue = null;
         switch (this) {

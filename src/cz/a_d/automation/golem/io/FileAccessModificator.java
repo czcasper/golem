@@ -7,7 +7,6 @@ package cz.a_d.automation.golem.io;
 import cz.a_d.automation.golem.protocol.file.FileURLConnection;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -116,7 +115,7 @@ public enum FileAccessModificator {
                     List<FileAccessModificator> tmpList = new ArrayList<>(splitedRights.length);
                     for (String singleRight : splitedRights) {
                         try {
-                            FileAccessModificator fromString = valueOf(singleRight.toUpperCase(Locale.getDefault()));
+                            FileAccessModificator fromString = valueOf(singleRight.toUpperCase());
                             tmpList.add(fromString);
                         } catch (IllegalArgumentException ex) {
                             Logger.getLogger(FileAccessModificator.class.getName()).log(Level.WARNING, "Invalid access rights identificator:{0} .Has been used.", singleRight);

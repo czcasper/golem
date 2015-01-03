@@ -15,16 +15,32 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * Implementation of simple action stream based on list of actions.
  *
  * @author casper
+ * @param <A> the type of action managed by stream.
+ * @param <V> the type of value in parameter spool.
  */
-// TODO Documentation: Create Javadoc on class and public method level.
 public class SimpleActionStream<A, V> implements ActionStream<A, V> {
 
+    /**
+     * Spool of parameters connected with this stream and used to share data between actions defined in stream.
+     */
     protected ParameterSpool<A, V> parmSpool;
+    /**
+     * List of actions stored in this stream.
+     */
     protected List<A> actions;
+    /**
+     * Instance of iterator used to iterate actions in this stream.
+     */
     protected ResetableIterator<A> it;
 
+    /**
+     * Construct action stream from given list of actions.
+     *
+     * @param actions collections of actions must be different from null and contains at least one valid action.
+     */
     public SimpleActionStream(List<A> actions) {
         if (actions == null) {
             throw new NullPointerException("Action stream cannot be initializet by null list of actions");

@@ -30,17 +30,36 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * Implementation of action proxy information class. This class is realizing mapping of class or instances into actions if they are contains
+ * annotations required by Golem actions.
  *
  * @author casper
  */
-// TODO Documentation: Create JavaDoc on class and public Method level (minimally) protected method should be included also.
 public class ActionInfoProxyImpl implements ActionInfoProxy {
 
+    /**
+     * Storage of all action fields sorted by type of field.
+     */
     protected Map<ActionFieldProxyType, List<Field>> fieldsData = new EnumMap<>(ActionFieldProxyType.class);
+    /**
+     * Storage of all fields sorted by name of field.
+     */
     protected Map<String, Field> fieldNameMap = new HashMap<>();
+    /**
+     * Storage for all action methods sorted by group and ordered by order defined by result of method comparator.
+     */
     protected Map<ActionMethodProxyType, SortedSet<Method>> methodsData = new EnumMap<>(ActionMethodProxyType.class);
+    /**
+     * Storage for comparator used for specific group of method.
+     */
     protected Map<ActionMethodProxyType, Comparator<Method>> methodComparators;
 
+    /**
+     * Construct instance of proxy object with defined comparators for methods.
+     *
+     * @param methodComparators instance of map which must have comparator instance stored under key type of group for all group supported
+     *                          by proxy object.
+     */
     public ActionInfoProxyImpl(Map<ActionMethodProxyType, Comparator<Method>> methodComparators) {
         if (methodComparators == null) {
             throw new NullPointerException("ActionInfo proxy cannot be initialized by null map");
@@ -48,6 +67,11 @@ public class ActionInfoProxyImpl implements ActionInfoProxy {
         this.methodComparators = methodComparators;
     }
 
+    /**
+     * Construct map of comparators with all supported types of action method group for proxy object.
+     *
+     * @return instance of map filled by method comparators.
+     */
     public static Map<ActionMethodProxyType, Comparator<Method>> createNewComparators() {
         Map<ActionMethodProxyType, Comparator<Method>> retValue = new EnumMap<>(ActionMethodProxyType.class);
         try {
@@ -69,7 +93,7 @@ public class ActionInfoProxyImpl implements ActionInfoProxy {
             Map<String, Field> fieldNames = proxy.getFieldNames();
             if ((fields != null) && (!fields.isEmpty())) {
                 fieldNameMap.putAll(fieldNames);
-                for (Map.Entry<ActionFieldProxyType,List<Field>> entry : fields.entrySet()) {
+                for (Map.Entry<ActionFieldProxyType, List<Field>> entry : fields.entrySet()) {
                     List<Field> srcFields = entry.getValue();
                     ActionFieldProxyType type = entry.getKey();
                     if ((srcFields != null) && (!srcFields.isEmpty())) {
@@ -89,7 +113,7 @@ public class ActionInfoProxyImpl implements ActionInfoProxy {
 
             Map<ActionMethodProxyType, SortedSet<Method>> methods = proxy.getMethods();
             if ((methods != null) && (!methods.isEmpty())) {
-                for (Map.Entry<ActionMethodProxyType,SortedSet<Method>> entry : methods.entrySet()) {
+                for (Map.Entry<ActionMethodProxyType, SortedSet<Method>> entry : methods.entrySet()) {
                     SortedSet<Method> srcMethods = entry.getValue();
                     ActionMethodProxyType type = entry.getKey();
                     if ((srcMethods != null) && (!srcMethods.isEmpty())) {
@@ -272,6 +296,13 @@ public class ActionInfoProxyImpl implements ActionInfoProxy {
         return fieldNameMap;
     }
 
+    /**
+     * Loading fields from class into proxy object. Field are identified by using Golem annotations and sorted by type of this annotation.
+     *
+     * @param actionClass class which is valid action class.
+     * @param fields      map of fields used to be filled by result of mapping.
+     * @param names       map of field names used to be filled by result of mapping.
+     */
     protected void loadFields(Class<?> actionClass, Map<ActionFieldProxyType, List<Field>> fields, Map<String, Field> names) {
         for (Field f : actionClass.getDeclaredFields()) {
             for (Annotation a : f.getDeclaredAnnotations()) {
@@ -304,6 +335,13 @@ public class ActionInfoProxyImpl implements ActionInfoProxy {
         }
     }
 
+    /**
+     * Loading methods from class into proxy object. Methods are identified by Golem annotations and grouped by annotation type. Sorting of
+     * method in list is based on optional annotation parameter order.
+     *
+     * @param actionClass class which is valid action class.
+     * @param methods     map of methods used to be filled by result of mapping.
+     */
     protected void loadMethods(Class<?> actionClass, Map<ActionMethodProxyType, SortedSet<Method>> methods) {
         for (Method m : actionClass.getDeclaredMethods()) {
             for (Annotation a : m.getDeclaredAnnotations()) {
@@ -353,9 +391,6 @@ public class ActionInfoProxyImpl implements ActionInfoProxy {
         if (this.fieldNameMap != other.fieldNameMap && (this.fieldNameMap == null || !this.fieldNameMap.equals(other.fieldNameMap))) {
             return false;
         }
-        if (this.methodsData != other.methodsData && (this.methodsData == null || !this.methodsData.equals(other.methodsData))) {
-            return false;
-        }
-        return true;
+        return !(this.methodsData != other.methodsData && (this.methodsData == null || !this.methodsData.equals(other.methodsData)));
     }
 }
