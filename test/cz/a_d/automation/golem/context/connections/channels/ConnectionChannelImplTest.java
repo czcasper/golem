@@ -53,7 +53,7 @@ public class ConnectionChannelImplTest {
             testData.add(tmpList);
         }
         GolemURLStreamHandlerFactory.getDefaultInstance();
-        connection = GolemConnectionFactory.open(FileHelper.createFileURL(testFile));
+        connection = GolemConnectionFactory.getGlobalFactory().open(FileHelper.createFileURL(testFile));
     }
 
     @AfterClass
@@ -194,14 +194,14 @@ public class ConnectionChannelImplTest {
             assertTrue(result);
         }
         connection.close();
-        connection = GolemConnectionFactory.open(FileHelper.createFileURL(testFile, Arrays.asList(new FileAccessModificator[]{FileAccessModificator.WRITE})));
+        connection = GolemConnectionFactory.getGlobalFactory().open(FileHelper.createFileURL(testFile, Arrays.asList(new FileAccessModificator[]{FileAccessModificator.WRITE})));
         connection.open();
         try (ConnectionChannel instance = connection.getChannel()) {
             boolean result = instance.isReadable();
             assertFalse(result);
         }
         connection.close();
-        connection = GolemConnectionFactory.open(FileHelper.createFileURL(testFile));
+        connection = GolemConnectionFactory.getGlobalFactory().open(FileHelper.createFileURL(testFile));
     }
 
     /**
@@ -217,14 +217,14 @@ public class ConnectionChannelImplTest {
             assertTrue(result);
         }
         connection.close();
-        connection = GolemConnectionFactory.open(FileHelper.createFileURL(testFile, Arrays.asList(new FileAccessModificator[]{FileAccessModificator.READ})));
+        connection = GolemConnectionFactory.getGlobalFactory().open(FileHelper.createFileURL(testFile, Arrays.asList(new FileAccessModificator[]{FileAccessModificator.READ})));
         connection.open();
         try (ConnectionChannel instance = connection.getChannel()) {
             boolean result = instance.isWriteable();
             assertFalse(result);
         }
         connection.close();
-        connection = GolemConnectionFactory.open(FileHelper.createFileURL(testFile));
+        connection = GolemConnectionFactory.getGlobalFactory().open(FileHelper.createFileURL(testFile));
     }
 
     /**

@@ -44,7 +44,7 @@ public class ConnectionImplTest {
          */
         URL url = testFile.toURI().toURL();
         URLConnection connection = null;
-        Connection instance = GolemConnectionFactory.open(url);
+        Connection instance = GolemConnectionFactory.getGlobalFactory().open(url);
         URLConnection current = instance.getCurrent();
         instance.reset(connection);
         assertSame(current, instance.getCurrent());
@@ -68,7 +68,7 @@ public class ConnectionImplTest {
          * Initialize and test testing state of connection.
          */
         URL url = testFile.toURI().toURL();
-        Connection instance = GolemConnectionFactory.open(url);
+        Connection instance = GolemConnectionFactory.getGlobalFactory().open(url);
         assertTrue(instance.isOpen());
 
         instance.close();
@@ -86,7 +86,7 @@ public class ConnectionImplTest {
          * configuration.
          */
         URL url = testFile.toURI().toURL();
-        Connection instance = GolemConnectionFactory.open(url);
+        Connection instance = GolemConnectionFactory.getGlobalFactory().open(url);
         assertTrue(instance.isOpen());
         instance.open();
         assertTrue(instance.isOpen());
@@ -104,7 +104,7 @@ public class ConnectionImplTest {
          * Initialize and test interaction of method with reset.
          */
         URL url = testFile.toURI().toURL();
-        Connection instance = GolemConnectionFactory.open(url);
+        Connection instance = GolemConnectionFactory.getGlobalFactory().open(url);
         ConnectionChannel result = instance.getChannel();
         assertNotNull(result);
         

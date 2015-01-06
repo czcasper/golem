@@ -46,11 +46,11 @@ public class GolemConnectionFactoryTest {
          */
         URI uri = null;
         Proxy proxy = null;
-        Connection result = GolemConnectionFactory.open(uri, proxy);
+        Connection result = GolemConnectionFactory.getGlobalFactory().open(uri, proxy);
         assertNull(result);
 
         proxy = Proxy.NO_PROXY;
-        result = GolemConnectionFactory.open(uri, proxy);
+        result = GolemConnectionFactory.getGlobalFactory().open(uri, proxy);
         assertNull(result);
 
         /**
@@ -59,7 +59,7 @@ public class GolemConnectionFactoryTest {
         File testFile = File.createTempFile("golemConnectionFactory", "open_uri");
         try {
             uri = testFile.toURI();
-            result = GolemConnectionFactory.open(uri, proxy);
+            result = GolemConnectionFactory.getGlobalFactory().open(uri, proxy);
             assertNotNull(result);
             assertTrue(result.isOpen());
             assertNotNull(result.getChannel());
@@ -69,7 +69,7 @@ public class GolemConnectionFactoryTest {
             /**
              * Test if method open will opens new connection into same file.
              */
-            Connection secondResult = GolemConnectionFactory.open(uri, proxy);
+            Connection secondResult = GolemConnectionFactory.getGlobalFactory().open(uri, proxy);
             assertNotNull(secondResult);
             assertNotSame(result, secondResult);
             assertTrue(secondResult.isOpen());
@@ -97,11 +97,11 @@ public class GolemConnectionFactoryTest {
          */
         URL url = null;
         Proxy proxy = null;
-        Connection result = GolemConnectionFactory.open(url, proxy);
+        Connection result = GolemConnectionFactory.getGlobalFactory().open(url, proxy);
         assertNull(result);
 
         proxy = Proxy.NO_PROXY;
-        result = GolemConnectionFactory.open(url, proxy);
+        result = GolemConnectionFactory.getGlobalFactory().open(url, proxy);
         assertNull(result);
 
         /**
@@ -110,7 +110,7 @@ public class GolemConnectionFactoryTest {
         File testFile = File.createTempFile("golemConnectionFactory", "open_uri");
         try {
             url = testFile.toURI().toURL();
-            result = GolemConnectionFactory.open(url, proxy);
+            result = GolemConnectionFactory.getGlobalFactory().open(url, proxy);
             assertNotNull(result);
             assertTrue(result.isOpen());
             assertNotNull(result.getChannel());
@@ -120,7 +120,7 @@ public class GolemConnectionFactoryTest {
             /**
              * Test if method open will opens new connection into same file.
              */
-            Connection secondResult = GolemConnectionFactory.open(url, proxy);
+            Connection secondResult = GolemConnectionFactory.getGlobalFactory().open(url, proxy);
             assertNotNull(secondResult);
             assertNotSame(result, secondResult);
             assertTrue(secondResult.isOpen());
@@ -147,7 +147,7 @@ public class GolemConnectionFactoryTest {
          * Initialize and test protection for null paramter value.
          */
         URI uri = null;
-        Connection result = GolemConnectionFactory.open(uri);
+        Connection result = GolemConnectionFactory.getGlobalFactory().open(uri);
         assertNull(result);
 
         /**
@@ -156,7 +156,7 @@ public class GolemConnectionFactoryTest {
         File testFile = File.createTempFile("golemConnectionFactory", "open_uri");
         try {
             uri = testFile.toURI();
-            result = GolemConnectionFactory.open(uri);
+            result = GolemConnectionFactory.getGlobalFactory().open(uri);
             assertNotNull(result);
             assertTrue(result.isOpen());
             assertNotNull(result.getChannel());
@@ -166,7 +166,7 @@ public class GolemConnectionFactoryTest {
             /**
              * Test if method open will opens new connection into same file.
              */
-            Connection secondResult = GolemConnectionFactory.open(uri);
+            Connection secondResult = GolemConnectionFactory.getGlobalFactory().open(uri);
             assertNotNull(secondResult);
             assertNotSame(result, secondResult);
             assertTrue(secondResult.isOpen());
@@ -197,7 +197,7 @@ public class GolemConnectionFactoryTest {
          * Initialize and test protection for null paramter value.
          */
         URL url = null;
-        Connection result = GolemConnectionFactory.open(url);
+        Connection result = GolemConnectionFactory.getGlobalFactory().open(url);
         assertNull(result);
 
         /**
@@ -206,7 +206,7 @@ public class GolemConnectionFactoryTest {
         File testFile = File.createTempFile("golemConnectionFactory", "open_uri");
         try {
             url = testFile.toURI().toURL();
-            result = GolemConnectionFactory.open(url);
+            result = GolemConnectionFactory.getGlobalFactory().open(url);
             assertNotNull(result);
             assertTrue(result.isOpen());
             assertNotNull(result.getChannel());
@@ -216,7 +216,7 @@ public class GolemConnectionFactoryTest {
             /**
              * Test if method open will opens new connection into same file
              */
-            Connection secondResult = GolemConnectionFactory.open(url);
+            Connection secondResult = GolemConnectionFactory.getGlobalFactory().open(url);
             assertNotNull(secondResult);
             assertNotSame(result, secondResult);
             assertTrue(secondResult.isOpen());

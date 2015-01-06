@@ -736,10 +736,11 @@ public class ParameterSpoolImplTest {
 
     /**
      * Test of clone method, of class AbstractSpoolImpl.
+     * @throws java.lang.CloneNotSupportedException
      */
     @Test
     @SuppressWarnings("unchecked")
-    public void testClone() {
+    public void testClone() throws CloneNotSupportedException {
         /**
          * Initialize testing instance and test if clone create different
          * instance of spool.
