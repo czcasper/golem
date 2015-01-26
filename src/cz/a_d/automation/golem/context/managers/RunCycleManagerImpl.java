@@ -135,11 +135,11 @@ public class RunCycleManagerImpl<T, C, V> extends AbstractContextManager<T, C, R
     }
 
     @Override
-    protected RunCycleImpl<T> setupManager(T action, Object... params) {
-        RunCycleImpl<T> retValue = null;
+    protected RunCycleImpl<T,V> setupManager(T action, Object... params) {
+        RunCycleImpl<T,V> retValue = null;
         if ((context != null) && (context.getActionStream() != null) && (params.length == 2) && (params instanceof Number[])) {
             Number[] parm = (Number[]) params;
-            RunCycleImpl<T> cycle = new RunCycleImpl<>(context.getActionStream().getActionList(), context.resetableIterator());
+            RunCycleImpl<T,V> cycle = new RunCycleImpl<>(context.getActionStream());
             if (cycle.setupCycle(action, parm[0].longValue(), parm[1].intValue())) {
                 retValue = cycle;
             }

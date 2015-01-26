@@ -41,20 +41,17 @@ public class SimpleActionStreamTest {
     protected List<Object> actionList;
 
     public SimpleActionStreamTest() {
-        List<Class<?>> classStream = new ArrayList<>();
-        classStream.add(ActionForTestingContext.class);
-        classStream.add(ActionWithConnection.class);
-        classStream.add(ActionWithContext.class);
-        classStream.add(ActionWithMembers.class);
-        classStream.add(ActionWithNamedMembers.class);
-        classStream.add(ActionWithPointerToContext.class);
-        classStream.add(ActionWithPointersOnMembers.class);
-        classStream.add(ActionWithRetValues.class);
-        classStream.add(SimpleValidAction.class);
-        classStream.add(ValidActionWithNoRun.class);
-        ActionInformationSpool<Object> infoSpool = ActionInformationSpoolImpl.getGlobal();
-        ActionStream<Object, Object> valid = infoSpool.createNewFromClasses(classStream);
-        actionList = valid.getActionList();
+        actionList = new ArrayList<>();
+        actionList.add(new ActionForTestingContext());
+        actionList.add(new ActionWithConnection());
+        actionList.add(new ActionWithContext());
+        actionList.add(new ActionWithMembers());
+        actionList.add(new ActionWithNamedMembers());
+        actionList.add(new ActionWithPointerToContext());
+        actionList.add(new ActionWithPointersOnMembers());
+        actionList.add(new ActionWithRetValues());
+        actionList.add(new SimpleValidAction());
+        actionList.add(new ValidActionWithNoRun());
     }
 
     /**
@@ -91,25 +88,7 @@ public class SimpleActionStreamTest {
     public void testConstructor_Conversion() {
         ArrayList<Object> dummy = new ArrayList<>(actionList);
         SimpleActionStream<Object, Object> instance = new SimpleActionStream<>(dummy);
-        assertTrue(instance.getActionList() instanceof AddressArrayList);
-    }
-
-    /**
-     * Test of getActionList method, of class SimpleActionStream. Validated if
-     * instance returning same instance of list in case when is initialized by
-     * valid instance of AddressArrayList.
-     */
-    @Test
-    public void testGetActionList() {
-        SimpleActionStream<Object, Object> instance = new SimpleActionStream<>(actionList);
-        List<Object> result = instance.getActionList();
-        assertNotNull(result);
-        assertFalse(result.isEmpty());
-        assertSame(actionList, result);
-        assertNull(instance.getParameterSpool());
-        ResetableIterator<Object> it = instance.resetableIterator();
-        assertNotNull(it);
-        assertEquals(it.next(), actionList.get(0));
+        assertTrue(instance.actions instanceof AddressArrayList);
     }
 
     /**
@@ -159,7 +138,7 @@ public class SimpleActionStreamTest {
         SimpleActionStream<Object, Object> instance = new SimpleActionStream<>(actionList);
         SimpleActionStream<Object, Object> result = (SimpleActionStream<Object, Object>) instance.clone();
         Iterator<Object> it = actionList.iterator();
-        for (Object o : result.getActionList()) {
+        for (Object o : result.actions) {
             assertSame(it.next(), o);
         }
         
@@ -170,8 +149,8 @@ public class SimpleActionStreamTest {
         tmpList.add(new ActionWithClone());
         instance = new SimpleActionStream<>(tmpList);
         result = (SimpleActionStream<Object, Object>) instance.clone();
-        it = instance.getActionList().iterator();
-        for(Object o : result.getActionList()){
+        it = instance.actions.iterator();
+        for(Object o : result.actions){
             Object t = it.next();
             assertNotSame(t, o);
         }        

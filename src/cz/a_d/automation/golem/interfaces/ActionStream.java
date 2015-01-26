@@ -4,7 +4,7 @@ package cz.a_d.automation.golem.interfaces;
 
 import cz.a_d.automation.golem.common.iterators.ResetableIterator;
 import cz.a_d.automation.golem.interfaces.spools.ParameterSpool;
-import java.util.List;
+import java.util.Iterator;
 
 /**
  * Interface describing all methods required by Golem runner. This methods are used during action stream processing and execution of action
@@ -17,11 +17,11 @@ import java.util.List;
 public interface ActionStream<A, V> extends Cloneable {
 
     /**
-     * Getter to access list of actions defined by action stream.
+     * Testing whether action stream contains some action.
      *
-     * @return instance of list with actions. Must contains at least one valid action to be successfully consumed by runner.
+     * @return true in case when action stream contains actions, otherwise false.
      */
-    public List<A> getActionList();
+    public boolean isEmpty();
 
     /**
      * Changing spool of parameters used by action stream.
@@ -43,6 +43,51 @@ public interface ActionStream<A, V> extends Cloneable {
      * @return instance of iterator which is providing access to actions in stream. Never return null value.
      */
     public ResetableIterator<A> resetableIterator();
+
+    /**
+     * Creates deep copy of action stream, this copy contains all content of parameters and sub set of actions stored between actions
+     * defined by parameters including this two actions.
+     *
+     * @param startAction action which defines beginning of new sub stream.
+     * @param endAction   action which defines end of new sub stream.
+     * @return instance of action stream in case when parameters are defining valid sequence of actions, otherwise null.
+     */
+    public ActionStream<A, V> subStream(A startAction, A endAction);
+
+    /**
+     * Testing whether specific instance of action is stored in action stream.
+     *
+     * @param action instance of action which will be tested if is presented in action stream.
+     * @return true in case when instance of action is in action stream, otherwise false.
+     */
+    public boolean contains(A action);
+
+    /**
+     * Testing if first action from parameter is stored in action stream before action defined by second parameter.
+     *
+     * @param action    tested action, must be different from null and alredy stored in action stream.
+     * @param endAction action used like end marker for test operation. Must be different from null and already stored in action stream.
+     * @return true in case when tested action is before end marker and parameters are valid, otherwise false.
+     */
+    public boolean isBefore(A action, A endAction);
+
+    /**
+     * Getter to access action based on position of action and vicinity defined by index.
+     *
+     * @param action instance of action which will define start position in action stream. Must be different from null.
+     * @param index  could be positive or negative number. Value of index summed with position defined by action and must be positive number
+     *               less then amount of actions stored inside action stream.
+     * @return instance of action in case when parameters are valid, otherwise null.
+     */
+    public A getAction(A action, int index);
+
+    /**
+     * Getter to access iterator which iterate through actions in stream and start on action defined be input parameter.
+     *
+     * @param action valid action stored in action stream.
+     * @return instance of iterator in case when parameter is valid, otherwise null.
+     */
+    public Iterator<A> iterator(A action);
 
     /**
      * Supports cloning of action stream. This allows duplicate action streams and run it in parallel.

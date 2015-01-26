@@ -322,7 +322,6 @@ public class ActionInformationSpoolImplTest {
         result = instance.createNewFromObject(testData);
         assertNotNull(result);
         assertEquals(valid.length, instance.size());
-        assertArrayEquals(valid, result.getActionList().toArray());
 
         /**
          * Initialize and test edge use case with mixed object and class.
@@ -333,7 +332,7 @@ public class ActionInformationSpoolImplTest {
         assertNotNull(result);
         assertEquals(validWitCl.length, instance.size());
         Iterator<Object> valIt = Arrays.asList(valid).iterator();
-        Iterator<Object> resIt = result.getActionList().iterator();
+        Iterator<Object> resIt = result.resetableIterator();
         while (resIt.hasNext()) {
             assertEquals(valIt.next().getClass(), resIt.next().getClass());
         }
@@ -395,7 +394,7 @@ public class ActionInformationSpoolImplTest {
         assertNotNull(result);
         assertEquals(valid.size(), instance.size());
         Iterator<Class<?>> valIt = valid.iterator();
-        Iterator<Object> resIt = result.getActionList().iterator();
+        Iterator<Object> resIt = result.resetableIterator();
         while (resIt.hasNext()) {
             assertEquals(valIt.next(), resIt.next().getClass());
         }

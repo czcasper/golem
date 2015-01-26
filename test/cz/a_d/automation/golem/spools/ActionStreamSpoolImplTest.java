@@ -137,7 +137,8 @@ public class ActionStreamSpoolImplTest {
         assertNull(result);
         assertTrue(instance.isEmpty());
         key="valid key";
-        value.getActionList().clear();
+        // TODO considere if it is neccessary
+//        value.getActionList().clear();
         result = instance.putFrom(key, value);
         assertNull(result);
         assertTrue(instance.isEmpty());
@@ -191,7 +192,8 @@ public class ActionStreamSpoolImplTest {
             instance.putFrom(key, value);
             result = instance.getFrom(key);
             assertNotNull(result);
-            assertArrayEquals(value.getActionList().toArray(), value.getActionList().toArray());
+            // TODO find better way for testing
+//            assertArrayEquals(value.getActionList().toArray(), value.getActionList().toArray());
             assertNotSame(value, result);
         }
     }
@@ -214,7 +216,8 @@ public class ActionStreamSpoolImplTest {
         assertNull(result);
         assertTrue(instance.isEmpty());
         key = new SimpleActionStreamKey("test");
-        value.getActionList().clear();
+        // TODO considere if it is necessary
+//        value.getActionList().clear();
         result = instance.put(key, value);
         assertNull(result);
         assertTrue(instance.isEmpty());
@@ -269,14 +272,12 @@ public class ActionStreamSpoolImplTest {
         assertFalse(instance.isEmpty());
         result = instance.get(key);
         assertNotSame(nonClonable, result);
-        List<Object> baseList = nonClonable.getActionList();
-        List<Object> resultlist = result.getActionList();
-        assertEquals(baseList.size(), resultlist.size());
-        Iterator<Object> baseIt = baseList.iterator();
-        Iterator<Object> resultIt = resultlist.iterator();
+        Iterator<Object> baseIt = nonClonable.resetableIterator();
+        Iterator<Object> resultIt = result.resetableIterator();
         while (resultIt.hasNext()) {
             assertSame(baseIt.next(), resultIt.next());
         }
+        assertFalse(baseIt.hasNext());
 
         /**
          * Initialize and test getting new instance of ActionStream from spool
@@ -289,14 +290,12 @@ public class ActionStreamSpoolImplTest {
         assertFalse(instance.isEmpty());
         result = instance.get(key);
         assertNotSame(clonable, result);
-        baseList = clonable.getActionList();
-        resultlist = result.getActionList();
-        assertEquals(baseList.size(), resultlist.size());
-        baseIt = baseList.iterator();
-        resultIt = resultlist.iterator();
+        baseIt = clonable.resetableIterator();
+        resultIt = result.resetableIterator();
         while (resultIt.hasNext()) {
             assertNotSame(baseIt.next(), resultIt.next());
         }
+        assertFalse(baseIt.hasNext());
     }
 
     /**

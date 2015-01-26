@@ -2,6 +2,7 @@ package cz.a_d.automation.golem.context;
 
 import cz.a_d.automation.golem.common.AddressArrayList;
 import cz.a_d.automation.golem.common.iterators.ResetableIterator;
+import cz.a_d.automation.golem.spools.actions.SimpleActionStream;
 import java.util.Iterator;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -17,8 +18,8 @@ import org.junit.Test;
 public class RunCycleImplTest {
 
     private AddressArrayList<Object> steps;
-    private RunCycleImpl<Object> initialized;
-    private ResetableIterator<Object> it;
+    private RunCycleImpl<Object,Object> initialized;
+    private SimpleActionStream<Object,Object> stream;
 
     public RunCycleImplTest() {
         steps = new AddressArrayList<>();
@@ -41,8 +42,8 @@ public class RunCycleImplTest {
 
     @Before
     public void setUp() {
-        it = new ResetableIterator<>(steps.iterator());
-        initialized = new RunCycleImpl<>(steps, it);
+        stream = new SimpleActionStream(steps);
+        initialized = new RunCycleImpl<>(stream);
         initialized.setupCycle(steps.get(0), 5, steps.size() - 1);
     }
 
@@ -76,6 +77,7 @@ public class RunCycleImplTest {
                 assertSame(tmpIt.next(), result);
             }
         }
+        ResetableIterator<Object> it = stream.resetableIterator();
         assertFalse(initialized.hasNext());
         assertFalse(it.hasNext());
         assertEquals(initialized.getCycleIterationNum(), initialized.getRepeatCount());
@@ -128,7 +130,7 @@ public class RunCycleImplTest {
         Object rootAction = null;
         int repeatCount = 0;
         int actionCount = -1;
-        RunCycleImpl<Object> instance = new RunCycleImpl<>(steps, it);
+        RunCycleImpl<Object,Object> instance = new RunCycleImpl<>(stream);
 
         boolean result = instance.setupCycle(rootAction, repeatCount, actionCount);
         assertFalse(result);
@@ -162,6 +164,7 @@ public class RunCycleImplTest {
         //TODO refactor test logic 
         Iterator<Object> current = null;
         Iterator<Object> valid = null;
+        ResetableIterator<Object> it = stream.resetableIterator();
         while (initialized.hasNext()) {
             if (initialized.isFirstAction()) {
                 assertNotSame(current, it.getIt());
@@ -231,7 +234,7 @@ public class RunCycleImplTest {
      */
     @Test
     public void testGetStartAction() {
-        RunCycleImpl<Object> instance = new RunCycleImpl<>(steps);
+        RunCycleImpl<Object,Object> instance = new RunCycleImpl<>(stream);
         Object result = instance.getStartAction();
         assertNull(result);
         Object expResult;
@@ -250,7 +253,7 @@ public class RunCycleImplTest {
      */
     @Test
     public void testShiftRootAction() {
-        RunCycleImpl<Object> instance = new RunCycleImpl<>(steps);
+        RunCycleImpl<Object,Object> instance = new RunCycleImpl<>(stream);
 
         boolean result = instance.shiftStartAction(10);
         assertFalse(result);
@@ -315,7 +318,7 @@ public class RunCycleImplTest {
      */
     @Test
     public void testGetEndAction() {
-        RunCycleImpl<Object> instance = new RunCycleImpl<>(steps);
+        RunCycleImpl<Object,Object> instance = new RunCycleImpl<>(stream);
         Object result = instance.getEndAction();
         assertNull(result);
         Object expResult;
@@ -340,7 +343,7 @@ public class RunCycleImplTest {
      */
     @Test
     public void testShiftEndAction() {
-        RunCycleImpl<Object> instance = new RunCycleImpl<>(steps);
+        RunCycleImpl<Object,Object> instance = new RunCycleImpl<>(stream);
         boolean result = instance.shiftEndAction(10);
         assertFalse(result);
 
@@ -388,6 +391,7 @@ public class RunCycleImplTest {
         boolean setupCycle = initialized.setupCycle(steps.get(0), steps.size(), steps.size() - 1);
         assertTrue(setupCycle);
 
+        ResetableIterator<Object> it = stream.resetableIterator();
         Iterator<Object> valid = null;
         int index = 0, range = steps.size();
         while (initialized.hasNext()) {
@@ -412,13 +416,14 @@ public class RunCycleImplTest {
      */
     @Test
     public void testSetBreak() {
-        RunCycleImpl<Object> instance = new RunCycleImpl<>(steps);
+        RunCycleImpl<Object,Object> instance = new RunCycleImpl<>(stream);
         boolean result = instance.isBreak();
         assertFalse(result);
 
         instance.setBreak();
         assertTrue(instance.isBreak());
 
+        ResetableIterator<Object> it = stream.resetableIterator();
         initialized.reset();
         it.setIt(steps.iterator());
         assertTrue(initialized.hasNext());
@@ -447,10 +452,11 @@ public class RunCycleImplTest {
      */
     @Test
     public void testGetCycleIterationNum() {
-        RunCycleImpl<Object> instance = new RunCycleImpl<>(steps);
+        RunCycleImpl<Object,Object> instance = new RunCycleImpl<>(stream);
         long result = instance.getCycleIterationNum();
         assertEquals(0l, result);
 
+        ResetableIterator<Object> it = stream.resetableIterator();
         Iterator<Object> valid = null;
         int index = 0;
         while (initialized.hasNext()) {
@@ -470,12 +476,13 @@ public class RunCycleImplTest {
      */
     @Test
     public void testGetActionIndex() {
-        RunCycleImpl<Object> instance = new RunCycleImpl<>(steps);
+        RunCycleImpl<Object,Object> instance = new RunCycleImpl<>(stream);
         int result = instance.getActionIndex();
         assertEquals(0, result);
 
         Iterator<Object> valid = null;
         int index = 0;
+        Iterator<Object> it = stream.resetableIterator();
         while (initialized.hasNext()) {
             if (initialized.isFirstAction()) {
                 valid = steps.iterator();
@@ -494,7 +501,7 @@ public class RunCycleImplTest {
      */
     @Test
     public void testGetRepeatCount() {
-        RunCycleImpl<Object> instance = new RunCycleImpl<>(steps);
+        RunCycleImpl<Object,Object> instance = new RunCycleImpl<>(stream);
         long result = instance.getRepeatCount();
         assertEquals(0L, result);
 
@@ -512,7 +519,7 @@ public class RunCycleImplTest {
     @Test
     public void testSetRepeatCount() {
         int repeatCount = 0;
-        RunCycleImpl<Object> instance = new RunCycleImpl<>(steps);
+        RunCycleImpl<Object,Object> instance = new RunCycleImpl<>(stream);
         instance.setRepeatCount(repeatCount);
         assertEquals(repeatCount, instance.getRepeatCount());
 
@@ -520,6 +527,7 @@ public class RunCycleImplTest {
         initialized.setupCycle(steps.get(0), repeatCount, steps.size() - 1);
         assertEquals(repeatCount, initialized.getRepeatCount());
 
+        Iterator<Object> it= stream.resetableIterator();
         Iterator<Object> valid = null;
         int index = steps.size() - 1;
         while (initialized.hasNext()) {

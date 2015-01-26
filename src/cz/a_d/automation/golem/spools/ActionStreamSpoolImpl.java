@@ -114,11 +114,8 @@ public class ActionStreamSpoolImpl<A, V> extends AbstractSpoolImpl<A, ActionStre
     @Override
     public ActionStream<A, V> put(ActionStreamKey<?> key, ActionStream<A, V> value) {
         ActionStream<A, V> retValue = null;
-        if ((key != null) && (value != null)) {
-            List<A> actionList = value.getActionList();
-            if ((actionList != null) && (!actionList.isEmpty())) {
-                retValue = super.put(key, value);
-            }
+        if ((key != null) && (value != null) && (!value.isEmpty())) {
+            retValue = super.put(key, value);
         }
         return retValue;
     }
@@ -132,13 +129,9 @@ public class ActionStreamSpoolImpl<A, V> extends AbstractSpoolImpl<A, ActionStre
     @Override
     public ActionStream<A, V> putFrom(String key, ActionStream<A, V> value) {
         ActionStream<A, V> retValue = null;
-        if (value != null) {
-            List<A> actionList = value.getActionList();
-            if ((actionList != null) && (!actionList.isEmpty())) {
-                retValue = super.putFrom(key, value);
-            }
+        if (value != null && (!value.isEmpty())) {
+            retValue = super.putFrom(key, value);
         }
-
         return retValue;
     }
 

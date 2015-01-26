@@ -10,6 +10,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -58,11 +59,6 @@ public class SimpleActionStream<A, V> implements ActionStream<A, V> {
     }
 
     @Override
-    public List<A> getActionList() {
-        return actions;
-    }
-
-    @Override
     public void setParameterSpool(ParameterSpool<A, V> actionParams) {
         this.parmSpool = actionParams;
     }
@@ -75,6 +71,58 @@ public class SimpleActionStream<A, V> implements ActionStream<A, V> {
     @Override
     public ResetableIterator<A> resetableIterator() {
         return it;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return actions.isEmpty();
+    }
+
+    @Override
+    public ActionStream<A, V> subStream(A startAction, A endAction) {
+        ActionStream<A, V> retValue = null;
+        if(actions.contains(startAction) && actions.contains(endAction)){
+            int start = actions.indexOf(startAction);
+            int end = actions.indexOf(endAction);
+            if((start>0)&&(end>0)&&(end>start)){
+                retValue = new SimpleActionStream<>(new AddressArrayList<>(actions.subList(start, end)));
+                try {
+                    retValue.setParameterSpool((ParameterSpool<A, V>) parmSpool.clone());
+                } catch (CloneNotSupportedException ex) {
+                    Logger.getLogger(SimpleActionStream.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+
+        return retValue;
+    }
+
+    @Override
+    public boolean contains(A action) {
+        return actions.contains(action);
+    }
+
+    @Override
+    public boolean isBefore(A action, A endAction) {
+        return actions.indexOf(action) < actions.indexOf(endAction);
+    }
+
+    @Override
+    public A getAction(A action, int index) {
+        A retValue = null;
+        if (actions.contains(action)) {
+            int indexOf = actions.indexOf(action);
+            indexOf += index;
+            if (indexOf > 0 && indexOf < actions.size()) {
+                retValue = actions.get(indexOf);
+            }
+        }
+        return retValue;
+    }
+
+    @Override
+    public Iterator<A> iterator(A action) {
+        return actions.listIterator(actions.indexOf(action));
     }
 
     @Override

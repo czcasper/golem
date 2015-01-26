@@ -3,10 +3,10 @@
  */
 package cz.a_d.automation.golem.context;
 
-import cz.a_d.automation.golem.common.AddressArrayList;
 import cz.a_d.automation.golem.common.iterators.ResetableIterator;
+import cz.a_d.automation.golem.interfaces.ActionStream;
 import cz.a_d.automation.golem.interfaces.context.RunCycle;
-import java.util.List;
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -16,8 +16,9 @@ import java.util.logging.Logger;
  *
  * @author casper
  * @param <T> the type of actions managed by cycle manager.
+ * @param <V>
  */
-public class RunCycleImpl<T> implements RunCycle<T>, Cloneable {
+public class RunCycleImpl<T, V> implements RunCycle<T>, Cloneable {
 
     /**
      * Variables releated range of cycle in array.
@@ -52,7 +53,7 @@ public class RunCycleImpl<T> implements RunCycle<T>, Cloneable {
     /**
      * List of actions from action stream which is used for iteration and implementing logic of cycle on top of action stream.
      */
-    protected List<T> steps;
+    protected ActionStream<T, V> steps;
 
     /**
      * Iterator used to iterate actions from list of actions.
@@ -60,42 +61,19 @@ public class RunCycleImpl<T> implements RunCycle<T>, Cloneable {
     protected ResetableIterator<T> internalIt;
 
     /**
-     * Construct Cycle implementation from list of actions. List is wrapped in case when it is needed to provide safe search for specific
-     * instance in list based on address of object.
+     * Constructing cycle implementation from list of actions and iterator connected with this list. List is wrapped in case when it is
+     * needed to provide safe search for specific instance in list based on address of object.
      *
      * @param steps List of actions to be processed by current instance of cycle. Must be different from null and contains at least one
      *              action.
      * @throws NullPointerException  if the specified list is null
      * @throws IllegalStateException if the specified list is empty
      */
-    public RunCycleImpl(List<T> steps) {
-        this(steps, new ResetableIterator<>(steps.iterator()));
-    }
-
-    /**
-     * Constructing cycle implementation from list of actions and iterator connected with this list. List is wrapped in case when it is
-     * needed to provide safe search for specific instance in list based on address of object.
-     *
-     * @param steps      List of actions to be processed by current instance of cycle. Must be different from null and contains at least one
-     *                   action.
-     * @param internalIt
-     * @throws NullPointerException  if the specified list is null
-     * @throws IllegalStateException if the specified list is empty
-     */
-    public RunCycleImpl(List<T> steps, ResetableIterator<T> internalIt) {
+    public RunCycleImpl(ActionStream<T, V> steps) {
         if ((steps == null) || (internalIt == null)) {
             throw new NullPointerException("Run cycle cannot be initializet by null array or iterator");
         }
-        if (steps.isEmpty()) {
-            throw new IllegalStateException("Run cycle cannot be initialized by empty list");
-        }
-
-        if (!(steps instanceof AddressArrayList)) {
-            steps = new AddressArrayList<>(steps);
-        }
-
         this.steps = steps;
-        this.internalIt = internalIt;
     }
 
     /**
@@ -110,11 +88,10 @@ public class RunCycleImpl<T> implements RunCycle<T>, Cloneable {
     public boolean setupCycle(T rootAction, long repeatCount, int actionCount) {
         boolean retValue = false;
         if ((rootAction != null) && (steps.contains(rootAction) && (actionCount >= 0) && (repeatCount != 0))) {
-            int endPos = steps.indexOf(rootAction) + actionCount;
-            if (endPos < steps.size()) {
-                this.startAction = rootAction;
-                endAction = steps.get(endPos);
+            startAction = rootAction;
+            endAction = steps.getAction(rootAction, actionCount);
 
+            if (startAction != null && endAction != null) {
                 this.repeatCount = repeatCount;
                 this.cycleIterationNum = 0;
                 this.actionIndex = 0;
@@ -181,23 +158,10 @@ public class RunCycleImpl<T> implements RunCycle<T>, Cloneable {
     public boolean shiftStartAction(int index) {
         boolean retValue = false;
         if ((index != 0) && (!steps.isEmpty()) && (startAction != null)) {
-            int newIndex;
-            if (steps.contains(startAction)) {
-                newIndex = steps.indexOf(startAction) + index;
-            } else {
-                newIndex = index;
-            }
-            if ((newIndex >= 0) && (newIndex < steps.size())) {
-                int endPos = steps.indexOf(endAction);
-                if (endPos >= 0) {
-                    if (newIndex <= endPos) {
-                        startAction = steps.get(newIndex);
-                        retValue = true;
-                    }
-                } else {
-                    startAction = steps.get(newIndex);
-                    retValue = true;
-                }
+            T action = steps.getAction(startAction, index);
+            if(action!=null){
+                startAction = action;
+                retValue=true;
             }
         }
         return retValue;
@@ -212,15 +176,9 @@ public class RunCycleImpl<T> implements RunCycle<T>, Cloneable {
     public boolean shiftEndAction(int index) {
         boolean retValue = false;
         if ((index != 0) && (steps != null) && (endAction != null) && (!steps.isEmpty())) {
-            int newIndex;
-            if (steps.contains(endAction)) {
-                newIndex = steps.indexOf(endAction) + index;
-            } else {
-                newIndex = index;
-            }
-
-            if ((newIndex >= 0) && (newIndex < steps.size())) {
-                endAction = steps.get(newIndex);
+            T action = steps.getAction(endAction, index);
+            if(action!=null){
+                endAction = action;
                 retValue = true;
             }
         }
@@ -291,17 +249,9 @@ public class RunCycleImpl<T> implements RunCycle<T>, Cloneable {
 
     @Override
     public void updateIt(T action) {
-        if (steps.contains(action)) {
-            int index = steps.indexOf(action);
-            if (index >= 0) {
-                if (index >= steps.size()) {
-                    index = steps.size() - 1;
-                    internalIt.setIt(steps.listIterator(index));
-                    internalIt.next();
-                } else {
-                    internalIt.setIt(steps.listIterator(index));
-                }
-            }
+        Iterator<T> iterator = steps.iterator(action);
+        if(iterator!=null){
+            internalIt.setIt(iterator);
         }
     }
 
