@@ -147,8 +147,7 @@ public class ActionStreamSpoolImplTest {
         assertNull(result);
         assertTrue(instance.isEmpty());
         key="valid key";
-        // TODO considere if it is neccessary
-//        value.getActionList().clear();
+        value.clear();
         result = instance.putFrom(key, value);
         assertNull(result);
         assertTrue(instance.isEmpty());
@@ -227,7 +226,7 @@ public class ActionStreamSpoolImplTest {
         assertTrue(instance.isEmpty());
         key = new SimpleActionStreamKey("test");
         // TODO considere if it is necessary
-//        value.getActionList().clear();
+        value.clear();
         result = instance.put(key, value);
         assertNull(result);
         assertTrue(instance.isEmpty());

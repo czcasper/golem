@@ -102,6 +102,11 @@ public interface ActionStream<A, V> extends Cloneable {
     public Iterator<A> iterator(A action);
 
     /**
+     * Clear all actions stored in action stream. Result of this method is action stream without actions, parameters are not changed.
+     */
+    public void clear();
+
+    /**
      * Supports cloning of action stream. This allows duplicate action streams and run it in parallel.
      *
      * @return deep copy of action stream including all actions and parameters stored inside stream.

@@ -141,7 +141,6 @@ public class SimpleActionStream<A, V> implements ActionStream<A, V> {
     @SuppressWarnings("unchecked")
     public Object clone() throws CloneNotSupportedException {
         SimpleActionStream<A, V> retValue = (SimpleActionStream<A, V>) super.clone();
-        retValue.it = new ResetableIterator<>(retValue.actions.iterator());
         if (parmSpool != null) {
             retValue.parmSpool = (ParameterSpool<A, V>) parmSpool.clone();
         }
@@ -168,6 +167,14 @@ public class SimpleActionStream<A, V> implements ActionStream<A, V> {
                 }
             }
         }
+        retValue.it = new ResetableIterator<>(retValue.actions.iterator());
         return retValue;
     }
+
+    @Override
+    public void clear() {
+        actions.clear();
+    }
+    
+    
 }
