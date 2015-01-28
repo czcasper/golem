@@ -75,11 +75,12 @@ public interface ActionStream<A, V> extends Cloneable {
     public boolean contains(A action);
 
     /**
-     * Testing if first action from parameter is stored in action stream before action defined by second parameter.
+     * Testing if first action from parameter is stored in action stream before action defined by second parameter including if start and
+     * stop action has same index.
      *
      * @param action    tested action, must be different from null and alredy stored in action stream.
      * @param endAction action used like end marker for test operation. Must be different from null and already stored in action stream.
-     * @return true in case when tested action is before end marker and parameters are valid, otherwise false.
+     * @return true in case when tested action is before end marker or is end marker and parameters are valid, otherwise false.
      */
     public boolean isBefore(A action, A endAction);
 

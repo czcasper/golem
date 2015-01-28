@@ -116,7 +116,7 @@ public class SimpleActionStream<A, V> implements ActionStream<A, V> {
 
     @Override
     public boolean isBefore(A action, A endAction) {
-        return actions.indexOf(action) < actions.indexOf(endAction);
+        return actions.indexOf(action) <= actions.indexOf(endAction);
     }
 
     @Override
@@ -125,7 +125,7 @@ public class SimpleActionStream<A, V> implements ActionStream<A, V> {
         if (actions.contains(action)) {
             int indexOf = actions.indexOf(action);
             indexOf += index;
-            if (indexOf > 0 && indexOf < actions.size()) {
+            if (indexOf >= 0 && indexOf < actions.size()) {
                 retValue = actions.get(indexOf);
             }
         }

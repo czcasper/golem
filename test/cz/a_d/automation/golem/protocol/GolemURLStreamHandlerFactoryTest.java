@@ -68,6 +68,7 @@ public class GolemURLStreamHandlerFactoryTest {
 
     @Test
     public void testIntegrationWithSystem() throws IOException{
+        GolemURLStreamHandlerFactory.getDefaultInstance();
         File tmpFile = File.createTempFile("unitTest", "GolemURLStreamHandlerFactory");
         URL fileUrl = FileHelper.createFileURL(tmpFile);
         URLConnection con = fileUrl.openConnection();

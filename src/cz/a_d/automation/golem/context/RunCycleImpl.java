@@ -81,10 +81,11 @@ public class RunCycleImpl<T, V> implements RunCycle<T>, Cloneable {
      * @throws IllegalStateException if the specified list is empty
      */
     public RunCycleImpl(ActionStream<T, V> steps) {
-        if ((steps == null) || (internalIt == null)) {
-            throw new NullPointerException("Run cycle cannot be initializet by null array or iterator");
+        if (steps == null) {
+            throw new NullPointerException("Run cycle cannot be initializet by null null action stream");
         }
         this.steps = steps;
+        internalIt = steps.resetableIterator();
     }
 
     /**
@@ -101,8 +102,7 @@ public class RunCycleImpl<T, V> implements RunCycle<T>, Cloneable {
         if ((rootAction != null) && (steps.contains(rootAction) && (actionCount >= 0) && (repeatCount != 0))) {
             startAction = rootAction;
             endAction = steps.getAction(rootAction, actionCount);
-
-            if (startAction != null && endAction != null) {
+            if (steps.isBefore(startAction, endAction)) {
                 this.repeatCount = repeatCount;
                 this.cycleIterationNum = 0;
                 this.actionIndex = 0;
@@ -170,9 +170,9 @@ public class RunCycleImpl<T, V> implements RunCycle<T>, Cloneable {
         boolean retValue = false;
         if ((index != 0) && (!steps.isEmpty()) && (startAction != null)) {
             T action = steps.getAction(startAction, index);
-            if(action!=null){
+            if (action!=null && steps.isBefore(action, endAction)) {
                 startAction = action;
-                retValue=true;
+                retValue = true;
             }
         }
         return retValue;
@@ -188,7 +188,7 @@ public class RunCycleImpl<T, V> implements RunCycle<T>, Cloneable {
         boolean retValue = false;
         if ((index != 0) && (steps != null) && (endAction != null) && (!steps.isEmpty())) {
             T action = steps.getAction(endAction, index);
-            if(action!=null){
+            if (action != null && steps.isBefore(startAction, action)) {
                 endAction = action;
                 retValue = true;
             }
@@ -261,7 +261,7 @@ public class RunCycleImpl<T, V> implements RunCycle<T>, Cloneable {
     @Override
     public void updateIt(T action) {
         Iterator<T> iterator = steps.iterator(action);
-        if(iterator!=null){
+        if (iterator != null) {
             internalIt.setIt(iterator);
         }
     }
